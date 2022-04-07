@@ -3,6 +3,7 @@
 // import { ElTable, ElTableColumn } from "element-plus";
 // import 'element-plus/es/components/table/style/css';
 import liveView from '../../components/liveView.vue';
+import mapView from '../../components/mapView.vue';
 
 
 export default {
@@ -14,7 +15,8 @@ export default {
     components:{
         // ElTable,
         // ElTableColumn,
-        liveView
+        liveView,
+        mapView
     },
     setup() {
 

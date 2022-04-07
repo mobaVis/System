@@ -9,7 +9,7 @@
     <div class="live">
       <b> Live View </b>
       <br>
-      <live-view />
+      <liveView />
     </div>
 
     <div class="individual">
@@ -18,11 +18,7 @@
 
     <div class="prediction">
       <b> Event Prediction View </b><br>
-      <img
-        id="map"
-        src="../../assets/image/map.png"
-        alt="empty image"
-      >
+      <mapView />
     </div>
   </div>
 </template>
@@ -83,7 +79,5 @@
   flex-direction: row;
 }
 
-#map{
-  z-index:2;
-}
+
 </style>

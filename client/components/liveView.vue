@@ -12,7 +12,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default {
   mounted() {
-    this.render();
+    // this.render();
   },
   data() {
     return {};

@@ -24,13 +24,17 @@ module.exports = {
         "Promise": true,
         "d3": true
     },
-    "extends": ["eslint:recommended", "plugin:vue/recommended"],
+    "extends": [
+        // "eslint:recommended",
+        "plugin:vue/essential"
+    ],
     "rules": {
         "indent": ["error", 4, {
             "SwitchCase": 1
         }],
         "linebreak-style": ["error", "windows"],
-        "semi": ["error", "always"],
+        // "semi": ["error", "always"],
+        "semi": 0,
         "comma-dangle": ["warn", {
             "arrays": "ignore",
             "objects": "ignore",
@@ -48,6 +52,6 @@ module.exports = {
         "no-duplicate-case": "error",
         "no-duplicate-imports": "error",
         "no-empty": "error",
-        "vue/no-lone-template": "off"
+        "vue/no-lone-template": "off",
     }
 };
