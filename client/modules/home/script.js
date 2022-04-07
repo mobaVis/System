@@ -2,7 +2,7 @@
 // import { reactive, onMounted, ref} from 'vue';
 // import { ElTable, ElTableColumn } from "element-plus";
 // import 'element-plus/es/components/table/style/css';
-import { useRouter } from 'vue-router';
+import liveView from '../../components/liveView.vue';
 
 
 export default {
@@ -14,13 +14,10 @@ export default {
     components:{
         // ElTable,
         // ElTableColumn,
+        liveView
     },
     setup() {
-        const router = useRouter();
 
-        const toDetail = () => {
-            router.push('/threejs');
-        };
         const tableData = [
             {
                 date: '2016-05-02',
@@ -45,8 +42,7 @@ export default {
         ];
 
         return {
-            tableData,
-            toDetail
+            tableData
         };
     }
 };

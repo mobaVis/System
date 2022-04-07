@@ -1,8 +1,25 @@
-# jsonVee
-An efficient front-end integration framework，Based on Node.js, Vue, Webpack.
+# MOBA_VIS
+This Visual Analytics System is built based on JsonVee, an efficient front-end integration framework，Based on Node.js, Vue, Webpack.
 
-- clone项目到本地之后，到主目录执行`npm install`安装npm依赖
+## Dependence
+1. Webpack5, Vue 3.0, MongoDB
+2. node >=v16
+3. `npm install` to install all dependencies
 
+## Usage
+1. 启动服务端
+    ```bash
+    npm run server
+    ```
+2. 启动前端
+    ```bash
+    npm run start
+    ```
+3. 发布
+    ```bash
+    npm run build
+    ```
+    此时会执行webpack的构建，目标文件会放到public目录
 
 ## three.js 运行步骤
 
@@ -13,44 +30,7 @@ An efficient front-end integration framework，Based on Node.js, Vue, Webpack.
 
 **注意：关键配置在`build/webpack.prod.conf.js`，里面有个CopyPlugin插件**
 
-
-## 更新 
-
-- 2022-04-06
-
-1. 添加element-plus支持
-2. 修复已知Bug
-
-- 2021-11-17
-
-1. 升级Webpack，从Webpack4升级到最新的Webpack5
-2. 调整打包逻辑，移除老代码
-3. 更新依赖包，到最新版本
-4. 切换到Vue3.0，欢迎大家尝鲜。
-### 运行与调试
-
-1. 安装MongoDB
-
-- MongoDB 预编译二进制包下载地址：https://www.mongodb.com/download-center/community
-
-2. 基本运行项目 
-
-    1.1 启动服务端
-    ```bash
-    npm run server
-    ```
-    1.2 启动前端
-    ```bash
-    npm run start
-    ```
-3. 发布
-```bash
-npm run build
-```
-此时会执行webpack的构建，目标文件会放到public目录
-
-## 目录
-
+## Directories
 --- `/project`   
 -------- `/build`   // 打包相关逻辑，一般不用动   
 -------- `/config`  // 环境配置文件，本地环境和生产环境   
@@ -72,9 +52,7 @@ npm run build
 -------------- `/router `   // 路由  
 -------------- `/service `   // 对Handler的进一步封装    
 
-
-## 关于
-
+## About
 [Vue 2.x 文档](https://vuejs.bootcss.com/)   
 
 [Vue 3.x 文档](https://v3.cn.vuejs.org/)
@@ -82,8 +60,3 @@ npm run build
 [Node.js 文档](http://nodejs.cn/)    
 
 [Express 框架学习](https://github.com/expressjs/express)
-
-
-## 注意事项
-
-因为是新的版本，所以要求Node.js更新到版本16及以上。可以用Nvm来进行Node.js多版本管理。
