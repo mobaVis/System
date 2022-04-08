@@ -1,5 +1,6 @@
 <template>
   <div>
+    <svg id="players" width="116" height="234" />
     <el-button @click="select_time--" icon="ArrowLeftBold" circle></el-button>
     <el-button @click="select_time++" icon="ArrowRightBold" circle></el-button>
     <div class="slider-demo-block">
@@ -8,8 +9,6 @@
         :max="json.length - 1"
       />
     </div>
-    <!-- <img id="map" src="../assets/image/map.png" alt="empty image" width="200" /> -->
-    <svg id="players" width="200" height="300" />
   </div>
 </template>
 
@@ -119,7 +118,8 @@ export default {
   display: flex;
   align-items: center;
 }
-#map {
+#players {
   z-index: 2;
+  float: right;
 }
 </style>
