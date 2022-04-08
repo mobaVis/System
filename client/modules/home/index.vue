@@ -9,7 +9,8 @@
     <div class="live">
       <b> Live View </b>
       <br>
-      <liveView />
+      <troisModel />
+      <!-- <liveView /> -->
     </div>
 
     <div class="individual">

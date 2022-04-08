@@ -12,6 +12,8 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as Icons from '@element-plus/icons-vue'
 
+// TroisJS
+import {TroisJSVuePlugin} from 'troisjs'
 
 window.d3 = d3;
 const myApp = createApp({
@@ -33,5 +35,5 @@ for (let icon in Icons) {
     )
 }
 
-
+myApp.use(TroisJSVuePlugin);
 myApp.mount("#app-wrapper");

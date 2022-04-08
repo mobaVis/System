@@ -4,6 +4,7 @@
 // import 'element-plus/es/components/table/style/css';
 import liveView from '../../components/liveView.vue';
 import mapView from '../../components/mapView.vue';
+import troisModel from "../../components/TroisLoadModel.vue";
 
 
 export default {
@@ -16,7 +17,8 @@ export default {
         // ElTable,
         // ElTableColumn,
         liveView,
-        mapView
+        mapView,
+        troisModel
     },
     setup() {
 
