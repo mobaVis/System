@@ -3,26 +3,36 @@
     <div>
         <!-- <img alt="Vue logo" src="../assets/logo.png" :width="10"> -->
         <el-row>
-            <el-button circle icon="Refresh" @click="updatePlayerPos(select_time)" />
+            <el-button
+                circle
+                icon="Refresh"
+                @click="updatePlayerPos(select_time)"
+            />
             <el-button circle icon="CameraFilled" @click="printCamera" />
+            <el-button circle @click="findPlayer(0)">0</el-button>
+            <el-button circle @click="findPlayer(1)">1</el-button>
+            <el-button circle @click="findPlayer(2)">2</el-button>
+            <el-button circle @click="findPlayer(3)">3</el-button>
+            <el-button circle @click="findPlayer(4)">4</el-button>
         </el-row>
         <el-row>
             <div class="render">
                 <Renderer
                     ref="renderer"
                     antialias
-                    :orbit-ctrl="{ enableDamping: true, target }"
                     shadow
                     width="600"
                     height="350"
                 >
+                    <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
+
                     <Camera
                         ref="cam"
                         :fov="45"
                         :near="0.1"
                         :far="200"
                         :position="{ x: 20, y: 20, z: 0 }"
-                        :lookAt="{x:0,y:0,z:0}"
+                        :lookAt="target"
                     />
                     <Scene ref="scene" background="#a0a0a0">
                         <!-- <HemisphereLight /> -->
@@ -73,7 +83,7 @@
                             receive-shadow
                         >
                             <PhysicalMaterial>
-                                <Texture src="three/map.svg" />
+                                <Texture src="three/map.png" />
                             </PhysicalMaterial>
                         </Plane>
                     </Scene>
@@ -81,7 +91,11 @@
             </div>
         </el-row>
         <el-row>
-            <el-slider v-model="select_time" :max="json.length - 1" width='400' />
+            <el-slider
+                v-model="select_time"
+                :max="json.length - 1"
+                width="400"
+            />
             <el-button
                 @click="select_time--"
                 icon="ArrowLeftBold"
@@ -92,7 +106,7 @@
                 icon="ArrowRightBold"
                 circle
             ></el-button>
-            &nbsp;&nbsp;&nbsp; {{select_time}}
+            &nbsp;&nbsp;&nbsp; {{ select_time }}
         </el-row>
     </div>
 </template>
@@ -107,7 +121,10 @@ import {
     Fog,
     GridHelper,
     Vector3,
+    // OrbitControls,
+    CameraHelper,
 } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default {
     data() {
@@ -143,17 +160,34 @@ export default {
         grid.material.opacity = 0.3;
         grid.material.transparent = true;
         this.$refs.scene.add(grid);
+        const helper = new CameraHelper(this.$refs.cam.camera);
+        this.$refs.scene.add(helper);
 
         // animate oct & cube
         this.animate();
     },
     methods: {
         printCamera() {
-            const camera = this.$refs.cam.camera
-            camera.position.set(0,20,Math.floor(Math.random() * 15))
-            const target=this.players[0].scene.position
-            console.log(camera.position, camera.lookAt)
-            camera.lookAt(target)
+            const target = this.players[0].scene.position;
+            const camera = this.$refs.cam.camera;
+            camera.position.set(10,10,10)
+            camera.lookAt(0,0,0)
+
+        },
+          findPlayer(id){
+            const target = this.players[id].scene.position;
+            const camera = this.$refs.cam.camera;
+            // this.control = new OrbitControls(camera, this.players[0].scene);
+            // console.log(thos.control)
+
+            camera.position.set(
+                this.getRandomIntInclusive(target.x - 3, target.x + 3),
+                5,
+                this.getRandomIntInclusive(target.z - 3, target.z + 3)
+            );
+            console.log(camera.position, "lookAt target:", target);
+            camera.lookAt(target);
+            // this.target=target
         },
         // render LOOP
         animate() {
@@ -169,13 +203,13 @@ export default {
         },
         updatePlayerPos(time) {
             // positions
-            this.positions=[]
+            this.positions = [];
             for (let i in d3.range(10)) {
                 let data = this.json[time]["usr_" + i];
                 let camp = i > 4 ? 2 : 1;
                 this.positions.push({
-                    x: data[0]/2, // small model with half coordinates
-                    y: data[1]/2,
+                    x: data[0] / 2, // small model with half coordinates
+                    y: data[1] / 2,
                     camp: camp,
                 });
             }
@@ -192,8 +226,6 @@ export default {
 
                 // console.log(this.players[i].scene.position);
                 this.players[i].scene.position.set(x, 0, z);
-                // console.log(this.players[i].position);
-
             }
         },
         onLoad(object) {
@@ -236,10 +268,9 @@ export default {
 </script>
 
 <style scoped>
-.render{
-  display: flex;
-  align-items: center;
-  z-index: 1;
-
+.render {
+    display: flex;
+    align-items: center;
+    z-index: 1;
 }
 </style>
