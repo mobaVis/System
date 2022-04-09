@@ -17,15 +17,15 @@
                     height="350"
                 >
                     <Camera
-                        ref="camera"
+                        ref="cam"
                         :fov="45"
-                        :near="0.25"
+                        :near="0.1"
                         :far="200"
-                        :position="{ x: 0, y: 15, z: 10 }"
+                        :position="{ x: 20, y: 20, z: 0 }"
+                        :lookAt="{x:0,y:0,z:0}"
                     />
                     <Scene ref="scene" background="#a0a0a0">
                         <!-- <HemisphereLight /> -->
-
                         <DirectionalLight
                             :position="{ x: 0, y: 10, z: 5 }"
                             cast-shadow
@@ -43,7 +43,7 @@
                             :position="{ x: 0, y: 2, z: 50 }"
                             cast-shadow
                         >
-                            <PhongMaterial color="#E74866" />
+                            <PhongMaterial color="blue" />
                         </Octahedron>
 
                         <Box
@@ -53,7 +53,7 @@
                             :rotation="{ y: Math.PI / 4, z: Math.PI / 4 }"
                             cast-shadow
                         >
-                            <PhysicalMaterial color="#55A4F3" />
+                            <PhysicalMaterial color="red" />
                         </Box>
 
                         <GltfModel
@@ -67,13 +67,13 @@
                         <!-- <FbxModel src="https://github.com/troisjs/troisjs.github.io/blob/master/src/public/assets/models/Samba%20Dancing.fbx" @load="onLoad" /> -->
 
                         <Plane
-                            :width="58"
-                            :height="117"
+                            :width="60"
+                            :height="120"
                             :rotation="{ x: -Math.PI / 2 }"
                             receive-shadow
                         >
                             <PhysicalMaterial>
-                                <Texture src="three/map.png" />
+                                <Texture src="three/map.svg" />
                             </PhysicalMaterial>
                         </Plane>
                     </Scene>
@@ -83,15 +83,16 @@
         <el-row>
             <el-slider v-model="select_time" :max="json.length - 1" width='400' />
             <el-button
-                @click="select_time-=2"
+                @click="select_time--"
                 icon="ArrowLeftBold"
                 circle
             ></el-button>
             <el-button
-                @click="select_time+=2"
+                @click="select_time++"
                 icon="ArrowRightBold"
                 circle
             ></el-button>
+            &nbsp;&nbsp;&nbsp; {{select_time}}
         </el-row>
     </div>
 </template>
@@ -124,7 +125,7 @@ export default {
             // for three.js
             target: new Vector3(0, 1, 0),
             mixers: [],
-            players: [], // objects
+            players: [], // objects, use `.scene` for position, etc
             n: 10,
         };
     },
@@ -148,8 +149,11 @@ export default {
     },
     methods: {
         printCamera() {
-            // this.$refs.cam.position.z=Math.floor(Math.random() * 15)
-            console.log(this.$refs.camera.position, this.$refs.camera.lookAt);
+            const camera = this.$refs.cam.camera
+            camera.position.set(0,20,Math.floor(Math.random() * 15))
+            const target=this.players[0].scene.position
+            console.log(camera.position, camera.lookAt)
+            camera.lookAt(target)
         },
         // render LOOP
         animate() {
@@ -165,6 +169,7 @@ export default {
         },
         updatePlayerPos(time) {
             // positions
+            this.positions=[]
             for (let i in d3.range(10)) {
                 let data = this.json[time]["usr_" + i];
                 let camp = i > 4 ? 2 : 1;
@@ -174,16 +179,21 @@ export default {
                     camp: camp,
                 });
             }
+            // console.log(this.positions)
+            // console.log(this.json)
 
             // scatter players
             for (let i = 0; i < this.n; i++) {
-                console.log(i);
+                // console.log(i);
                 var x = this.positions[i].x;
                 var z = this.positions[i].y;
+                // var x = this.getRandomIntInclusive(-29,29);
+                // var z = this.getRandomIntInclusive(-58,58);
 
-                console.log(this.players[i]);
+                // console.log(this.players[i].scene.position);
                 this.players[i].scene.position.set(x, 0, z);
                 // console.log(this.players[i].position);
+
             }
         },
         onLoad(object) {
@@ -191,7 +201,7 @@ export default {
             const mixer = new AnimationMixer(object.scene);
             this.mixers.push(mixer);
             this.players.push(object);
-            let clip = AnimationClip.findByName(object.animations, "Attack1");
+            let clip = AnimationClip.findByName(object.animations, "Walk");
             const action = mixer.clipAction(clip);
             // const action = this.mixer.clipAction(object.animations[2]);
             action.play();

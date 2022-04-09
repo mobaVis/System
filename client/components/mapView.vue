@@ -66,7 +66,6 @@ export default {
         margin = { top: 10, right: 20, bottom: 10, left: 20 };
 
       svg.selectAll("circle").remove();
-      this.positions = [];
 
       var getX = d3
         .scaleLinear()
@@ -80,6 +79,7 @@ export default {
         .nice();
 
       // positions
+      this.positions = [];
       for (let i in d3.range(10)) {
         let data = this.json[time]["usr_" + i];
         let camp = i > 4 ? 2 : 1;
