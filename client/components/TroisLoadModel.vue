@@ -55,8 +55,11 @@
                         <GltfModel
                             v-for="i in n"
                             :key="i"
-                            :ref="`player${i}`"
-                            :position="{ x: 0, y: 0, z: i * 3 - 15 }"
+                            :position="{
+                                x: positions[parseInt(i - 1)].x/2,
+                                y: 0,
+                                z: positions[parseInt(i - 1)].y/2,
+                            }"
                             src="three/calibur/scene.gltf"
                             @load="onLoad"
                         />
@@ -72,17 +75,27 @@
                         </Plane>
                     </Scene>
                 </Renderer>
-            <!-- <el-button class='top' circle icon="VideoPlay" @click="findPlayer(0)"/> -->
-            <video-play class='top' :style="{display:play}" @click="playTime"/>
-            <video-pause class='top' :style="{display:pause}" @click="playTime"/>
+                <!-- <el-button class='top' circle icon="VideoPlay" @click="findPlayer(0)"/> -->
+                <video-play
+                    class="top"
+                    :style="{ display: play }"
+                    @click="playTime"
+                />
+                <video-pause
+                    class="top"
+                    :style="{ display: pause }"
+                    @click="playTime"
+                />
+                <mapView
+                    v-bind:positions="positions"
+                    :red="red"
+                    :blue="blue"
+                    name="liveMap"
+                />
             </div>
-
         </el-row>
         <el-row>
-            <el-slider
-                v-model="select_time"
-                :max="json.length - 1"
-            />
+            <el-slider v-model="select_time" :max="json.length - 1" />
         </el-row>
         <el-row>
             <el-button
@@ -108,6 +121,8 @@
 
 <script>
 /* eslint-disable */
+import mapView from "./mapView.vue";
+
 // Model from mixamo.com
 import {
     AnimationMixer,
@@ -132,12 +147,11 @@ export default {
             blue: "#55A4F3",
             x_max: 58,
             y_max: 117,
-            svgID: "players",
 
             // play time
-            play:"block",
-            pause:"none",
-            timer:NaN,
+            play: "block",
+            pause: "none",
+            timer: NaN,
 
             // for three.js
             target: new Vector3(0, 1, 0),
@@ -155,11 +169,20 @@ export default {
         targetPos(val, oldVal) {
             // if (val.distanceToSquared(oldVal) > 10) {
             this.followTarget(val);
-            console.log(val)
+            console.log(val);
             // }
         },
     },
+    
+    components: {
+        mapView,
+    },
+
     mounted() {
+        this.json = require("@/assets/json/pos6219491628248857926.json");
+        this.updatePositions(this.select_time)
+
+        // render
         const scene = this.$refs.scene.scene;
         scene.fog = new Fog(0xa0a0a0, 200, 1000);
 
@@ -182,21 +205,22 @@ export default {
         this.animate();
     },
     methods: {
-        playTime(){
-          if(this.play!='none'){
-            // play
-            this.play = "none"
-            this.pause="block"
-            console.log('pause!!');
-            this.timer=setInterval(()=>{this.select_time++}, 1000);
-          }
-          else{
-            // pause
-            this.pause = "none"
-            this.play="block"
-            console.log('play!!');
-            if(this.timer) clearInterval(this.timer)
-          }
+        playTime() {
+            if (this.play != "none") {
+                // play
+                this.play = "none";
+                this.pause = "block";
+                console.log("pause!!");
+                this.timer = setInterval(() => {
+                    this.select_time++;
+                }, 1000);
+            } else {
+                // pause
+                this.pause = "none";
+                this.play = "block";
+                console.log("play!!");
+                if (this.timer) clearInterval(this.timer);
+            }
         },
         printCamera() {
             // const target = this.players[0].scene.position;
@@ -205,18 +229,33 @@ export default {
             camera.position.set(10, 10, 10);
             camera.lookAt(0, 0, 0);
         },
+        updatePositions(time) {
+            // positions
+            this.positions = [];
+            for (let i in d3.range(10)) {
+                let data = this.json[time]["usr_" + i];
+                let camp = i > 4 ? 2 : 1;
+                this.positions.push({
+                    x: data[0],
+                    y: data[1],
+                    camp: camp,
+                });
+            }
+            // console.log(positions);
+        },
         findPlayer(id) {
-            if(this.select_plr==id)return;
+            if (this.select_plr == id) return;
             this.select_plr = id;
 
             // watch
-            this.$refs.renderer.onBeforeRender(()=>{
-              if(this.select_plr!=-1){
-                // follow player
-                this.targetPos = this.players[this.select_plr].scene.position
-                this.followTarget(this.targetPos)
-              }
-            })
+            this.$refs.renderer.onBeforeRender(() => {
+                if (this.select_plr != -1) {
+                    // follow player
+                    this.targetPos =
+                        this.players[this.select_plr].scene.position;
+                    this.followTarget(this.targetPos);
+                }
+            });
             // this.control.target.set(target);
             // this.control.update();
         },
@@ -224,13 +263,9 @@ export default {
             const target = position;
             const camera = this.$refs.cam.camera;
 
-            camera.position.set(
-                target.x - 3,
-                10,
-                target.z + 3
-            );
+            camera.position.set(target.x - 3, 10, target.z + 3);
             camera.lookAt(target);
-            console.log(camera.position, "lookAt target:", target);
+            // console.log(camera.position, "lookAt target:", target);
         },
         // render LOOP
         animate() {
@@ -244,25 +279,17 @@ export default {
                 cube.rotation.y += 0.01;
             });
         },
+
+        // refresh positions of all player scenes
         updatePlayerPos(time) {
-          // refresh positions of all player scenes
             // positions
-            this.positions = [];
-            for (let i in d3.range(10)) {
-                let data = this.json[time]["usr_" + i];
-                let camp = i > 4 ? 2 : 1;
-                this.positions.push({
-                    x: data[0] / 2, // small model with half coordinates
-                    y: data[1] / 2,
-                    camp: camp,
-                });
-            }
+            this.updatePositions(time);
 
             // scatter players
             for (let i = 0; i < this.n; i++) {
                 // console.log(i);
-                var x = this.positions[i].x;
-                var z = this.positions[i].y;
+                var x = this.positions[i].x /2;
+                var z = this.positions[i].y /2;
                 // var x = this.getRandomIntInclusive(-29,29);
                 // var z = this.getRandomIntInclusive(-58,58);
 
@@ -311,24 +338,28 @@ export default {
 
 <style scoped>
 .render {
-    margin:0 auto;
+    position: relative;
+    margin: 0 auto;
     align-items: center;
+    height: 350px;
     z-index: 1;
 }
-.top{
-  position:absolute;
-  left:5%;
-  bottom:5%;
-  z-index:3;
-  width: 40px;
-  height: 40px;
-  opacity: 60%;
-  color: aliceblue;
-  cursor: pointer;
+.top {
+    /* play & pause icon */
+    position: absolute;
+    left: 3%;
+    bottom: 5%;
+    z-index: 3;
+    width: 50px;
+    height: 50px;
+    opacity: 50%;
+    color: aliceblue;
+    cursor: pointer;
 }
-.el-slider{
-    margin:0 auto;
-  width: 95%;
-  height: fit-content;
+.el-slider {
+    margin: 0 auto;
+    width: 96%;
+    /* height: 30px; */
+    height: fit-content;
 }
 </style>

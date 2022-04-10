@@ -13,7 +13,7 @@ import 'element-plus/dist/index.css';
 import * as Icons from '@element-plus/icons-vue'
 
 // TroisJS
-import {TroisJSVuePlugin} from 'troisjs'
+import { TroisJSVuePlugin } from 'troisjs'
 
 window.d3 = d3;
 const myApp = createApp({

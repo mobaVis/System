@@ -13,6 +13,8 @@ import {
 import {
     RGBELoader
 } from 'three/examples/jsm/loaders/RGBELoader.js';
+
+
 export default {
     setup() {
         let camera, scene, renderer;

@@ -8,20 +8,38 @@ import troisModel from "../../components/TroisLoadModel.vue";
 
 
 export default {
-    data () {
+    data() {
         return {
-            // todo
+            // for mapView
+            json : require("@/assets/json/pos6219491628248857926.json"),
+            positions: [],
+            select_time: 0,
+            red: "#E74866",
+            blue: "#55A4F3",
+            x_max: 58,
+            y_max: 117,
+            svgID: "players",
         };
     },
-    components:{
+    watch: {
+        // watch if any var changes
+        select_time(val, oldVal) {
+            this.updatePositions(val);
+        },
+    },
+    components: {
         // ElTable,
         // ElTableColumn,
         liveView,
         mapView,
         troisModel
     },
+    mounted() {
+        this.json = require("@/assets/json/pos6219491628248857926.json");
+        this.updatePositions(this.select_time);
+        this.live_positions =  JSON.parse(JSON.stringify(this.positions));
+    },
     setup() {
-
         const tableData = [
             {
                 date: '2016-05-02',
@@ -48,5 +66,22 @@ export default {
         return {
             tableData
         };
+    },
+
+    methods: {
+        updatePositions(time) {
+            // positions
+            this.positions = [];
+            for (let i in d3.range(10)) {
+                let data = this.json[time]["usr_" + i];
+                let camp = i > 4 ? 2 : 1;
+                this.positions.push({
+                    x: data[0],
+                    y: data[1],
+                    camp: camp,
+                });
+            }
+            // console.log(positions);
+        },
     }
 };
