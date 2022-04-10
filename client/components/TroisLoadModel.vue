@@ -1,15 +1,6 @@
 <template>
     <!-- unlike name: this file import model with troisjs -->
     <div>
-        <!-- <img alt="Vue logo" src="../assets/logo.png" :width="10"> -->
-        <el-row>
-            <el-button circle icon="CameraFilled" @click="printCamera" />
-            <el-button circle @click="findPlayer(0)">0</el-button>
-            <el-button circle @click="findPlayer(1)">1</el-button>
-            <el-button circle @click="findPlayer(2)">2</el-button>
-            <el-button circle @click="findPlayer(3)">3</el-button>
-            <el-button circle @click="findPlayer(4)">4</el-button>
-        </el-row>
         <el-row>
             <div class="render">
                 <Renderer
@@ -69,8 +60,6 @@
                             src="three/calibur/scene.gltf"
                             @load="onLoad"
                         />
-                        <!-- <FbxModel src="https://github.com/troisjs/troisjs.github.io/blob/master/src/public/assets/models/Samba%20Dancing.fbx" @load="onLoad" /> -->
-
                         <Plane
                             :width="60"
                             :height="120"
@@ -83,14 +72,19 @@
                         </Plane>
                     </Scene>
                 </Renderer>
+            <!-- <el-button class='top' circle icon="VideoPlay" @click="findPlayer(0)"/> -->
+            <video-play class='top' :style="{display:play}" @click="playTime"/>
+            <video-pause class='top' :style="{display:pause}" @click="playTime"/>
             </div>
+
         </el-row>
         <el-row>
             <el-slider
                 v-model="select_time"
                 :max="json.length - 1"
-                width="400"
             />
+        </el-row>
+        <el-row>
             <el-button
                 @click="select_time--"
                 icon="ArrowLeftBold"
@@ -102,6 +96,12 @@
                 circle
             ></el-button>
             &nbsp;&nbsp;&nbsp; {{ select_time }}
+            <el-button circle icon="CameraFilled" @click="printCamera" />
+            <el-button circle @click="findPlayer(0)"> 0 </el-button>
+            <el-button circle @click="findPlayer(1)">1</el-button>
+            <el-button circle @click="findPlayer(2)">2</el-button>
+            <el-button circle @click="findPlayer(3)">3</el-button>
+            <el-button circle @click="findPlayer(4)">4</el-button>
         </el-row>
     </div>
 </template>
@@ -133,6 +133,11 @@ export default {
             x_max: 58,
             y_max: 117,
             svgID: "players",
+
+            // play time
+            play:"block",
+            pause:"none",
+            timer:NaN,
 
             // for three.js
             target: new Vector3(0, 1, 0),
@@ -177,6 +182,22 @@ export default {
         this.animate();
     },
     methods: {
+        playTime(){
+          if(this.play!='none'){
+            // play
+            this.play = "none"
+            this.pause="block"
+            console.log('pause!!');
+            this.timer=setInterval(()=>{this.select_time++}, 1000);
+          }
+          else{
+            // pause
+            this.pause = "none"
+            this.play="block"
+            console.log('play!!');
+            if(this.timer) clearInterval(this.timer)
+          }
+        },
         printCamera() {
             // const target = this.players[0].scene.position;
             this.findPlayer(-1);
@@ -290,8 +311,24 @@ export default {
 
 <style scoped>
 .render {
-    display: flex;
+    margin:0 auto;
     align-items: center;
     z-index: 1;
+}
+.top{
+  position:absolute;
+  left:5%;
+  bottom:5%;
+  z-index:3;
+  width: 40px;
+  height: 40px;
+  opacity: 60%;
+  color: aliceblue;
+  cursor: pointer;
+}
+.el-slider{
+    margin:0 auto;
+  width: 95%;
+  height: fit-content;
 }
 </style>
