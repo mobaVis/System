@@ -3,11 +3,6 @@
     <div>
         <!-- <img alt="Vue logo" src="../assets/logo.png" :width="10"> -->
         <el-row>
-            <el-button
-                circle
-                icon="Refresh"
-                @click="updatePlayerPos(select_time)"
-            />
             <el-button circle icon="CameraFilled" @click="printCamera" />
             <el-button circle @click="findPlayer(0)">0</el-button>
             <el-button circle @click="findPlayer(1)">1</el-button>
@@ -144,11 +139,19 @@ export default {
             mixers: [],
             players: [], // objects, use `.scene` for position, etc
             n: 10,
+            select_plr: 0,
+            targetPos: new Vector3(0, 1, 0),
         };
     },
     watch: {
         select_time(val, oldVal) {
             this.updatePlayerPos(val);
+        },
+        targetPos(val, oldVal) {
+            // if (val.distanceToSquared(oldVal) > 10) {
+            this.followTarget(val);
+            console.log(val)
+            // }
         },
     },
     mounted() {
@@ -160,34 +163,53 @@ export default {
         grid.material.opacity = 0.3;
         grid.material.transparent = true;
         this.$refs.scene.add(grid);
-        const helper = new CameraHelper(this.$refs.cam.camera);
+
+        // camera
+        const camera = this.$refs.cam.camera;
+        const helper = new CameraHelper(camera);
         this.$refs.scene.add(helper);
+        this.control = new OrbitControls(
+            camera,
+            this.$refs.renderer.renderer.domElement
+        );
 
         // animate oct & cube
         this.animate();
     },
     methods: {
         printCamera() {
-            const target = this.players[0].scene.position;
+            // const target = this.players[0].scene.position;
+            this.findPlayer(-1);
             const camera = this.$refs.cam.camera;
-            camera.position.set(10,10,10)
-            camera.lookAt(0,0,0)
-
+            camera.position.set(10, 10, 10);
+            camera.lookAt(0, 0, 0);
         },
-          findPlayer(id){
-            const target = this.players[id].scene.position;
+        findPlayer(id) {
+            if(this.select_plr==id)return;
+            this.select_plr = id;
+
+            // watch
+            this.$refs.renderer.onBeforeRender(()=>{
+              if(this.select_plr!=-1){
+                // follow player
+                this.targetPos = this.players[this.select_plr].scene.position
+                this.followTarget(this.targetPos)
+              }
+            })
+            // this.control.target.set(target);
+            // this.control.update();
+        },
+        followTarget(position) {
+            const target = position;
             const camera = this.$refs.cam.camera;
-            // this.control = new OrbitControls(camera, this.players[0].scene);
-            // console.log(thos.control)
 
             camera.position.set(
-                this.getRandomIntInclusive(target.x - 3, target.x + 3),
-                5,
-                this.getRandomIntInclusive(target.z - 3, target.z + 3)
+                target.x - 3,
+                10,
+                target.z + 3
             );
-            console.log(camera.position, "lookAt target:", target);
             camera.lookAt(target);
-            // this.target=target
+            console.log(camera.position, "lookAt target:", target);
         },
         // render LOOP
         animate() {
@@ -202,6 +224,7 @@ export default {
             });
         },
         updatePlayerPos(time) {
+          // refresh positions of all player scenes
             // positions
             this.positions = [];
             for (let i in d3.range(10)) {
@@ -213,8 +236,6 @@ export default {
                     camp: camp,
                 });
             }
-            // console.log(this.positions)
-            // console.log(this.json)
 
             // scatter players
             for (let i = 0; i < this.n; i++) {

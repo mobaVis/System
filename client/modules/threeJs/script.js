@@ -17,16 +17,19 @@ export default {
     setup() {
         let camera, scene, renderer;
         let model, mixer, clock;
+        let mixers = [];
+        let players = new THREE.Group();
 
         const init = () => {
             const canvas = document.querySelector("#helmet");
             // const container = document.createElement('div');
             // document.body.appendChild(container);
 
-            camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.25, 20);
+            camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 20);
             camera.position.set(0, 5, 10);
 
             scene = new THREE.Scene();
+            scene.add(players)
 
             new RGBELoader()
                 .setPath('three/equirectangular/')
@@ -55,20 +58,28 @@ export default {
                         action.play();
                         animate();
                         clock = new THREE.Clock();
+
+                        var cloneModel = model.clone();
+                        cloneModel.position.set(-5, 0, 0);
+                        players.add(cloneModel);
+                        camera.lookAt(cloneModel);
+                        console.log('clone', cloneModel)
                     });
                 });
-
-            // var cloneModel = model.clone()
-            // cloneModel.position.set(-5, 0, 0);
-            // scene.add(cloneModel);
-            // render();
-
+            const geometry = new THREE.PlaneGeometry(10, 10);
+            const material = new THREE.LineBasicMaterial({ color: 0xffffff });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotateX(-Math.PI / 2);
+            scene.add(plane)
 
             renderer = new THREE.WebGLRenderer({
                 canvas,
                 antialias: true
             });
+            renderer.setSize(canvas.width, canvas.height);
+            console.log(canvas.width, canvas.height)
             renderer.setPixelRatio(window.devicePixelRatio);
+            console.log(canvas.width, canvas.height)
             // renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1;
@@ -82,6 +93,7 @@ export default {
             controls.maxDistance = 10;
             controls.target.set(0, 0, -0.2);
             controls.update();
+            console.log('domElement', renderer.domElement)
 
             canvas.addEventListener('resize', onWindowResize);
 
@@ -91,6 +103,7 @@ export default {
 
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
+            renderer.setSize(canvas.width, canvas.height);
             // renderer.setSize(window.innerWidth, window.innerHeight);
 
             render();
@@ -102,10 +115,21 @@ export default {
 
         const animate = () => {
             requestAnimationFrame(animate);
+
             // update animate
-            if (clock) mixer.update(clock.getDelta());
+            if (clock) {
+                const delta = clock.getDelta();
+                update(delta);
+            }
+
+
             render();
-        }
+        };
+
+        const update = (delta) => {
+
+            mixer.update(delta)
+        };
 
         onMounted(() => {
             const data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
