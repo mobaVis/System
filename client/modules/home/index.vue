@@ -24,7 +24,7 @@
                 v-bind:positions="positions"
                 :red="red"
                 :blue="blue"
-                name="predictMap"
+                name="predictMap" :cam_position={x:0,y:0,z:0}
             />
             <el-button
                 @click="select_time--"

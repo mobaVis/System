@@ -17,7 +17,7 @@
                         :fov="45"
                         :near="0.1"
                         :far="200"
-                        :position="{ x: 20, y: 20, z: 0 }"
+                        :position="camPos"
                         :lookAt="target"
                     />
                     <Scene ref="scene" background="#a0a0a0">
@@ -56,9 +56,9 @@
                             v-for="i in n"
                             :key="i"
                             :position="{
-                                x: positions[parseInt(i - 1)].x/2,
+                                x: positions[parseInt(i - 1)].x / 2,
                                 y: 0,
-                                z: positions[parseInt(i - 1)].y/2,
+                                z: positions[parseInt(i - 1)].y / 2,
                             }"
                             src="three/calibur/scene.gltf"
                             @load="onLoad"
@@ -91,6 +91,7 @@
                     :red="red"
                     :blue="blue"
                     name="liveMap"
+                    :cam_position="camPos"
                 />
             </div>
         </el-row>
@@ -154,33 +155,31 @@ export default {
             timer: NaN,
 
             // for three.js
-            target: new Vector3(0, 1, 0),
+            target: new Vector3(0, 0, 0), // camera.lookAt
             mixers: [],
             players: [], // objects, use `.scene` for position, etc
             n: 10,
-            select_plr: 0,
-            targetPos: new Vector3(0, 1, 0),
+            select_plr: -1, // not follow player
+            targetPos: new Vector3(0, 1, 0), // targetPlayer.position
+            camPos: new Vector3(-10, 20, -10), // camera.position
         };
     },
     watch: {
         select_time(val, oldVal) {
             this.updatePlayerPos(val);
         },
-        targetPos(val, oldVal) {
-            // if (val.distanceToSquared(oldVal) > 10) {
-            this.followTarget(val);
-            console.log(val);
-            // }
-        },
+        // targetPos(val, oldVal) {
+        //     this.followTarget(val);
+        // },
     },
-    
+
     components: {
         mapView,
     },
 
     mounted() {
         this.json = require("@/assets/json/pos6219491628248857926.json");
-        this.updatePositions(this.select_time)
+        this.updatePositions(this.select_time);
 
         // render
         const scene = this.$refs.scene.scene;
@@ -205,30 +204,17 @@ export default {
         this.animate();
     },
     methods: {
-        playTime() {
-            if (this.play != "none") {
-                // play
-                this.play = "none";
-                this.pause = "block";
-                console.log("pause!!");
-                this.timer = setInterval(() => {
-                    this.select_time++;
-                }, 1000);
-            } else {
-                // pause
-                this.pause = "none";
-                this.play = "block";
-                console.log("play!!");
-                if (this.timer) clearInterval(this.timer);
-            }
-        },
+        // global view at center
         printCamera() {
             // const target = this.players[0].scene.position;
             this.findPlayer(-1);
             const camera = this.$refs.cam.camera;
-            camera.position.set(10, 10, 10);
+            // camera.position.set(-10, 20, -10);
+            this.camPos = { x: -10, y: 15, z: -10 };
             camera.lookAt(0, 0, 0);
         },
+
+        // update this.positions
         updatePositions(time) {
             // positions
             this.positions = [];
@@ -243,44 +229,32 @@ export default {
             }
             // console.log(positions);
         },
+
+        // update select_plr: which player to target
         findPlayer(id) {
             if (this.select_plr == id) return;
             this.select_plr = id;
-
-            // watch
-            this.$refs.renderer.onBeforeRender(() => {
-                if (this.select_plr != -1) {
-                    // follow player
-                    this.targetPos =
-                        this.players[this.select_plr].scene.position;
-                    this.followTarget(this.targetPos);
-                }
-            });
             // this.control.target.set(target);
             // this.control.update();
+            if(this.select_plr != -1) {
+            this.targetPos = this.players[this.select_plr].scene.position;
+            this.followTarget(this.targetPos);}
         },
+
+        // camera follow position
         followTarget(position) {
             const target = position;
             const camera = this.$refs.cam.camera;
 
-            camera.position.set(target.x - 3, 10, target.z + 3);
+            camera.position.set(target.x - 10, 15, target.z - 10);
+            // this.camPos = {x:target.x - 10, y:15, z:target.z - 10};
+            this.camPos = {x:camera.position.x, y:15, z:camera.position.z};; //or the camera may shake
+            // console.log(this.camPos);
             camera.lookAt(target);
             // console.log(camera.position, "lookAt target:", target);
         },
-        // render LOOP
-        animate() {
-            // rotate
-            const oct = this.$refs.oct.mesh;
-            const cube = this.$refs.box.mesh;
 
-            this.$refs.renderer.onBeforeRender(() => {
-                oct.rotation.y += 0.01;
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
-            });
-        },
-
-        // refresh positions of all player scenes
+        // refresh positions of all player scenes and camera if possible
         updatePlayerPos(time) {
             // positions
             this.updatePositions(time);
@@ -288,16 +262,45 @@ export default {
             // scatter players
             for (let i = 0; i < this.n; i++) {
                 // console.log(i);
-                var x = this.positions[i].x /2;
-                var z = this.positions[i].y /2;
+                var x = this.positions[i].x / 2;
+                var z = this.positions[i].y / 2;
                 // var x = this.getRandomIntInclusive(-29,29);
                 // var z = this.getRandomIntInclusive(-58,58);
 
                 // console.log(this.players[i].scene.position);
                 this.players[i].scene.position.set(x, 0, z);
             }
+
+            // if target is any player, update camera
+            if (this.select_plr != -1) {
+                // follow player
+                this.targetPos = this.players[this.select_plr].scene.position;
+                this.followTarget(this.targetPos);
+            }
         },
+
+        // play & pause
+        playTime() {
+            if (this.play != "none") {
+                // play
+                this.play = "none";
+                this.pause = "block";
+                console.log("play!!");
+                this.timer = setInterval(() => {
+                    this.select_time++;
+                }, 1000);
+            } else {
+                // pause
+                this.pause = "none";
+                this.play = "block";
+                console.log("pause!!");
+                if (this.timer) clearInterval(this.timer);
+            }
+        },
+
+        // #region model & animation loader
         onLoad(object) {
+            // load models and animations
             // console.log(object.animations);
             const mixer = new AnimationMixer(object.scene);
             this.mixers.push(mixer);
@@ -325,6 +328,20 @@ export default {
                 // console.log(mixer);
                 mixer.update(this.clock.getDelta());
             }
+        },
+        // #endregion
+
+        // render LOOP: rotate 2 cubes
+        animate() {
+            // rotate
+            const oct = this.$refs.oct.mesh;
+            const cube = this.$refs.box.mesh;
+
+            this.$refs.renderer.onBeforeRender(() => {
+                oct.rotation.y += 0.01;
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+            });
         },
         // helper function
         getRandomIntInclusive(min, max) {

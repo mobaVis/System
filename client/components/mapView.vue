@@ -1,6 +1,6 @@
 <template>
     <div>
-        <svg :id="name" width="116"/>
+        <svg :id="name" width="116" />
     </div>
 </template>
 
@@ -11,42 +11,53 @@ export default {
     mounted() {
         this.plotBG(this.name);
         this.updatePlayers(this.name, this.circle_size);
+        this.updateCameraPosition(this.name, this.cam_position);
     },
     data() {
         return {
             // scale of x, y coordinates for plot
             x_max: 58,
             y_max: 117,
-            circle_size:5,
+            circle_size: 5,
 
             // margin
-            margin : { top: 20, right: 20, bottom: 20, left: 20 }
+            margin: { top: 20, right: 20, bottom: 20, left: 20 },
+
+            // block
+            blockSize:{width: 20, height:18}
         };
     },
 
-    props:{
-        positions:{
-            type:Array,
-            required:true
+    props: {
+        positions: {
+            type: Array,
+            required: true,
         },
-        red:{
-            type:String,
-            required:true
+        red: {
+            type: String,
+            required: true,
         },
-        blue:{
-            type:String,
-            required:true
+        blue: {
+            type: String,
+            required: true,
         },
-        name:{
-            type:String,
-            required:true
-        }
+        name: {
+            type: String,
+            required: true,
+        },
+        cam_position: {
+            type: Object,
+            required: true,
+        },
     },
 
     watch: {
         // watch if any var changes
         positions(val, oldVal) {
             this.updatePlayers(this.name, this.circle_size);
+        },
+        cam_position(val, oldVal) {
+            this.updateCameraPosition(this.name, val);
         },
     },
     methods: {
@@ -69,7 +80,7 @@ export default {
 
         // update blue & red circles
         updatePlayers(svgID, circle_size) {
-            console.log('positions in map view: ',this.positions);
+            // console.log("positions in map view: ", this.positions);
             var svg = d3.select("#" + svgID),
                 svgDom = document.getElementById(svgID),
                 width = svgDom.clientWidth,
@@ -107,6 +118,41 @@ export default {
                 });
             svg.selectAll(".camp1").attr("fill", this.red);
             svg.selectAll(".camp2").attr("fill", this.blue);
+        },
+
+        updateCameraPosition(svgID, cam_position) {
+            // console.log('cam_position:',cam_position);
+            var svg = d3.select("#" + svgID),
+                svgDom = document.getElementById(svgID),
+                width = svgDom.clientWidth,
+                height = svgDom.clientHeight,
+                margin = this.margin;
+
+            svg.selectAll("rect").remove();
+            var getX = d3
+                .scaleLinear()
+                .domain([-this.x_max, this.x_max])
+                .range([margin.left, width - margin.right])
+                .nice();
+            var getY = d3
+                .scaleLinear()
+                .domain([-this.y_max, this.y_max])
+                .range([margin.bottom, height - margin.top])
+                .nice();
+
+            var rect = svg.selectAll("rect").append("g");
+            rect.data([cam_position])
+                .enter()
+                .append("rect")
+                .attr("x", (d) => getX(d.x * 2))
+                .attr("y", (d) => getY(d.z * 2))
+                .attr("width", this.blockSize.width)
+                .attr("height", this.blockSize.height)
+                .attr("class", "cam_field")
+                .attr("fill", "#7D53A4")
+                .attr("opacity", "0.5")
+                .attr("stroke", "2")
+                .style('z-index', 3)
         },
     },
 };
