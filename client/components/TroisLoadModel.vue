@@ -2,13 +2,14 @@
     <!-- unlike name: this file import model with troisjs -->
     <div>
         <el-row>
+            <!-- play part -->
             <div class="render">
                 <Renderer
                     ref="renderer"
                     antialias
                     shadow
-                    width="600"
-                    height="350"
+                    width="936"
+                    height="507"
                 >
                     <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
 
@@ -41,7 +42,6 @@
                         >
                             <PhongMaterial color="blue" />
                         </Octahedron>
-
                         <Box
                             ref="box"
                             :size="1"
@@ -56,13 +56,14 @@
                             v-for="i in n"
                             :key="i"
                             :position="{
-                                x: positions[parseInt(i - 1)].x / 2,
+                                x: positions[i - 1].x / 2,
                                 y: 0,
-                                z: positions[parseInt(i - 1)].y / 2,
+                                z: positions[i - 1].y / 2,
                             }"
                             src="three/calibur/scene.gltf"
                             @load="onLoad"
                         />
+
                         <Plane
                             :width="60"
                             :height="120"
@@ -99,17 +100,7 @@
             <el-slider v-model="select_time" :max="json.length - 1" />
         </el-row>
         <el-row>
-            <el-button
-                @click="select_time--"
-                icon="ArrowLeftBold"
-                circle
-            ></el-button>
-            <el-button
-                @click="select_time++"
-                icon="ArrowRightBold"
-                circle
-            ></el-button>
-            &nbsp;&nbsp;&nbsp; {{ select_time }}
+             {{ select_time }} &nbsp;&nbsp;&nbsp;
             <el-button circle icon="CameraFilled" @click="printCamera" />
             <el-button circle @click="findPlayer(0)"> 0 </el-button>
             <el-button circle @click="findPlayer(1)">1</el-button>
@@ -140,9 +131,20 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export default {
     data() {
         return {
-            // select time
+            // select time: init
             json: require("../assets/json/pos6219491628248857926.json"),
-            positions: [],
+            positions: [
+                { x: 0, y: -10, camp: 1 },
+                { x: 0, y: -8, camp: 1 },
+                { x: 0, y: -6, camp: 1 },
+                { x: 0, y: -4, camp: 1 },
+                { x: 0, y: -2, camp: 1 },
+                { x: 0, y: 0, camp: 2 },
+                { x: 0, y: 2, camp: 2 },
+                { x: 0, y: 4, camp: 2 },
+                { x: 0, y: 6, camp: 2 },
+                { x: 0, y: 8, camp: 2 },
+            ],
             select_time: 0,
             red: "#E74866",
             blue: "#55A4F3",
@@ -236,9 +238,10 @@ export default {
             this.select_plr = id;
             // this.control.target.set(target);
             // this.control.update();
-            if(this.select_plr != -1) {
-            this.targetPos = this.players[this.select_plr].scene.position;
-            this.followTarget(this.targetPos);}
+            if (this.select_plr != -1) {
+                this.targetPos = this.players[this.select_plr].scene.position;
+                this.followTarget(this.targetPos);
+            }
         },
 
         // camera follow position
@@ -248,7 +251,7 @@ export default {
 
             camera.position.set(target.x - 10, 15, target.z - 10);
             // this.camPos = {x:target.x - 10, y:15, z:target.z - 10};
-            this.camPos = {x:camera.position.x, y:15, z:camera.position.z};; //or the camera may shake
+            this.camPos = { x: camera.position.x, y: 15, z: camera.position.z }; //or the camera may shake
             // console.log(this.camPos);
             camera.lookAt(target);
             // console.log(camera.position, "lookAt target:", target);
@@ -355,10 +358,12 @@ export default {
 
 <style scoped>
 .render {
-    position: relative;
+    position: absolute;
     margin: 0 auto;
-    align-items: center;
-    height: 350px;
+    left: 12px;
+    top: 52px;
+    /* align-items: center; */
+    /* height: 50%; */
     z-index: 1;
 }
 .top {
@@ -374,9 +379,14 @@ export default {
     cursor: pointer;
 }
 .el-slider {
-    margin: 0 auto;
-    width: 96%;
-    /* height: 30px; */
-    height: fit-content;
+    /* processLine */
+
+    position: absolute;
+    width: 936px;
+    height: 19.97px;
+    left: 12px;
+    top: 554.29px;
+    height: 20px;
+    /* height: fit-content; */
 }
 </style>

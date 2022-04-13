@@ -2,9 +2,12 @@
 // import { reactive, onMounted, ref} from 'vue';
 // import { ElTable, ElTableColumn } from "element-plus";
 // import 'element-plus/es/components/table/style/css';
-import liveView from '../../components/liveView.vue';
-import mapView from '../../components/mapView.vue';
-import troisModel from "../../components/TroisLoadModel.vue";
+import liveView from '@/components/liveView.vue';
+import mapView from '@/components/mapView.vue';
+import troisModel from "@/components/TroisLoadModel.vue";
+import historyView from "@/components/history.vue";
+import avatarUnit from "@/components/avaterButton.vue";
+import eventLegends from "@/components/eventLegends.vue";
 
 
 export default {
@@ -19,6 +22,10 @@ export default {
             x_max: 58,
             y_max: 117,
             svgID: "players",
+
+            // for avatar
+            camp1_colors:["#FDCB6E","#FAB1A0","#FF7675","#FD79A8","#F2CCD3"],
+            camp2_colors:["#00B894","#55EFC4","#81ECEC","#74B9FF","#A29BFE" ],
         };
     },
     watch: {
@@ -32,7 +39,10 @@ export default {
         // ElTableColumn,
         liveView,
         mapView,
-        troisModel
+        troisModel,
+        'history-view': historyView,
+        'avatar-button':avatarUnit,
+        'live-legend':eventLegends
     },
     mounted() {
         this.json = require("@/assets/json/pos6219491628248857926.json");
