@@ -76,37 +76,21 @@
                         </Plane>
                     </Scene>
                 </Renderer>
-                <!-- <el-button class='top' circle icon="VideoPlay" @click="findPlayer(0)"/> -->
-                <video-play
-                    class="top"
-                    :style="{ display: play }"
-                    @click="playTime"
-                />
-                <video-pause
-                    class="top"
-                    :style="{ display: pause }"
-                    @click="playTime"
-                />
+                <div class="top">
+                    <video-play :style="{ display: play }" @click="playTime" />
+                    <video-pause
+                        :style="{ display: pause }"
+                        @click="playTime"
+                    />
+                </div>
                 <mapView
                     v-bind:positions="positions"
                     :red="red"
                     :blue="blue"
-                    name="liveMap"
+                    :name="mapname"
                     :cam_position="camPos"
                 />
             </div>
-        </el-row>
-        <el-row>
-            <el-slider v-model="select_time" :max="json.length - 1" />
-        </el-row>
-        <el-row>
-             {{ select_time }} &nbsp;&nbsp;&nbsp;
-            <el-button circle icon="CameraFilled" @click="printCamera" />
-            <el-button circle @click="findPlayer(0)"> 0 </el-button>
-            <el-button circle @click="findPlayer(1)">1</el-button>
-            <el-button circle @click="findPlayer(2)">2</el-button>
-            <el-button circle @click="findPlayer(3)">3</el-button>
-            <el-button circle @click="findPlayer(4)">4</el-button>
         </el-row>
     </div>
 </template>
@@ -145,7 +129,6 @@ export default {
                 { x: 0, y: 6, camp: 2 },
                 { x: 0, y: 8, camp: 2 },
             ],
-            select_time: 0,
             red: "#E74866",
             blue: "#55A4F3",
             x_max: 58,
@@ -166,8 +149,34 @@ export default {
             camPos: new Vector3(-10, 20, -10), // camera.position
         };
     },
+    props: {
+        mapname: {
+            type: String,
+            required: true,
+        },
+        live_time: {
+            type: Number,
+            default: 0,
+        },
+    },
+    emits: ["update:live_name"],
+    computed: {
+        select_time: {
+            get: function () {
+                return this.live_time;
+            },
+            set: function (value) {
+                // console.log('set select_time', value)
+                this.$emit("update:live_name", value);
+            },
+        },
+    },
+
     watch: {
         select_time(val, oldVal) {
+            console.log(this.id, val);
+            // this.$emit('live_time_change', val)
+            this.value = val;
             this.updatePlayerPos(val);
         },
         // targetPos(val, oldVal) {
@@ -180,8 +189,7 @@ export default {
     },
 
     mounted() {
-        this.json = require("@/assets/json/pos6219491628248857926.json");
-        this.updatePositions(this.select_time);
+        this.updatePositions(0);
 
         // render
         const scene = this.$refs.scene.scene;
@@ -206,16 +214,6 @@ export default {
         this.animate();
     },
     methods: {
-        // global view at center
-        printCamera() {
-            // const target = this.players[0].scene.position;
-            this.findPlayer(-1);
-            const camera = this.$refs.cam.camera;
-            // camera.position.set(-10, 20, -10);
-            this.camPos = { x: -10, y: 15, z: -10 };
-            camera.lookAt(0, 0, 0);
-        },
-
         // update this.positions
         updatePositions(time) {
             // positions
@@ -234,6 +232,14 @@ export default {
 
         // update select_plr: which player to target
         findPlayer(id) {
+            if (id == -1) {
+                // global view at ceneter
+                const camera = this.$refs.cam.camera;
+                // camera.position.set(-10, 20, -10);
+                this.camPos = { x: -10, y: 15, z: -10 };
+                camera.lookAt(0, 0, 0);
+                return;
+            }
             if (this.select_plr == id) return;
             this.select_plr = id;
             // this.control.target.set(target);
@@ -361,32 +367,8 @@ export default {
     position: absolute;
     margin: 0 auto;
     left: 12px;
-    top: 52px;
-    /* align-items: center; */
-    /* height: 50%; */
-    z-index: 1;
+    z-index: -1;
 }
-.top {
-    /* play & pause icon */
-    position: absolute;
-    left: 3%;
-    bottom: 5%;
-    z-index: 3;
-    width: 50px;
-    height: 50px;
-    opacity: 50%;
-    color: aliceblue;
-    cursor: pointer;
-}
-.el-slider {
-    /* processLine */
 
-    position: absolute;
-    width: 936px;
-    height: 19.97px;
-    left: 12px;
-    top: 554.29px;
-    height: 20px;
-    /* height: fit-content; */
-}
+
 </style>

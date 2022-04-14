@@ -11,34 +11,124 @@
             <b> Live View </b>
             <br />
             <el-row>
-                <el-col :span="20"> <troisModel /></el-col>
+                <el-col :span="20">
+                    <el-row>
+                        <troisModel
+                            id="liveVideo"
+                            v-model:live_time="live_time"
+                            mapname="liveMap"
+                            ref="liveVideo"
+                        /> </el-row
+                    ><el-row>
+                        <el-slider
+                            id="liveVideoSlider"
+                            v-model="live_time"
+                            :max="json.length - 1"
+                        />
+                    </el-row>
+                </el-col>
                 <el-col :span="4">
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp1_colors" :key="i">
-                            <avatar-button :name="i" :color="color" />
+                            <avatar-button
+                                :name="i"
+                                :color="color"
+                                @onClick="goWatchPlayer"
+                                class="liveVideo"
+                            />
                         </li>
                     </ul>
-                    <br />
-                    <br />
+                    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <el-button
+                        circle
+                        icon="CameraFilled"
+                        @click="goWatchPlayer('liveVideo', -1)"
+                    />
+                    &nbsp;&nbsp;&nbsp;{{ live_time }}
                     <br />
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp2_colors" :key="i">
-                            <avatar-button :name="i" :color="color" />
+                            <avatar-button
+                                :name="i + 5"
+                                :color="color"
+                                @onClick="goWatchPlayer"
+                                class="liveVideo"
+                            />
                         </li>
                     </ul>
-                    <br/>
-                    <live-legend style="right:0;bottom:0;" />
+                    <br />
+                    <live-legend style="right: 0; bottom: 0" />
                 </el-col>
             </el-row>
             <!-- <liveView /> -->
         </div>
 
-        <div class="individual">
-            <b> Individual View </b>
+        <div class="review">
+            <b> Review View </b>
+            <el-row> <review-time-detail /></el-row
+            ><el-row>
+                <el-col :span="20">
+                    <el-row>
+                        <troisModel
+                            id="reviewVideo"
+                            v-model:live_time="review_times[0]"
+                            mapname="reviewMap"
+                            ref="reviewVideo"
+                        /> </el-row
+                    ><el-row>
+                        <el-slider
+                            id="reviewVideoSlider"
+                            v-model="review_times"
+                            range
+                            :max="json.length - 1"
+                    /></el-row>
+                </el-col>
+                <el-col :span="4">
+                    <br />
+                    <ul style="list-style-type: none">
+                        <li v-for="(color, i) in camp1_colors" :key="i">
+                            <avatar-button
+                                :name="i"
+                                :color="color"
+                                @onClick="goWatchPlayer"
+                                class="reviewVideo"
+                            />
+                        </li>
+                    </ul>
+                    <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <el-button
+                        circle
+                        icon="CameraFilled"
+                        @click="goWatchPlayer('reviewVideo', -1)"
+                    />
+                    &nbsp;&nbsp;&nbsp;{{ review_times[0] }}
+                    <br />
+                    <ul style="list-style-type: none">
+                        <li v-for="(color, i) in camp2_colors" :key="i">
+                            <avatar-button
+                                :name="i + 5"
+                                :color="color"
+                                @onClick="goWatchPlayer"
+                                class="reviewVideo"
+                            />
+                        </li>
+                    </ul>
+                </el-col>
+            </el-row>
         </div>
 
         <div class="prediction">
             <b> Event Prediction View </b><br />
+            <!-- event predictions -->
+            <el-row>
+                <el-col :span="12"> <prediction /></el-col>
+                <el-col :span="12" >
+                    <!-- <closeup id="closeVideo" :positions="positions" ref="closeVideo" /> -->
+                    </el-col
+                ></el-row
+            >
             <mapView
                 v-bind:positions="positions"
                 :red="red"
@@ -96,7 +186,7 @@
     box-sizing: border-box;
     border-radius: 5px;
 }
-.individual {
+.review {
     /* review */
 
     position: absolute;
@@ -135,15 +225,22 @@
     width: 25%;
     height: 25%;
     // width: 180px;
-    right: 45%;
-    top: 3%;
+    right: 1%;
+    top: 30%;
     z-index: 2;
 }
 #liveMap {
     float: right;
     position: absolute;
     right: 0%;
-    top: 0%;
+    top: 2%;
+    z-index: 2;
+}
+#reviewMap {
+    float: right;
+    position: absolute;
+    right: 0%;
+    top: 5%;
     z-index: 2;
 }
 .tmp {
@@ -154,4 +251,67 @@
     bottom: 0;
 }
 // #endregion
+
+// #region sliders
+#liveVideoSlider {
+    /* processLine */
+
+    position: absolute;
+    width: 100%;
+    left: 12px;
+    top: 520px;
+    height: 20px;
+    --el-slider-main-bg-color: #a29bfe;
+    --el-slider-runway-bg-color: var(--el-border-color-light);
+    --el-slider-stop-bg-color: var(--el-color-white);
+    --el-slider-disabled-color: var(--el-text-color-placeholder);
+    --el-slider-border-radius: 10px;
+    --el-slider-height: 20px;
+    --el-slider-button-size: 19.97px;
+    --el-slider-button-wrapper-size: 19.97px;
+    --el-slider-button-wrapper-offset: -5px;
+    z-index: 1;
+    // height: fit-content;
+}
+#reviewVideoSlider {
+    /* processLine */
+
+    position: absolute;
+    width: 100%;
+    left: 12px;
+    top: 45px;
+    height: 20px;
+    --el-slider-main-bg-color: #a29bfe;
+    --el-slider-runway-bg-color: var(--el-border-color-light);
+    --el-slider-stop-bg-color: var(--el-color-white);
+    --el-slider-disabled-color: var(--el-text-color-placeholder);
+    --el-slider-border-radius: 10px;
+    --el-slider-height: 20px;
+    --el-slider-button-size: 19.97px;
+    --el-slider-button-wrapper-size: 19.97px;
+    --el-slider-button-wrapper-offset: -4px;
+    // height: fit-content;
+}
+// #endregion
+
+#liveVideo {
+    position: absolute;
+    top: 22px;
+}
+#reviewVideo {
+    position: absolute;
+    top: 52px;
+}
+/* play & pause icon */
+.top {
+    position: absolute;
+    left: 3%;
+    bottom: 5%;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    opacity: 50%;
+    color: aliceblue;
+    cursor: pointer;
+}
 </style>

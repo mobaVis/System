@@ -53,5 +53,6 @@ module.exports = {
         "no-duplicate-imports": "error",
         "no-empty": "error",
         "vue/no-lone-template": "off",
+        "vue/no-v-model-argument": "off"
     }
 };

@@ -1,22 +1,28 @@
 // import HttpHelper from "common/utils/axios_helper.js";
 // import { reactive, onMounted, ref} from 'vue';
-// import { ElTable, ElTableColumn } from "element-plus";
-// import 'element-plus/es/components/table/style/css';
-import liveView from '@/components/liveView.vue';
 import mapView from '@/components/mapView.vue';
 import troisModel from "@/components/TroisLoadModel.vue";
 import historyView from "@/components/history.vue";
+
 import avatarUnit from "@/components/avaterButton.vue";
 import eventLegends from "@/components/eventLegends.vue";
+
+import reviewDetail from "@/components/reviewDetail.vue";
+
+import eventPredict from "@/components/eventPredict.vue";
+import closeup from "@/components/closeup.vue";
+import { ref } from 'vue';
 
 
 export default {
     data() {
         return {
             // for mapView
-            json : require("@/assets/json/pos6219491628248857926.json"),
+            json: require("@/assets/json/pos6219491628248857926.json"),
             positions: [],
             select_time: 0,
+            live_time: 0,
+            review_times: ref([100, 200]),
             red: "#E74866",
             blue: "#55A4F3",
             x_max: 58,
@@ -24,8 +30,8 @@ export default {
             svgID: "players",
 
             // for avatar
-            camp1_colors:["#FDCB6E","#FAB1A0","#FF7675","#FD79A8","#F2CCD3"],
-            camp2_colors:["#00B894","#55EFC4","#81ECEC","#74B9FF","#A29BFE" ],
+            camp1_colors: ["#FDCB6E", "#FAB1A0", "#FF7675", "#FD79A8", "#F2CCD3"],
+            camp2_colors: ["#00B894", "#55EFC4", "#81ECEC", "#74B9FF", "#A29BFE"],
         };
     },
     watch: {
@@ -35,19 +41,18 @@ export default {
         },
     },
     components: {
-        // ElTable,
-        // ElTableColumn,
-        liveView,
         mapView,
         troisModel,
         'history-view': historyView,
-        'avatar-button':avatarUnit,
-        'live-legend':eventLegends
+        'avatar-button': avatarUnit,
+        'live-legend': eventLegends,
+        'review-time-detail': reviewDetail,
+        'prediction': eventPredict,closeup
     },
     mounted() {
         this.json = require("@/assets/json/pos6219491628248857926.json");
         this.updatePositions(this.select_time);
-        this.live_positions =  JSON.parse(JSON.stringify(this.positions));
+        this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
     setup() {
         const tableData = [
@@ -93,5 +98,11 @@ export default {
             }
             // console.log(positions);
         },
+        goWatchPlayer(refName, player_id) {
+
+            console.log(refName)
+            console.log(this.$refs[refName])
+            this.$refs[refName].findPlayer(player_id);
+        }
     }
 };
