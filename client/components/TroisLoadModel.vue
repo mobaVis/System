@@ -71,7 +71,7 @@
                             receive-shadow
                         >
                             <PhysicalMaterial>
-                                <Texture src="three/map.png" />
+                                <Texture src="three/map_clear.jpg" />
                             </PhysicalMaterial>
                         </Plane>
                     </Scene>
