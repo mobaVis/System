@@ -58,7 +58,22 @@
                         </li>
                     </ul>
                     <br />
-                    <live-legend style="right: 0; bottom: 0" />
+                    <el-switch
+                        v-model="live_switch"
+                        size="small"
+                        :active-text="
+                            select_plr == -1 ? 'global' : `player${select_plr}`
+                        "
+                        active-color="#a29bfe"
+                    />
+                    <live-legend
+                        style="
+                             {
+                                right: 0;
+                                bottom: 0;
+                            }
+                        "
+                    />
                 </el-col>
             </el-row>
             <!-- <liveView /> -->
@@ -123,19 +138,44 @@
             <b> Event Prediction View </b><br />
             <!-- event predictions -->
             <el-row>
-                <el-col :span="12"> <prediction /></el-col>
-                <el-col :span="12" >
-                    <!-- <closeup id="closeVideo" :positions="positions" ref="closeVideo" /> -->
-                    </el-col
-                ></el-row
-            >
-            <mapView
-                v-bind:positions="positions"
-                :red="red"
-                :blue="blue"
-                name="predictMap"
-                :cam_position="{ x: 0, y: 0, z: 0 }"
-            />
+                <el-col :span="12">
+                    <prediction :colors="camp1_colors.concat(camp2_colors)"
+                /></el-col>
+                <el-col :span="12">
+                    <closeup
+                        id="closeVideo"
+                        :positions="positions"
+                        ref="closeVideo"
+                    /> </el-col
+            ></el-row>
+            <el-row>
+                <el-col :span="12"
+                    ><glyph
+                        name="select_glyph"
+                        :radius="150"
+                        :colors="glyph_colors"
+                    />
+                </el-col>
+                <el-col :span="12">
+                    <mapView
+                        v-bind:positions="positions"
+                        :red="red"
+                        :blue="blue"
+                        name="predictMap"
+                        :cam_position="{ x: 0, y: 0, z: 0 }"
+                    />
+                </el-col>
+            </el-row>
+            <el-row class="glyph_group">
+                <span v-for="i in 4" :key="i">
+                    <glyph
+                        :name="`select_glyph_${i}`"
+                        :radius="40"
+                        :colors="glyph_colors"
+                    />&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+            </el-row>
+
             <div class="tmp">
                 <el-button
                     @click="select_time--"
@@ -201,7 +241,6 @@
 }
 .prediction {
     /* prediction */
-
     position: absolute;
     left: 71.48%;
     right: 0.78%;
@@ -222,10 +261,10 @@
 // #region map with diff size & pos
 #predictMap {
     position: absolute;
-    width: 25%;
-    height: 25%;
+    width: 200px;
+    height: 400px;
     // width: 180px;
-    right: 1%;
+    right: 10%;
     top: 30%;
     z-index: 2;
 }
@@ -313,5 +352,16 @@
     opacity: 50%;
     color: aliceblue;
     cursor: pointer;
+}
+
+#select_glyph {
+    position: absolute;
+    left: 10%;
+    top: 33px;
+}
+.glyph_group {
+    // position: absolute;
+    left: 10%;
+    top: 30%;
 }
 </style>

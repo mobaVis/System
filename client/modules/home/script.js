@@ -11,6 +11,7 @@ import reviewDetail from "@/components/reviewDetail.vue";
 
 import eventPredict from "@/components/eventPredict.vue";
 import closeup from "@/components/closeup.vue";
+import glyph from "@/components/glyph.vue";
 import { ref } from 'vue';
 
 
@@ -32,6 +33,13 @@ export default {
             // for avatar
             camp1_colors: ["#FDCB6E", "#FAB1A0", "#FF7675", "#FD79A8", "#F2CCD3"],
             camp2_colors: ["#00B894", "#55EFC4", "#81ECEC", "#74B9FF", "#A29BFE"],
+
+            // for glyph
+            glyph_colors: ['#f09235', '#C47948', '#976058', '#664969', '#786986', '#8A89A4', '#9CAAC3'],
+
+            // for plr switch
+            live_switch: false,
+            select_plr: -1
         };
     },
     watch: {
@@ -47,7 +55,7 @@ export default {
         'avatar-button': avatarUnit,
         'live-legend': eventLegends,
         'review-time-detail': reviewDetail,
-        'prediction': eventPredict,closeup
+        'prediction': eventPredict, closeup, glyph
     },
     mounted() {
         this.json = require("@/assets/json/pos6219491628248857926.json");

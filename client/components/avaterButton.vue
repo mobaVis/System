@@ -21,9 +21,13 @@
             <text
                 x="32"
                 y="25"
-                font-family="Noto Sans"
-                font-style="SemiBold"
-                font-size="18"
+                style="
+                    font-family: 'Noto Sans';
+                    font-style: SemiBold;
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 25px;
+                "
                 :fill="black"
             >
                 {{ num1 }} / {{ num2 }}
@@ -82,23 +86,23 @@ export default {
             required: true,
         },
     },
-    methods:{
-        getPlayer(){
-            console.log(this)
+    methods: {
+        getPlayer() {
+            console.log(this);
 
             const player_id = this.name;
             const ref_Name = this.class;
             // const ref_Name = this.attr('class');
-            console.log(ref_Name)
+            console.log(ref_Name);
 
-            this.$emit('onClick', ref_Name, player_id)
-        }
-    }
+            this.$emit("onClick", ref_Name, player_id);
+        },
+    },
 };
 </script>
 
 <style scoped>
-*{
+* {
     cursor: pointer;
 }
 </style>

@@ -1,39 +1,63 @@
 <template>
-    <div>
-        <svg
-            id="predict_title"
-            width="190"
-            height="32"
-            viewBox="0 0 190 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <text
-                x="8"
-                y="25"
-                font-family="Noto Sans"
-                font-style="Display Regular"
-                font-size="50"
-                fill="#333333"
-            >
-                {{ event_num }}
+    <svg
+        id="predict_title"
+        width="300"
+        height="340"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <g>
+            <text>
+                <tspan
+                    x="42"
+                    y="32"
+                    style="
+                        font-family: 'Noto Sans';
+                        font-style: Light;
+                        font-weight: 400;
+                        font-size: 40px;
+                        line-height: 54px;
+                    "
+                    fill="#333333"
+                >
+                    {{ event_num }}
+                </tspan>
+                <tspan
+                    x="70"
+                    y="32"
+                    style="
+                        font-family: 'Noto Sans';
+                        font-style: normal;
+                        font-weight: 300;
+                        font-size: 15px;
+                        line-height: 20px;
+                    "
+                    fill="#333333"
+                >
+                    events predicted in 10 s
+                </tspan>
             </text>
+        </g>
+
+        <g>
             <text
-                x="16"
-                y="25"
-                font-family="Noto Sans"
-                font-style="Light"
-                font-size="15"
-                fill="#333333"
+                x="30"
+                y="60"
+                width="230"
+                style="
+                    font-family: 'Noto Sans';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 18px;
+                    line-height: 25px;
+                    text-align: center;
+                "
+                fill="black"
             >
-                events predicted in 10 s
+                0.92 - destroy tower
             </text>
-            <path
-                d="M0 55C0 52.2386 2.23858 50 5 50H245C247.761 50 250 52.2386 250 55V75C250 77.7614 247.761 80 245 80H5C2.23857 80 0 77.7614 0 75V55Z"
-                fill="#FF7675"
-            />
-        </svg>
-    </div>
+        </g>
+    </svg>
 </template>
 
 <script>
@@ -49,12 +73,48 @@ export default {
             ],
         };
     },
+    props: {
+        colors: { type: Array },
+    },
+    mounted() {
+        this.plotPopUps();
+    },
+    methods: {
+        plotPopUps() {
+            const svg = d3.select("#predict_title");
+            for (let i = 0; i < this.event_num; i++) {
+                let g = svg
+                    .selectAll()
+                    .data([{ w: 250, h: 30 }])
+                    .enter()
+                    .append("g");
+                g.append("rect")
+                    .attr("x", 0)
+                    .attr("y", () => {
+                        return 40 + i * 40;
+                    })
+                    .attr('class', 'popup')
+                    .style('cursor', 'pointer')
+                    .attr("width", (d) => d.w)
+                    .attr("height", (d) => d.h)
+                    .attr("rx", 15)
+                    .attr("fill", this.colors[this.events[i].plr_id]);
+                g.append("text")
+                    .text(this.events[i].p+' - '+this.events[i].event)
+                    .attr("x", 30)
+                    .attr("y", 60 + i * 40)
+                    .attr("fill", "#333333");
+            }
+
+            return;
+        },
+    },
 };
 </script>
 <style scoped>
 #predict_title {
     position: absolute;
-    left: 10%;
+    left: 5%;
     top: 3%;
 }
 </style>

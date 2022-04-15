@@ -1,6 +1,15 @@
 <template>
     <div>
-        <text>player1</text>
+        <text
+            style="
+                font-family: 'Noto Sans';
+                font-style: normal;
+                font-weight: 900;
+                font-size: 20px;
+                line-height: 27px;
+                color: '#666666';
+            "
+            >player1</text>
         <div class="close-view">
             <Renderer ref="renderer" antialias shadow width="350" height="220">
                 <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
@@ -24,7 +33,7 @@
                         }"
                     />
 
-                    <GltfModel
+                    <!-- <GltfModel
                         v-for="i in 10"
                         :key="i"
                         :position="{
@@ -34,7 +43,7 @@
                         }"
                         src="three/calibur/scene.gltf"
                         @load="onLoad"
-                    />
+                    /> -->
 
                     <Plane
                         :width="60"
@@ -85,27 +94,27 @@ export default {
         positions: {
             type: Array,
             required: true,
-            // default: () => {
-            //     return [
-            //         { x: 0, y: -10, camp: 1 },
-            //         { x: 0, y: -8, camp: 1 },
-            //         { x: 0, y: -6, camp: 1 },
-            //         { x: 0, y: -4, camp: 1 },
-            //         { x: 0, y: -2, camp: 1 },
-            //         { x: 0, y: 0, camp: 2 },
-            //         { x: 0, y: 2, camp: 2 },
-            //         { x: 0, y: 4, camp: 2 },
-            //         { x: 0, y: 6, camp: 2 },
-            //         { x: 0, y: 8, camp: 2 },
-            //     ];
-            // },
+            default: () => {
+                return [
+                    { x: 0, y: -10, camp: 1 },
+                    { x: 0, y: -8, camp: 1 },
+                    { x: 0, y: -6, camp: 1 },
+                    { x: 0, y: -4, camp: 1 },
+                    { x: 0, y: -2, camp: 1 },
+                    { x: 0, y: 0, camp: 2 },
+                    { x: 0, y: 2, camp: 2 },
+                    { x: 0, y: 4, camp: 2 },
+                    { x: 0, y: 6, camp: 2 },
+                    { x: 0, y: 8, camp: 2 },
+                ];
+            },
         },
     },
     watch: {
-        positions(val, oldVal) {
-            console.log(this.id, val);
-            this.updatePlayerPos(val);
-        },
+        // positions(val, oldVal) {
+        //     console.log(this.id, val);
+        //     this.updatePlayerPos(val);
+        // },
     },
     mounted() {
         // render
