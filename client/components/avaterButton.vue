@@ -9,14 +9,14 @@
         xmlns:xlink="http://www.w3.org/1999/xlink"
     >
         <g>
-            <rect
-                :class="name"
+            <rect ref="rect"
+                :class="`rect ${name}`"
                 rx="17.5"
                 y="1"
                 width="123"
                 height="35"
                 fill="#666666"
-                fill-opacity="0.1"
+                opacity="0.1"
             />
             <text
                 x="32"
@@ -81,21 +81,26 @@ export default {
             type: String,
             required: true,
         },
-        class: {
-            type: String,
-            required: true,
-        },
+        // class: {
+        //     type: String,
+        //     required: true,
+        // },
     },
     methods: {
         getPlayer() {
-            console.log(this);
+            const className = this.$el.className.animVal;
+            const rects = d3
+                .selectAll("." + className) // svgList
+                .selectAll(".rect")
+            rects.attr('opacity', 0.1)
+            const rect = this.$refs.rect
+            d3.select(rect).attr('opacity',0.5)
+            // console.log("rects", rects);
+            // console.log("rect", rect);
 
+            // update players in related view
             const player_id = this.name;
-            const ref_Name = this.class;
-            // const ref_Name = this.attr('class');
-            console.log(ref_Name);
-
-            this.$emit("onClick", ref_Name, player_id);
+            this.$emit("onClick", className, player_id);
         },
     },
 };

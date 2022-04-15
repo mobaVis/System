@@ -94,20 +94,20 @@ export default {
         positions: {
             type: Array,
             required: true,
-            default: () => {
-                return [
-                    { x: 0, y: -10, camp: 1 },
-                    { x: 0, y: -8, camp: 1 },
-                    { x: 0, y: -6, camp: 1 },
-                    { x: 0, y: -4, camp: 1 },
-                    { x: 0, y: -2, camp: 1 },
-                    { x: 0, y: 0, camp: 2 },
-                    { x: 0, y: 2, camp: 2 },
-                    { x: 0, y: 4, camp: 2 },
-                    { x: 0, y: 6, camp: 2 },
-                    { x: 0, y: 8, camp: 2 },
-                ];
-            },
+            // default: () => {
+            //     return [
+            //         { x: 0, y: -10, camp: 1 },
+            //         { x: 0, y: -8, camp: 1 },
+            //         { x: 0, y: -6, camp: 1 },
+            //         { x: 0, y: -4, camp: 1 },
+            //         { x: 0, y: -2, camp: 1 },
+            //         { x: 0, y: 0, camp: 2 },
+            //         { x: 0, y: 2, camp: 2 },
+            //         { x: 0, y: 4, camp: 2 },
+            //         { x: 0, y: 6, camp: 2 },
+            //         { x: 0, y: 8, camp: 2 },
+            //     ];
+            // },
         },
     },
     watch: {

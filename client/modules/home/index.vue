@@ -66,14 +66,7 @@
                         "
                         active-color="#a29bfe"
                     />
-                    <live-legend
-                        style="
-                             {
-                                right: 0;
-                                bottom: 0;
-                            }
-                        "
-                    />
+                    <live-legend/>
                 </el-col>
             </el-row>
             <!-- <liveView /> -->
