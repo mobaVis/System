@@ -1,9 +1,42 @@
 <template>
     <div class="wrapper">
+        <!-- logo -->
         <h1>MOBAVIS</h1>
 
         <div class="Overview">
-            <b> History Overview </b>
+            <b> History Overview </b><br />
+            <el-row :gutter="40">
+                <el-col :span="1"></el-col>
+                <el-col :span="12">
+                    <text
+                        style="
+                            font-family: 'Noto Sans';
+                            font-style: normal;
+                            font-weight: 900;
+                            font-size: 20px;
+                            line-height: 27px;
+                            color: #666666;
+                        "
+                        >Select Game ID</text
+                    >&nbsp;
+                    <el-select style="width: 289px;"
+                        v-model="select_game"
+                        class="m-2"
+                        placeholder="6219491628248857926"
+                        size="large"
+                    >
+                        <el-option
+                            v-for="item in games"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                    <el-divider/><all-legend/>
+                </el-col>
+                <el-col :span="6"><live-legend /></el-col>
+            </el-row>
+
             <history-view />
         </div>
 
@@ -58,15 +91,14 @@
                         </li>
                     </ul>
                     <br />
-                    <el-switch
+                    <!-- <el-switch
                         v-model="live_switch"
                         size="small"
                         :active-text="
                             select_plr == -1 ? 'global' : `player${select_plr}`
                         "
                         active-color="#a29bfe"
-                    />
-                    <live-legend/>
+                    /> -->
                 </el-col>
             </el-row>
             <!-- <liveView /> -->
@@ -131,44 +163,49 @@
             <b> Event Prediction View </b><br />
             <!-- event predictions -->
             <el-row>
-                <el-col :span="12">
+                <el-col :span="8">
+                    <!-- popups -->
                     <prediction :colors="camp1_colors.concat(camp2_colors)"
                 /></el-col>
-                <el-col :span="12">
+                <el-col :span="8">
                     <closeup
                         id="closeVideo"
                         :positions="positions"
                         ref="closeVideo"
-                    /> </el-col
-            ></el-row>
-            <el-row>
-                <el-col :span="12"
-                    ><glyph
-                        name="select_glyph"
-                        :radius="150"
-                        :colors="glyph_colors"
                     />
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="8">
                     <mapView
                         v-bind:positions="positions"
                         :red="red"
                         :blue="blue"
                         name="predictMap"
-                        :cam_position="{ x: 0, y: 0, z: 0 }"
+                        :cam_position="{ x: 0, y: 0, z: 55 }"
                     />
                 </el-col>
             </el-row>
-            <el-row class="glyph_group">
-                <span v-for="i in 4" :key="i">
+            <el-row>
+                <el-col :span="1"></el-col>
+                <el-col :span="9" class="glyph_group">
+                    <span v-for="(item, index) in glyph_vals" :key="index">
+                        <glyph
+                            :name="`tiny_glyph_${item.event}`"
+                            :radius="40"
+                            :colors="glyph_colors"
+                            :glyph_val="item.top_feature"
+                        />&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                </el-col>
+                <el-col :span="6">
                     <glyph
-                        :name="`select_glyph_${i}`"
-                        :radius="40"
+                        name="select_glyph"
+                        :radius="150"
                         :colors="glyph_colors"
-                    />&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
+                    />
+                </el-col>
             </el-row>
 
+            <!-- slider for predict map -->
             <div class="tmp">
                 <el-button
                     @click="select_time--"
@@ -196,10 +233,10 @@
     /* overview */
 
     position: absolute;
-    left: 0.78%;
-    right: 73.98%;
-    top: 6.94%;
-    bottom: 1.39%;
+    left: 51.13%;
+    right: 1.25%;
+    top: 50.69%;
+    bottom: 2.08%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -208,12 +245,11 @@
 
 .live {
     /* live */
-
     position: absolute;
-    left: 26.76%;
-    right: 29.3%;
-    top: 1.6%;
-    bottom: 44.44%;
+    left: 1.17%;
+    right: 50%;
+    top: 2.08%;
+    bottom: 51.32%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -221,12 +257,11 @@
 }
 .review {
     /* review */
-
     position: absolute;
-    left: 26.76%;
-    right: 29.3%;
-    top: 56.94%;
-    bottom: 1.39%;
+    left: 1.17%;
+    right: 50%;
+    top: 50.69%;
+    bottom: 2.08%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -235,10 +270,10 @@
 .prediction {
     /* prediction */
     position: absolute;
-    left: 71.48%;
-    right: 0.78%;
-    top: 1.6%;
-    bottom: 1.81%;
+    left: 51.13%;
+    right: 1.29%;
+    top: 5.21%;
+    bottom: 51.32%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -254,11 +289,11 @@
 // #region map with diff size & pos
 #predictMap {
     position: absolute;
-    width: 200px;
-    height: 400px;
+    width: 300px;
+    height: 600px;
     // width: 180px;
-    right: 10%;
-    top: 30%;
+    right: 5%;
+    top: 0%;
     z-index: 2;
 }
 #liveMap {
@@ -293,7 +328,7 @@
     left: 12px;
     top: 520px;
     height: 20px;
-    --el-slider-main-bg-color: #a29bfe;
+    --el-slider-main-bg-color: #6D5E7A;
     --el-slider-runway-bg-color: var(--el-border-color-light);
     --el-slider-stop-bg-color: var(--el-color-white);
     --el-slider-disabled-color: var(--el-text-color-placeholder);
@@ -313,7 +348,7 @@
     left: 12px;
     top: 45px;
     height: 20px;
-    --el-slider-main-bg-color: #a29bfe;
+    --el-slider-main-bg-color: #6D5E7A;
     --el-slider-runway-bg-color: var(--el-border-color-light);
     --el-slider-stop-bg-color: var(--el-color-white);
     --el-slider-disabled-color: var(--el-text-color-placeholder);
@@ -348,13 +383,13 @@
 }
 
 #select_glyph {
-    position: absolute;
+    //     // position: absolute;
     left: 10%;
-    top: 33px;
+    //     // top: 33px;
 }
 .glyph_group {
-    // position: absolute;
+    //     // position: absolute;
     left: 10%;
-    top: 30%;
+    //     // top: 0%;
 }
 </style>

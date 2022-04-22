@@ -68,8 +68,8 @@ export default {
     data() {
         return {
             black: "#5E5E5E",
-            num1: 1,
-            num2: 1,
+            num1: 0,
+            num2: 0,
         };
     },
     props: {

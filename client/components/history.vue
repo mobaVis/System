@@ -1,6 +1,6 @@
 <template>
     <div>
-    <p>balablabala</p>
+    <p>Here Plots The History SVG</p>
     <svg :id='svgID' />
     </div>
 </template>

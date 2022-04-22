@@ -7,11 +7,11 @@
                 font-weight: 900;
                 font-size: 20px;
                 line-height: 27px;
-                color: '#666666';
+                color: #666666;
             "
-            >player1</text>
+            >{{player}}</text>
         <div class="close-view">
-            <Renderer ref="renderer" antialias shadow width="350" height="220">
+            <Renderer ref="renderer" antialias shadow width="400" height="231">
                 <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
                 <Camera
                     ref="cam"
@@ -79,6 +79,7 @@ export default {
     data() {
         return {
             // select time: init
+            player:'player1',
             json: require("../assets/json/pos6219491628248857926.json"),
 
             // for three.js

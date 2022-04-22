@@ -8,8 +8,8 @@
                     ref="renderer"
                     antialias
                     shadow
-                    width="936"
-                    height="507"
+                    width="1040"
+                    height="500"
                 >
                     <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
 

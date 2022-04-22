@@ -8,13 +8,28 @@ export default {
         radius: { type: Number },
         name: { type: String },
         colors: { type: Array },
+        glyph_val: {
+            type: Object,
+            default() {
+                return {
+                    dies: 0.20252304040711888,
+                    tower_destroy: 0.2003423129211539,
+                    tower_destroy_2: 0.19937639461483428,
+                    dies_2: 0.19924323359908844,
+                    kills: 0.1985150184578045,
+                };
+            },
+        },
     },
-    data() {return{}},
+    data() {
+        return {};
+    },
     mounted() {
         this.plotGlyph();
     },
     methods: {
         plotGlyph() {
+            // console.log( Object.keys(this.glyph_val),Object.values(this.glyph_val));
             const data = [
                     ["大专及以上", 11964],
                     ["高中和中专", 18799],
@@ -31,7 +46,7 @@ export default {
                 .outerRadius(outerR);
 
             var angle_data = d3.pie().value(function (d) {
-                return d[1];
+                return d;
             });
 
             var color = (i) => {
@@ -43,9 +58,12 @@ export default {
             //pie
             d3.select("#" + this.name)
                 .append("g")
-                .attr("transform", "translate("+this.radius+","+this.radius+")")
+                .attr(
+                    "transform",
+                    "translate(" + this.radius + "," + this.radius + ")"
+                )
                 .selectAll("path")
-                .data(angle_data(data))
+                .data(angle_data(Object.values(this.glyph_val)))
                 .enter()
                 .append("path")
                 .attr("d", arc_generator)
@@ -56,3 +74,8 @@ export default {
     },
 };
 </script>
+<style scoped>
+*{
+    padding: 40 40;
+}
+</style>

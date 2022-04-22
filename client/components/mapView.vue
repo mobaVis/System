@@ -24,7 +24,8 @@ export default {
             margin: { top: 20, right: 20, bottom: 20, left: 20 },
 
             // block
-            blockSize:{width: 20, height:18}
+            blockSize:{width: 20, height:18},
+            blockColor:'#6D5E7A'
         };
     },
 
@@ -149,7 +150,7 @@ export default {
                 .attr("width", this.blockSize.width)
                 .attr("height", this.blockSize.height)
                 .attr("class", "cam_field")
-                .attr("fill", "#7D53A4")
+                .attr("fill", this.blockColor)
                 .attr("opacity", "0.5")
                 .attr("stroke", "2")
                 .style('z-index', 3)
