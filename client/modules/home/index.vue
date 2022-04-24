@@ -185,21 +185,24 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="1"></el-col>
-                <el-col :span="9" class="glyph_group">
-                    <span v-for="(item, index) in glyph_vals" :key="index">
+                <!-- <el-col :span="1"></el-col> -->
+                <el-col :span="13">
+                    <!-- <span v-for="(item, index) in glyph_vals" :key="index">
                         <glyph
                             :name="`tiny_glyph_${item.event}`"
                             :radius="40"
                             :colors="glyph_colors"
                             :glyph_val="item.top_feature"
                         />&nbsp;&nbsp;&nbsp;&nbsp;
-                    </span>
+                    </span> -->
+                    <distribution :data=predictions[51].top_feature name='features' />
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8">
                     <glyph
+                        style='margin: 20 10;'
                         name="select_glyph"
-                        :radius="150"
+                        :glyph_val=predictions[51].categoried_feature
+                        :radius="100"
                         :colors="glyph_colors"
                     />
                 </el-col>
@@ -231,11 +234,10 @@
 // #region main views and wrapper
 .Overview {
     /* overview */
-
     position: absolute;
     left: 51.13%;
     right: 1.25%;
-    top: 50.69%;
+    top: 56.67%;
     bottom: 2.08%;
 
     border: 1px solid #999999;
@@ -273,7 +275,7 @@
     left: 51.13%;
     right: 1.29%;
     top: 5.21%;
-    bottom: 51.32%;
+    bottom: 45.42%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -289,11 +291,10 @@
 // #region map with diff size & pos
 #predictMap {
     position: absolute;
-    width: 300px;
-    height: 600px;
-    // width: 180px;
-    right: 5%;
-    top: 0%;
+    width:280px;
+    height: 560px;
+    right: 1%;
+    top:-15%;
     z-index: 2;
 }
 #liveMap {
@@ -380,16 +381,5 @@
     opacity: 50%;
     color: aliceblue;
     cursor: pointer;
-}
-
-#select_glyph {
-    //     // position: absolute;
-    left: 10%;
-    //     // top: 33px;
-}
-.glyph_group {
-    //     // position: absolute;
-    left: 10%;
-    //     // top: 0%;
 }
 </style>

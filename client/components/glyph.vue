@@ -38,7 +38,7 @@ export default {
                     ["文盲人口", 5466],
                 ],
                 outerR = this.radius,
-                innerR = this.radius * 0.5;
+                innerR = this.radius * 0.4;
 
             var arc_generator = d3
                 .arc()
@@ -46,7 +46,7 @@ export default {
                 .outerRadius(outerR);
 
             var angle_data = d3.pie().value(function (d) {
-                return d;
+                return d[1];
             });
 
             var color = (i) => {
@@ -63,9 +63,10 @@ export default {
                     "translate(" + this.radius + "," + this.radius + ")"
                 )
                 .selectAll("path")
-                .data(angle_data(Object.values(this.glyph_val)))
+                .data(angle_data(Object.entries(this.glyph_val)))
                 .enter()
                 .append("path")
+                .attr('class',d=>d[0])
                 .attr("d", arc_generator)
                 .style("fill", function (d, i) {
                     return color(i);
