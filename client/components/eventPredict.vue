@@ -20,7 +20,7 @@
                     "
                     fill="#333333"
                 >
-                    {{ event_num }}
+                    {{ events.length }}
                 </tspan>
                 <tspan
                     x="70"
@@ -39,7 +39,7 @@
             </text>
         </g>
 
-        <g>
+        <!-- <g>
             <text
                 x="30"
                 y="60"
@@ -56,7 +56,7 @@
             >
                 0.92 - destroy tower
             </text>
-        </g>
+        </g> -->
     </svg>
 </template>
 
@@ -64,46 +64,116 @@
 export default {
     data() {
         return {
-            event_num: 4,
-            events: [
-                { p: 0.92, event: "destroy tower", plr_id: 0 },
-                { p: 0.78, event: "destroy tower", plr_id: 2 },
-                { p: 0.55, event: "destroy tower", plr_id: 4 },
-                { p: 0.53, event: "destroy tower", plr_id: 8 },
-            ],
+            events:[]
+            // events: [
+            //     {
+            //         possibility: 0.92,
+            //         event: "destroy tower",
+            //         plr_id: 0,
+            //         count_down: 1,
+            //     },
+            //     // { possibility: 0.78, event: "destroy tower", plr_id: 2,count_down:1 },
+            //     {
+            //         possibility: 0.55,
+            //         event: "destroy tower",
+            //         plr_id: 4,
+            //         count_down: 1,
+            //     },
+            //     {
+            //         possibility: 0.53,
+            //         event: "destroy tower",
+            //         plr_id: 8,
+            //         count_down: 1,
+            //     },
+            // ],
         };
     },
     props: {
         colors: { type: Array },
+        data: {
+            type: Object,
+        },
+    },
+    watch: {
+        data(val, oldVal) {
+            d3.select("#predict_title").selectAll(".predict_events").remove();
+            this.events = [];
+            if (Object.keys(this.data).length == 0) return;
+            this.parseData();
+            this.plotPopUps();
+        },
     },
     mounted() {
+        // console.log(typeof(this.data))
+        if (Object.keys(this.data).length == 0) return;
+        this.parseData();
         this.plotPopUps();
     },
     methods: {
+        parseData() {
+            const event_num = this.data.event_num
+            for (let i = 0; i < event_num; i++) {
+                this.events.push({
+                    event: this.data["event_" + i],
+                    possibility: this.data["possibility_" + i].toFixed(2),
+                    count_down: this.data["count_down_" + i],
+                    plr_id: get_id(this.data["event_" + i]),
+                });
+            }
+            // console.log("events", events);
+
+            function get_id(eventName) {
+                const suffix = eventName.slice(-2);
+                if (suffix.slice(0, 1) == "c") {
+                    // camp
+                    return 9 + parseInt(suffix.slice(-1));
+                } else {
+                    return parseInt(suffix.slice(-1));
+                }
+            }
+        },
         plotPopUps() {
+            const _this=this
             const svg = d3.select("#predict_title");
-            for (let i = 0; i < this.event_num; i++) {
+            for (let i = 0; i < this.events.length; i++) {
                 let g = svg
                     .selectAll()
                     .data([{ w: 250, h: 30 }])
                     .enter()
-                    .append("g");
+                    .append("g")
+                    .attr("class", "predict_events");
                 g.append("rect")
                     .attr("x", 0)
                     .attr("y", () => {
                         return 40 + i * 40;
                     })
-                    .attr('class', 'popup')
-                    .style('cursor', 'pointer')
+                    .attr("class", "popup")
+                    .attr('id',"event"+i)
+                    .style("cursor", "pointer")
+                    .on('click',clickEventPlr)
                     .attr("width", (d) => d.w)
                     .attr("height", (d) => d.h)
                     .attr("rx", 15)
                     .attr("fill", this.colors[this.events[i].plr_id]);
+
                 g.append("text")
-                    .text(this.events[i].p+' - '+this.events[i].event)
-                    .attr("x", 30)
+                    .text(
+                        this.events[i].possibility +
+                            " - " +
+                            this.events[i].event +
+                            " - " +
+                            this.events[i].count_down +
+                            "s"
+                    )
+                    .attr("x", 15)
                     .attr("y", 60 + i * 40)
                     .attr("fill", "#333333");
+            }
+
+            function clickEventPlr(){
+                const select_plr=this.id.slice(-1)
+                // console.log(this.id.slice(-1))
+                _this.$emit('onClickEvent', select_plr)
             }
 
             return;

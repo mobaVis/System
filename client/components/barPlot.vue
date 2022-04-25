@@ -1,5 +1,5 @@
 <template>
-    <svg :id="name" width="1280" height="410" />
+    <svg :id="name" width="1290" height="410" :style="{display:'play'}" />
 </template>
 
 <script>
@@ -14,11 +14,20 @@ export default {
         },
     },
     setup() {},
+    watch:{
+        data(val, oldVal){
+            d3.select("#" + this.name).selectAll('g').remove()
+            this.plotBar()
+        }
+    },
     mounted() {
+        // console.log(this.data, typeof(this.data))
         this.plotBar();
     },
     methods: {
         plotBar() {
+            // plot only if data not empty
+            if(Object.keys(this.data).length==0) return
             const barData = this.data,
                 stepSize = 0.3;
             // init svg vars

@@ -19,20 +19,21 @@
                         "
                         >Select Game ID</text
                     >&nbsp;
-                    <el-select style="width: 289px;"
+                    <el-select
+                        style="width: 289px"
                         v-model="select_game"
                         class="m-2"
                         placeholder="6219491628248857926"
                         size="large"
                     >
                         <el-option
-                            v-for="item in games"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
+                            v-for="(name, index) in games"
+                            :key="index"
+                            :label="name"
+                            :value="name"
                         />
                     </el-select>
-                    <el-divider/><all-legend/>
+                    <el-divider /><all-legend />
                 </el-col>
                 <el-col :span="6"><live-legend /></el-col>
             </el-row>
@@ -165,7 +166,14 @@
             <el-row>
                 <el-col :span="8">
                     <!-- popups -->
-                    <prediction :colors="camp1_colors.concat(camp2_colors)"
+                    <prediction
+                        @onClickEvent='updateFeaturePlr'
+                        :colors="
+                            camp1_colors
+                                .concat(camp2_colors)
+                                .concat([red, blue])
+                        "
+                        :data="predict_live"
                 /></el-col>
                 <el-col :span="8">
                     <closeup
@@ -195,13 +203,22 @@
                             :glyph_val="item.top_feature"
                         />&nbsp;&nbsp;&nbsp;&nbsp;
                     </span> -->
-                    <distribution :data=predictions[51].top_feature name='features' />
+                    <distribution
+                        :data="
+                            JSON.stringify(predict_live)=='{}'? {} : predict_live['top_feature_'+glyph_plr]
+                        "
+                        name="features"
+                    />
                 </el-col>
                 <el-col :span="8">
                     <glyph
-                        style='margin: 20 10;'
+                        style="margin: 20 10"
                         name="select_glyph"
-                        :glyph_val=predictions[51].categoried_feature
+                        :glyph_val="
+                            JSON.stringify(predict_live) == '{}'
+                                ? {}
+                                : predict_live['categoried_feature_'+bar_plr]
+                        "
                         :radius="100"
                         :colors="glyph_colors"
                     />
@@ -291,10 +308,10 @@
 // #region map with diff size & pos
 #predictMap {
     position: absolute;
-    width:280px;
+    width: 280px;
     height: 560px;
     right: 1%;
-    top:-15%;
+    top: -15%;
     z-index: 2;
 }
 #liveMap {
@@ -329,7 +346,7 @@
     left: 12px;
     top: 520px;
     height: 20px;
-    --el-slider-main-bg-color: #6D5E7A;
+    --el-slider-main-bg-color: #6d5e7a;
     --el-slider-runway-bg-color: var(--el-border-color-light);
     --el-slider-stop-bg-color: var(--el-color-white);
     --el-slider-disabled-color: var(--el-text-color-placeholder);
@@ -349,7 +366,7 @@
     left: 12px;
     top: 45px;
     height: 20px;
-    --el-slider-main-bg-color: #6D5E7A;
+    --el-slider-main-bg-color: #6d5e7a;
     --el-slider-runway-bg-color: var(--el-border-color-light);
     --el-slider-stop-bg-color: var(--el-color-white);
     --el-slider-disabled-color: var(--el-text-color-placeholder);

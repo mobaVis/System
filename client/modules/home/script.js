@@ -38,21 +38,33 @@ export default {
 
             // for glyphs
             glyph_colors: ['#f09235', '#C47948', '#976058', '#664969', '#786986', '#8A89A4', '#9CAAC3'],
-            glyph_num:4,
+            glyph_num: 4,
+            glyph_plr:0,
 
             // for distribution bar plot
-            predictions:require('@/assets/json/grad_out_testing_time.json'),
-            predict_hash:require('@/assets/json/grad_out_testing_time_hash.json'),
+            predictions: require('@/assets/json/grad_out_testing_time.json'),
+            predict_hash: require('@/assets/json/grad_out_testing_time_hash.json'),
+            // predict_live: require('@/assets/json/grad_out_testing_time.json')[0],
+            predict_live:{},
+            bar_plr:0,
+
 
             // for plr switch
             live_switch: false,
-            select_plr: -1
+            select_plr: -1,
+
+            // for game switch
+            select_game: '',
+            games: ['6219491628248857926']
         };
     },
     watch: {
         // watch if any var changes
         select_time(val, oldVal) {
             this.updatePositions(val);
+            this.updatePredictions(val);
+            this.glyph_plr=0
+            this.bar_plr=0
         },
     },
     components: {
@@ -63,7 +75,7 @@ export default {
         'live-legend': eventLegends,
         'all-legend': overviewLegends,
         'review-time-detail': reviewDetail,
-        'prediction': eventPredict, closeup, glyph,'distribution':barPlot
+        'prediction': eventPredict, closeup, glyph, 'distribution': barPlot
     },
     mounted() {
         this.json = require("@/assets/json/pos6219491628248857926.json");
@@ -119,6 +131,25 @@ export default {
             console.log(refName)
             console.log(this.$refs[refName])
             this.$refs[refName].findPlayer(player_id);
+        },
+
+        // predict
+        updatePredictions(time) {
+            const key=time.toString()
+            if (this.predict_hash[key]!=undefined) {
+                const predict_index = this.predict_hash[key]
+                this.predict_live = this.predictions[predict_index]
+                // console.log('hit',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
+            }
+            else {
+                this.predict_live = {}
+                // console.log('miss',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
+            }
+        },
+        // select predict event bt plr
+        updateFeaturePlr(select_plr_id){
+            this.glyph_plr=select_plr_id
+            this.bar_plr=select_plr_id
         }
     }
 };
