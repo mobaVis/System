@@ -115,7 +115,7 @@ export default {
                 })
                 .attr("cy", (d) => {
                     // console.log('y',d.y);
-                    return getY(d.y);
+                    return getY(-d.y);
                 });
             svg.selectAll(".camp1").attr("fill", this.red);
             svg.selectAll(".camp2").attr("fill", this.blue);

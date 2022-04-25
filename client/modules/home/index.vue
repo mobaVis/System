@@ -38,7 +38,9 @@
                 <el-col :span="6"><live-legend /></el-col>
             </el-row>
 
-            <history-view />
+            <history-view :data=json name='history_track' :colors="
+                            camp1_colors
+                                .concat(camp2_colors)" />
         </div>
 
         <div class="live">
