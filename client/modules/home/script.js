@@ -49,13 +49,16 @@ export default {
             bar_plr:0,
 
 
-            // for plr switch
+            // for predict: plr switch
             live_switch: false,
             select_plr: -1,
 
-            // for game switch
+            // for history: game switch
             select_game: '',
-            games: ['6219491628248857926']
+            games: ['6219491628248857926'],
+            exp_display:false,
+            cash_display:false,
+            pos_display:true,
         };
     },
     watch: {
@@ -66,6 +69,16 @@ export default {
             this.glyph_plr=0
             this.bar_plr=0
         },
+        // display history
+        pos_display(val, oldVal){
+            if(val==true){
+                d3.selectAll('.pos_history').attr('opacity','0.6')
+            }
+            else{
+                d3.selectAll('.pos_history').attr('opacity','0.1')
+            }
+        }
+
     },
     components: {
         mapView,
@@ -83,32 +96,17 @@ export default {
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
     setup() {
-        const tableData = [
-            {
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-            },
-            {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄',
-            },
-            {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄',
-            },
-            {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄',
-            },
-        ];
+        // const tableData = [
+        //     {
+        //         date: '2016-05-02',
+        //         name: '王小虎',
+        //         address: '上海市普陀区金沙江路 1518 弄',
+        //     }
+        // ];
 
-        return {
-            tableData
-        };
+        // return {
+        //     tableData
+        // };
     },
 
     methods: {

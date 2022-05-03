@@ -5,6 +5,7 @@
 
         <div class="Overview">
             <b> History Overview </b><br />
+            <!-- select & player legends-->
             <el-row :gutter="40">
                 <el-col :span="1"></el-col>
                 <el-col :span="12">
@@ -35,12 +36,21 @@
                     </el-select>
                     <el-divider /><all-legend />
                 </el-col>
+                <el-col :span="5">
+                    <el-checkbox v-model="pos_display">positions</el-checkbox
+                    ><br />
+                    <el-checkbox v-model="exp_display">experience</el-checkbox
+                    ><br />
+                    <el-checkbox v-model="cash_display">cash</el-checkbox><br />
+                </el-col>
                 <el-col :span="6"><live-legend /></el-col>
             </el-row>
 
-            <history-view :data=json name='history_track' :colors="
-                            camp1_colors
-                                .concat(camp2_colors)" />
+            <history-view
+                :data="json"
+                name="history_track"
+                :colors="camp1_colors.concat(camp2_colors)"
+            />
         </div>
 
         <div class="live">
@@ -169,7 +179,7 @@
                 <el-col :span="8">
                     <!-- popups -->
                     <prediction
-                        @onClickEvent='updateFeaturePlr'
+                        @onClickEvent="updateFeaturePlr"
                         :colors="
                             camp1_colors
                                 .concat(camp2_colors)
@@ -207,7 +217,9 @@
                     </span> -->
                     <distribution
                         :data="
-                            JSON.stringify(predict_live)=='{}'? {} : predict_live['top_feature_'+glyph_plr]
+                            JSON.stringify(predict_live) == '{}'
+                                ? {}
+                                : predict_live['top_feature_' + glyph_plr]
                         "
                         name="features"
                     />
@@ -219,7 +231,7 @@
                         :glyph_val="
                             JSON.stringify(predict_live) == '{}'
                                 ? {}
-                                : predict_live['categoried_feature_'+bar_plr]
+                                : predict_live['categoried_feature_' + bar_plr]
                         "
                         :radius="100"
                         :colors="glyph_colors"

@@ -61,20 +61,12 @@ export default {
                 .append("g")
                 .attr("transform", "translate(0," + height/2 + ")")
                 .call(d3.axisBottom(x));
-            // xAxis.selectAll("text")
-            // .attr('y',function(d,i){
-            //     return i*stepSize/2
-            // })
-            // .attr("text-anchor", "start")
-            // .attr("dx", ".4em")
-            // .attr("dy", ".1em")
-            // .attr("transform", "rotate(75)")
 
             xAxis
                 .append("text") //bottom label
                 // .attr("transform", "rotate(90)")
                 .attr("y", margin.bottom-5)
-                .attr("x", width - 10)
+                .attr("x", width)
                 .attr("text-anchor", "end")
                 .attr("text-anchor", "end")
                 .attr("fill", "#666")
@@ -112,11 +104,12 @@ export default {
             for (let i = 0; i < 10; i++) {
                 g.append("path")
                     .attr("d", curveline(i))
-                    .attr("class", "curve")
+                    .attr("id", "curve_"+i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "2px")
                     .attr("fill", "none")
                     .attr('opacity','0.6')
+                    .attr('class','pos_history')
             }
         },
     },
