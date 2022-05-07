@@ -7,6 +7,7 @@ openFilePath = "../json/grad_out_testing_time.json"
 destName = open("../json/grad_out_testing_time_hash.json", 'w+')
 
 # dict in python: hashMap[${live_time}]=${index_of_correlated_obj}
+# both strings
 hashMap = {}
 
 if __name__ == "__main__":

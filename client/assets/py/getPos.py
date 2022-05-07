@@ -28,14 +28,14 @@ class UsrObj:
         self.value = {
             # "hero_ID": 0,
             # "skill_ID": 0,
-            # "cashGain": 0,
-            # "expGain": 0,
-            # "maya_kill": 0,
-            # "boss_kill": 0,
-            # "isAlive": 1,
-            # "tower_destroy": 0,
-            # "dies": 0,
-            # "kills": 0,
+            "cashGain": 0,
+            "expGain": 0,
+            "maya_kill": 0,
+            "boss_kill": 0,
+            "isAlive": 1,
+            "tower_destroy": 0,
+            "dies": 0,
+            "kills": 0,
             "pos": defaultPos,  # only float
         }
 
@@ -71,9 +71,15 @@ if __name__ == "__main__":
             time = itemVal['time']
             item = Item(time)
             # print("time:", itemVal["time"],itemVal['usr_0']['pos'],file=testOutputName)
+
+            # add usr_x
             for usr_i in range(10):
                 usr_dict = itemVal["usr_" + str(usr_i)]
-                item.value["usr_" + str(usr_i)] = usr_dict['pos']
+                item.value["usr_" + str(usr_i)] = usr_dict
+            # add camp_x
+            item.value['camp_1']=itemVal['camp_1']
+            item.value['camp_2']=itemVal['camp_2']
+
             # print(usr_i, itemVal["usr_0"]["pos"], file=testOutputName)
             posList.append(item.value)
 

@@ -1,5 +1,5 @@
 <template>
-    <svg :id="name" width="1290" height="410" :style="{display:'play'}" />
+    <svg :id="name" width="1290" height="410" :style="{display:'play'}" ></svg>
 </template>
 
 <script>
@@ -88,6 +88,7 @@ export default {
                 .text("Feature Importance");
 
             // plot data
+            console.log(barData)
             g.selectAll(".bar")
                 .data(Object.entries(barData))
                 .enter()

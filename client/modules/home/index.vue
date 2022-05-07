@@ -9,48 +9,32 @@
             <el-row :gutter="40">
                 <el-col :span="1"></el-col>
                 <el-col :span="12">
-                    <text
-                        style="
+                    <text style="
                             font-family: 'Noto Sans';
                             font-style: normal;
                             font-weight: 900;
                             font-size: 20px;
                             line-height: 27px;
                             color: #666666;
-                        "
-                        >Select Game ID</text
-                    >&nbsp;
-                    <el-select
-                        style="width: 289px"
-                        v-model="select_game"
-                        class="m-2"
-                        placeholder="6219491628248857926"
-                        size="large"
-                    >
-                        <el-option
-                            v-for="(name, index) in games"
-                            :key="index"
-                            :label="name"
-                            :value="name"
-                        />
+                        ">Select Game ID</text>&nbsp;
+                    <el-select style="width: 289px" v-model="select_game" class="m-2" placeholder="6219491628248857926"
+                        size="large">
+                        <el-option v-for="(name, index) in games" :key="index" :label="name" :value="name" />
                     </el-select>
-                    <el-divider /><all-legend />
+                    <el-divider />
+                    <plrs-legend :pos_display="pos_display" :cash_display="cash_display" :exp_display="exp_display" />
                 </el-col>
                 <el-col :span="5">
-                    <el-checkbox v-model="pos_display">positions</el-checkbox
-                    ><br />
-                    <el-checkbox v-model="exp_display">experience</el-checkbox
-                    ><br />
+                    <el-checkbox v-model="pos_display">positions</el-checkbox><br />
+                    <el-checkbox v-model="exp_display">experience</el-checkbox><br />
                     <el-checkbox v-model="cash_display">cash</el-checkbox><br />
                 </el-col>
-                <el-col :span="6"><live-legend /></el-col>
+                <el-col :span="6">
+                    <live-legend />
+                </el-col>
             </el-row>
 
-            <history-view
-                :data="json"
-                name="history_track"
-                :colors="camp1_colors.concat(camp2_colors)"
-            />
+            <history-view :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" />
         </div>
 
         <div class="live">
@@ -59,48 +43,26 @@
             <el-row>
                 <el-col :span="20">
                     <el-row>
-                        <troisModel
-                            id="liveVideo"
-                            v-model:live_time="live_time"
-                            mapname="liveMap"
-                            ref="liveVideo"
-                        /> </el-row
-                    ><el-row>
-                        <el-slider
-                            id="liveVideoSlider"
-                            v-model="live_time"
-                            :max="json.length - 1"
-                        />
+                        <troisModel id="liveVideo" v-model:live_time="live_time" mapname="liveMap" ref="liveVideo" />
+                    </el-row>
+                    <el-row>
+                        <el-slider id="liveVideoSlider" v-model="live_time" :max="json.length - 1" />
                     </el-row>
                 </el-col>
                 <el-col :span="4">
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp1_colors" :key="i">
-                            <avatar-button
-                                :name="i"
-                                :color="color"
-                                @onClick="goWatchPlayer"
-                                class="liveVideo"
-                            />
+                            <avatar-button :name="i" :color="color" @onClick="goWatchPlayer" class="liveVideo" />
                         </li>
                     </ul>
                     <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <el-button
-                        circle
-                        icon="CameraFilled"
-                        @click="goWatchPlayer('liveVideo', -1)"
-                    />
+                    <el-button circle icon="CameraFilled" @click="goWatchPlayer('liveVideo', -1)" />
                     &nbsp;&nbsp;&nbsp;{{ live_time }}
                     <br />
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp2_colors" :key="i">
-                            <avatar-button
-                                :name="i + 5"
-                                :color="color"
-                                @onClick="goWatchPlayer"
-                                class="liveVideo"
-                            />
+                            <avatar-button :name="i + 5" :color="color" @onClick="goWatchPlayer" class="liveVideo" />
                         </li>
                     </ul>
                     <br />
@@ -119,53 +81,34 @@
 
         <div class="review">
             <b> Review View </b>
-            <el-row> <review-time-detail /></el-row
-            ><el-row>
+            <el-row>
+                <review-time-detail />
+            </el-row>
+            <el-row>
                 <el-col :span="20">
                     <el-row>
-                        <troisModel
-                            id="reviewVideo"
-                            v-model:live_time="review_times[0]"
-                            mapname="reviewMap"
-                            ref="reviewVideo"
-                        /> </el-row
-                    ><el-row>
-                        <el-slider
-                            id="reviewVideoSlider"
-                            v-model="review_times"
-                            range
-                            :max="json.length - 1"
-                    /></el-row>
+                        <troisModel id="reviewVideo" v-model:live_time="review_times[0]" mapname="reviewMap"
+                            ref="reviewVideo" />
+                    </el-row>
+                    <el-row>
+                        <el-slider id="reviewVideoSlider" v-model="review_times" range :max="json.length - 1" />
+                    </el-row>
                 </el-col>
                 <el-col :span="4">
                     <br />
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp1_colors" :key="i">
-                            <avatar-button
-                                :name="i"
-                                :color="color"
-                                @onClick="goWatchPlayer"
-                                class="reviewVideo"
-                            />
+                            <avatar-button :name="i" :color="color" @onClick="goWatchPlayer" class="reviewVideo" />
                         </li>
                     </ul>
                     <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <el-button
-                        circle
-                        icon="CameraFilled"
-                        @click="goWatchPlayer('reviewVideo', -1)"
-                    />
+                    <el-button circle icon="CameraFilled" @click="goWatchPlayer('reviewVideo', -1)" />
                     &nbsp;&nbsp;&nbsp;{{ review_times[0] }}
                     <br />
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp2_colors" :key="i">
-                            <avatar-button
-                                :name="i + 5"
-                                :color="color"
-                                @onClick="goWatchPlayer"
-                                class="reviewVideo"
-                            />
+                            <avatar-button :name="i + 5" :color="color" @onClick="goWatchPlayer" class="reviewVideo" />
                         </li>
                     </ul>
                 </el-col>
@@ -178,30 +121,18 @@
             <el-row>
                 <el-col :span="8">
                     <!-- popups -->
-                    <prediction
-                        @onClickEvent="updateFeaturePlr"
-                        :colors="
-                            camp1_colors
-                                .concat(camp2_colors)
-                                .concat([red, blue])
-                        "
-                        :data="predict_live"
-                /></el-col>
-                <el-col :span="8">
-                    <closeup
-                        id="closeVideo"
-                        :positions="positions"
-                        ref="closeVideo"
-                    />
+                    <prediction @onClickEvent="updateFeaturePlr" :colors="
+                        camp1_colors
+                            .concat(camp2_colors)
+                            .concat([red, blue])
+                    " :data="predict_live"></prediction>
                 </el-col>
                 <el-col :span="8">
-                    <mapView
-                        v-bind:positions="positions"
-                        :red="red"
-                        :blue="blue"
-                        name="predictMap"
-                        :cam_position="{ x: 0, y: 0, z: 55 }"
-                    />
+                    <closeup id="closeVideo" :positions="positions" ref="closeVideo"></closeup>
+                </el-col>
+                <el-col :span="8">
+                    <mapView v-bind:positions="positions" :red="red" :blue="blue" name="predictMap"
+                        :cam_position="{ x: 0, y: 0, z: 55 }" />
                 </el-col>
             </el-row>
             <el-row>
@@ -215,42 +146,25 @@
                             :glyph_val="item.top_feature"
                         />&nbsp;&nbsp;&nbsp;&nbsp;
                     </span> -->
-                    <distribution
-                        :data="
-                            JSON.stringify(predict_live) == '{}'
-                                ? {}
-                                : predict_live['top_feature_' + glyph_plr]
-                        "
-                        name="features"
-                    />
+                    <distribution :data="
+                        JSON.stringify(predict_live) == '{}'
+                            ? {}
+                            : predict_live['top_feature_' + glyph_plr]
+                    " name="features" />
                 </el-col>
                 <el-col :span="8">
-                    <glyph
-                        style="margin: 20 10"
-                        name="select_glyph"
-                        :glyph_val="
-                            JSON.stringify(predict_live) == '{}'
-                                ? {}
-                                : predict_live['categoried_feature_' + bar_plr]
-                        "
-                        :radius="100"
-                        :colors="glyph_colors"
-                    />
+                    <glyph style="margin: 20 10" name="select_glyph" :glyph_val="
+                        JSON.stringify(predict_live) == '{}'
+                            ? {}
+                            : predict_live['categoried_feature_' + bar_plr]
+                    " :radius="100" :colors="glyph_colors" />
                 </el-col>
             </el-row>
 
             <!-- slider for predict map -->
             <div class="tmp">
-                <el-button
-                    @click="select_time--"
-                    icon="ArrowLeftBold"
-                    circle
-                ></el-button>
-                <el-button
-                    @click="select_time++"
-                    icon="ArrowRightBold"
-                    circle
-                ></el-button>
+                <el-button @click="select_time--" icon="ArrowLeftBold" circle></el-button>
+                <el-button @click="select_time++" icon="ArrowRightBold" circle></el-button>
                 <div class="slider-demo-block">
                     <el-slider v-model="select_time" :max="json.length - 1" />
                 </div>
@@ -288,6 +202,7 @@
     box-sizing: border-box;
     border-radius: 5px;
 }
+
 .review {
     /* review */
     position: absolute;
@@ -300,6 +215,7 @@
     box-sizing: border-box;
     border-radius: 5px;
 }
+
 .prediction {
     /* prediction */
     position: absolute;
@@ -317,6 +233,7 @@
     display: flex;
     flex-direction: row;
 }
+
 // #endregion
 
 // #region map with diff size & pos
@@ -328,6 +245,7 @@
     top: -15%;
     z-index: 2;
 }
+
 #liveMap {
     float: right;
     position: absolute;
@@ -335,6 +253,7 @@
     top: 2%;
     z-index: 2;
 }
+
 #reviewMap {
     float: right;
     position: absolute;
@@ -342,6 +261,7 @@
     top: 5%;
     z-index: 2;
 }
+
 .tmp {
     position: absolute;
     left: 5%;
@@ -349,6 +269,7 @@
     width: 90%;
     bottom: 0;
 }
+
 // #endregion
 
 // #region sliders
@@ -372,6 +293,7 @@
     z-index: 1;
     // height: fit-content;
 }
+
 #reviewVideoSlider {
     /* processLine */
 
@@ -391,16 +313,19 @@
     --el-slider-button-wrapper-offset: -4px;
     // height: fit-content;
 }
+
 // #endregion
 
 #liveVideo {
     position: absolute;
     top: 22px;
 }
+
 #reviewVideo {
     position: absolute;
     top: 52px;
 }
+
 /* play & pause icon */
 .top {
     position: absolute;

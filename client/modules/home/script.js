@@ -18,10 +18,20 @@ import { ref } from 'vue';
 
 
 export default {
+    components: {
+        mapView,
+        troisModel,
+        'history-view': historyView,
+        'avatar-button': avatarUnit,
+        'live-legend': eventLegends,
+        'plrs-legend': overviewLegends,
+        'review-time-detail': reviewDetail,
+        'prediction': eventPredict, closeup, glyph, 'distribution': barPlot
+    },
     data() {
         return {
             // for mapView
-            json: require("@/assets/json/pos6219491628248857926.json"),
+            json: require("@/assets/json/parse6219491628248857926.json"),
             positions: [],
             select_time: 0, // predict map
             live_time: 0,
@@ -72,26 +82,34 @@ export default {
         // display history
         pos_display(val, oldVal){
             if(val==true){
-                d3.selectAll('.pos_history').attr('opacity','0.6')
+                d3.selectAll('.pos_history').attr('opacity','0.5')
             }
             else{
                 d3.selectAll('.pos_history').attr('opacity','0.1')
             }
+        },
+        // display history
+        cash_display(val, oldVal){
+            if(val==true){
+                d3.selectAll('.cash_history').attr('opacity','0.1')
+            }
+            else{
+                d3.selectAll('.cash_history').attr('opacity','0.02')
+            }
+        },
+        // display history
+        exp_display(val, oldVal){
+            if(val==true){
+                d3.selectAll('.exp_history').attr('opacity','0.1')
+            }
+            else{
+                d3.selectAll('.exp_history').attr('opacity','0.02')
+            }
         }
 
     },
-    components: {
-        mapView,
-        troisModel,
-        'history-view': historyView,
-        'avatar-button': avatarUnit,
-        'live-legend': eventLegends,
-        'all-legend': overviewLegends,
-        'review-time-detail': reviewDetail,
-        'prediction': eventPredict, closeup, glyph, 'distribution': barPlot
-    },
     mounted() {
-        this.json = require("@/assets/json/pos6219491628248857926.json");
+        this.json = require("@/assets/json/parse6219491628248857926.json");
         this.updatePositions(this.select_time);
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
@@ -114,11 +132,11 @@ export default {
             // positions
             this.positions = [];
             for (let i in d3.range(10)) {
-                let data = this.json[time]["usr_" + i];
+                let pos = this.json[time]["usr_" + i]['pos'];
                 let camp = i > 4 ? 2 : 1;
                 this.positions.push({
-                    x: data[0],
-                    y: data[1],
+                    x: pos[0],
+                    y: pos[1],
                     camp: camp,
                 });
             }

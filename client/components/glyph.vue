@@ -1,5 +1,5 @@
 <template>
-    <svg :id="name" :width="radius * 2" :height="radius * 2" />
+    <svg :id="name" :width="radius * 2" :height="radius * 2"></svg>
 </template>
 
 <script>
