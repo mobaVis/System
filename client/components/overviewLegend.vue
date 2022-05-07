@@ -101,16 +101,17 @@ export default {
                 if (this.cash_display) this.changePathOpacity(playerID,'cash', 0.6);
                 if (this.exp_display) this.changePathOpacity(playerID,'exp', 0.6);
                 legend.style.opacity = 1;
+                this.$emit('clickUpdate',playerID,1)
             }
-            else {
-                this.changePathOpacity(playerID,'curve', 0.5);
+            else {// cancel select
+                if (this.pos_display) this.changePathOpacity(playerID,'curve', 0.5);
+                else this.changePathOpacity(playerID,'curve', 0.1);
                 this.changePathOpacity(playerID,'cash', 0.1);
                 this.changePathOpacity(playerID,'cexp', 0.1);
                 legend.style.opacity = 0.6;
-
-
+                this.$emit('clickUpdate',playerID, -1)
             }
-            // cancel select
+
         },
         changePathOpacity(playerID,name, opacity) {
             const path = d3.select("#" + name+'_'+playerID);

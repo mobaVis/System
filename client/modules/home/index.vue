@@ -22,19 +22,20 @@
                         <el-option v-for="(name, index) in games" :key="index" :label="name" :value="name" />
                     </el-select>
                     <el-divider />
-                    <plrs-legend :pos_display="pos_display" :cash_display="cash_display" :exp_display="exp_display" />
+                    <plrs-legend :pos_display="pos_display" :cash_display="cash_display" :exp_display="exp_display" @clickUpdate="updateHistory" />
                 </el-col>
                 <el-col :span="5">
                     <el-checkbox v-model="pos_display">positions</el-checkbox><br />
                     <el-checkbox v-model="exp_display">experience</el-checkbox><br />
                     <el-checkbox v-model="cash_display">cash</el-checkbox><br />
+                    <el-checkbox v-model="event_display">events</el-checkbox><br />
                 </el-col>
                 <el-col :span="6">
                     <live-legend />
                 </el-col>
             </el-row>
 
-            <history-view :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" />
+            <history-view ref="history" :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" />
         </div>
 
         <div class="live">

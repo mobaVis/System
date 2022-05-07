@@ -49,14 +49,14 @@ export default {
             // for glyphs
             glyph_colors: ['#f09235', '#C47948', '#976058', '#664969', '#786986', '#8A89A4', '#9CAAC3'],
             glyph_num: 4,
-            glyph_plr:0,
+            glyph_plr: 0,
 
             // for distribution bar plot
             predictions: require('@/assets/json/grad_out_testing_time.json'),
             predict_hash: require('@/assets/json/grad_out_testing_time_hash.json'),
             // predict_live: require('@/assets/json/grad_out_testing_time.json')[0],
-            predict_live:{},
-            bar_plr:0,
+            predict_live: {},
+            bar_plr: 0,
 
 
             // for predict: plr switch
@@ -65,10 +65,13 @@ export default {
 
             // for history: game switch
             select_game: '',
+            history_plrs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // list of all selected plr in plrs-legend
             games: ['6219491628248857926'],
-            exp_display:false,
-            cash_display:false,
-            pos_display:true,
+            pos_display: true,
+            exp_display: false,
+            cash_display: false,
+            event_display: false,
+
         };
     },
     watch: {
@@ -76,34 +79,74 @@ export default {
         select_time(val, oldVal) {
             this.updatePositions(val);
             this.updatePredictions(val);
-            this.glyph_plr=0
-            this.bar_plr=0
+            this.glyph_plr = 0
+            this.bar_plr = 0
         },
         // display history
-        pos_display(val, oldVal){
-            if(val==true){
-                d3.selectAll('.pos_history').attr('opacity','0.5')
+        pos_display(val, oldVal) {
+            if (val == true) {
+                // plot exp for 1st selected plr
+                for (let i = 0; i < 10; i++) {
+                    if (this.history_plrs[i] == 1) {
+                        d3.select('#curve_' + i).attr('opacity', '1').attr("stroke-width", "4px");
+                    }
+                    else {
+                        d3.select('#curve_' + i).attr('opacity', '0.5').attr("stroke-width", "2px");
+                    }
+                }
             }
-            else{
-                d3.selectAll('.pos_history').attr('opacity','0.1')
+            else {
+                d3.selectAll('.pos_history').attr('opacity', '0.1').attr("stroke-width", "2px");
             }
         },
         // display history
-        cash_display(val, oldVal){
-            if(val==true){
-                d3.selectAll('.cash_history').attr('opacity','0.1')
+        cash_display(val, oldVal) {
+            if (val == true) {
+                // plot exp for 1st selected plr
+                for (let i = 0; i < 10; i++) {
+                    if (this.history_plrs[i] == 1) {
+                        d3.select('#cash_' + i).attr('opacity', '0.6')
+                    }
+                    else {
+                        d3.select('#cash_' + i).attr('opacity', '0.1')
+                    }
+                }
             }
-            else{
-                d3.selectAll('.cash_history').attr('opacity','0.02')
+            else {
+                d3.selectAll('.cash_history').attr('opacity', '0.02')
             }
         },
         // display history
-        exp_display(val, oldVal){
-            if(val==true){
-                d3.selectAll('.exp_history').attr('opacity','0.1')
+        exp_display(val, oldVal) {
+            if (val == true) {
+                // plot exp for 1st selected plr
+                for (let i = 0; i < 10; i++) {
+                    if (this.history_plrs[i] == 1) {
+                        d3.select('#exp_' + i).attr('opacity', '0.6')
+                    }
+                    else {
+                        d3.select('#exp_' + i).attr('opacity', '0.1')
+                    }
+                }
             }
-            else{
-                d3.selectAll('.exp_history').attr('opacity','0.02')
+            else {
+                d3.selectAll('.exp_history').attr('opacity', '0.02')
+            }
+        },
+        // display events
+        event_display(val, oldVal) {
+            if (val == true) {
+                // plot events for 1st selected plr
+                for (let i = 0; i < 10; i++) {
+                    if (this.history_plrs[i] == 1) {
+                        this.$refs.history.plotEvents(i)
+                        break
+                    }
+                }
+            }
+            else {
+                // remove all events
+                this.updateHistory(-1, -1)
             }
         }
 
@@ -128,6 +171,7 @@ export default {
     },
 
     methods: {
+        // predict: map
         updatePositions(time) {
             // positions
             this.positions = [];
@@ -142,8 +186,8 @@ export default {
             }
             // console.log(positions);
         },
+        // live & review: click on avatar
         goWatchPlayer(refName, player_id) {
-
             console.log(refName)
             console.log(this.$refs[refName])
             this.$refs[refName].findPlayer(player_id);
@@ -151,8 +195,8 @@ export default {
 
         // predict
         updatePredictions(time) {
-            const key=time.toString()
-            if (this.predict_hash[key]!=undefined) {
+            const key = time.toString()
+            if (this.predict_hash[key] != undefined) {
                 const predict_index = this.predict_hash[key]
                 this.predict_live = this.predictions[predict_index]
                 // console.log('hit',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
@@ -162,10 +206,23 @@ export default {
                 // console.log('miss',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
             }
         },
-        // select predict event bt plr
-        updateFeaturePlr(select_plr_id){
-            this.glyph_plr=select_plr_id
-            this.bar_plr=select_plr_id
+        // predict: select predict event bt plr
+        updateFeaturePlr(select_plr_id) {
+            this.glyph_plr = select_plr_id
+            this.bar_plr = select_plr_id
+        },
+        /** history: click on plrs, operation = 1 for select and -1 for deselect */
+        updateHistory(plr_id, operation) {
+            if (operation == 1) {
+                // add
+                this.history_plrs[+plr_id] = 1
+                if (this.event_display) this.$refs.history.plotEvents(plr_id)
+            }
+            else {
+                if (plr_id != -1) this.history_plrs[+plr_id] = 0   // not for watch eventDisplay
+                d3.select('#events').remove()
+            }
+            // console.log(this.history_plrs)
         }
     }
 };
