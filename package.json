@@ -9,7 +9,8 @@
     "start": "node build/dev-server.js  --max-old-space-size=4096",
     "test": "npx cross-env NODE_OPTIONS='--trace-warnings' node build/dev-server.js",
     "build": "node build/build.js",
-    "server": "nodemon app.js"
+    "server": "nodemon app.js",
+    "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.14.0",
     "helmet": "^3.23.3",
+    "increase-memory-limit": "^1.0.7",
     "mongoose": "^5.11.8",
     "serve-favicon": "^2.5.0",
     "three": "^0.139.2",

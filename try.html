@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+        <style>
+            #render {
+                overflow: auto;
+                text-align: center;
+            }
+
+            #render .node {
+                cursor: pointer;
+            }
+
+            #render .node circle {
+                fill: #fff;
+                stroke: steelblue;
+                stroke-width: 1.5px;
+            }
+
+            #render .node text {
+                font: 16px "Hiragino Sans GB", "华文细黑", "STHeiti", "微软雅黑",
+                    "Microsoft YaHei", SimHei, "Helvetica Neue", Helvetica,
+                    Arial, sans-serif !important;
+            }
+
+            #render .link {
+                fill: none;
+                stroke: #ccc;
+                stroke-width: 1.5px;
+            }
+
+            #render .tooltip {
+                position: absolute;
+                padding: 8px;
+                text-align: left;
+                font: 16px "Hiragino Sans GB", "华文细黑", "STHeiti", "微软雅黑",
+                    "Microsoft YaHei", SimHei, "Helvetica Neue", Helvetica,
+                    Arial, sans-serif !important;
+                background: rgba(0, 0, 0, 0.87);
+                color: #fff;
+                border: 0px;
+                border-radius: 8px;
+                pointer-events: none;
+            }
+
+            #render .tooltip hr {
+                padding: 0;
+                margin: 8px 0;
+            }
+        </style>
+
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+    </head>
+    <body>
+        <div id="render"></div>
+    </body>
+
+    <script>
+        var nodes = {};
+
+        links = [
+            {
+                source: {
+                    name: "Nexus 4",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+                relation: "好纠结",
+                target: {
+                    name: "Nexus 9",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+            },
+            {
+                source: {
+                    name: "Nexus 9",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+                relation: "好纠结3",
+                target: {
+                    name: "Nexus 7",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+            },
+            {
+                source: {
+                    name: "Nexus 8",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+                relation: "好纠结1",
+                target: {
+                    name: "Nexus 9",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+            },
+            {
+                source: {
+                    name: "Nexus 1",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+                relation: "好纠结2",
+                target: {
+                    name: "Nexus 4",
+                    tooltip:
+                        "Dimensions:<br/>5.43 x 2.72 x 0.34 inches (137.84 x 69.17 x 8.59 mm)<hr/>Resolution:<br/>1080 x 1920 pixels<hr/>Processor:<br/>Quad-core, 2260 MHz, Krait 400",
+                },
+            },
+        ];
+
+        links.forEach(function (link) {
+            link.source =
+                nodes[link.source.name] ||
+                (nodes[link.source.name] = link.source);
+            link.target =
+                nodes[link.target.name] ||
+                (nodes[link.target.name] = link.target);
+        });
+
+        var margin = {
+                top: 20,
+                right: 120,
+                bottom: 20,
+                left: 120,
+            },
+            width = 960 - margin.right - margin.left,
+            height = 960 - margin.top - margin.bottom;
+
+        var tooltip = d3
+            .select("#render")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        var svg = d3
+            .select("#render")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr(
+                "transform",
+                "translate(" + margin.left + "," + margin.top + ")"
+            );
+
+        var force = d3.layout
+            .force() //layout将json格式转化为力学图可用的格式
+            .nodes(d3.values(nodes)) //设定节点数组
+            .links(links) //设定连线数组
+            .size([width, height]) //作用域的大小
+            .linkDistance(150) //连接线长度
+            //.gravity(.0001)
+            .charge(-800) //顶点的电荷数。该参数决定是排斥还是吸引，数值越小越互相排斥
+            .on("tick", tick) //指时间间隔，隔一段时间刷新一次画面
+            .start(); //开始转换
+
+        var link = svg
+            .selectAll(".link")
+            .data(force.links())
+            .enter()
+            .append("line")
+            .attr("class", "link");
+
+        var node = svg
+            .selectAll(".node")
+            .data(force.nodes())
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .on("mouseover", function (d) {
+                if (d.tooltip) {
+                    tooltip.transition().duration(200).style("opacity", 0.9);
+                    tooltip
+                        .html(d.tooltip)
+                        .style("left", d3.event.pageX + "px")
+                        .style("top", d3.event.pageY - 28 + "px");
+                }
+            })
+            .on("mouseout", function (d) {
+                if (d.tooltip) {
+                    tooltip.transition().duration(500).style("opacity", 0);
+                }
+            })
+            .call(force.drag);
+
+        node.append("circle")
+            .style("fill", "red")
+            .style("opacity", 0.1)
+            .attr("r", 30);
+
+        node.append("text")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle") //在圆圈中加上数据
+            .text(function (d) {
+                return d.name;
+            });
+
+        force.on("tick", tick);
+
+        function tick() {
+            link.attr("x1", function (d) {
+                return d.source.x;
+            })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            node.attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        }
+    </script>
+</html>

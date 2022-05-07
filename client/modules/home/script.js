@@ -105,15 +105,18 @@ export default {
                 // plot exp for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        d3.select('#cash_' + i).attr('opacity', '0.6')
+                        d3.select('#cash_' + i).attr('opacity', 0.5)
+                        d3.select('#cash_curve_' + i).attr('opacity', 1)
                     }
                     else {
-                        d3.select('#cash_' + i).attr('opacity', '0.1')
+                        d3.select('#cash_' + i).attr('opacity', 0.1)
+                        d3.select('#cash_curve_' + i).attr('opacity', 0.5)
                     }
                 }
             }
             else {
                 d3.selectAll('.cash_history').attr('opacity', '0.02')
+                d3.selectAll('.cash_history_curve').attr('opacity', '0.2')
             }
         },
         // display history
@@ -122,15 +125,18 @@ export default {
                 // plot exp for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        d3.select('#exp_' + i).attr('opacity', '0.6')
+                        d3.select('#exp_' + i).attr('opacity', '0.5')
+                        d3.select('#exp_curve_' + i).attr('opacity', 1)
                     }
                     else {
                         d3.select('#exp_' + i).attr('opacity', '0.1')
+                        d3.select('#exp_curve_' + i).attr('opacity', '0.5')
                     }
                 }
             }
             else {
                 d3.selectAll('.exp_history').attr('opacity', '0.02')
+                d3.selectAll('.exp_history_curve').attr('opacity', '0.2')
             }
         },
         // display events
@@ -219,8 +225,8 @@ export default {
                 this.history_plrs[+plr_id] = 1
                 legend.style.opacity = 1;
                 if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 1);
-                if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.6);
-                if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.6);
+                if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.5);
+                if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.5);
                 if (this.event_display) this.$refs.history.plotEvents(plr_id)
             }
             else {
@@ -246,6 +252,16 @@ export default {
                 else path.attr("opacity", opacity).attr("stroke-width", "2px");
             } else {
                 path.attr("opacity", opacity)
+                switch (opacity) {
+                    case 0.02: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 0.4);
+                        break;
+                    case 0.1: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 0.5);
+                        break;
+                    case 0.5: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 1);
+                        break;
+
+
+                }
             }
         }
     }

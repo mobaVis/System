@@ -1,10 +1,12 @@
 <template>
-    <svg
-        :id="name"
-        width="1290"
-        height="410"
-        :style="{ display: 'play' }"
-    ></svg>
+    <div id="history_div">
+        <svg
+            :id="name"
+            width="1290"
+            height="410"
+            :style="{ display: 'play' }"
+        ></svg>
+    </div>
 </template>
 
 <script>
@@ -38,6 +40,7 @@ export default {
     methods: {
         plotYtrack() {
             const _this = this;
+
             // plot only if data not empty
             // if(Object.keys(this.data).length==0) return
             const data = this.data;
@@ -65,8 +68,8 @@ export default {
                 )
                 .attr("id", "history");
 
-            // read and plot data
-            // x axis
+            // #region : read and plot data
+            // #region : x axis
             var xAxis = g
                 .append("g")
                 .attr("transform", "translate(0," + _this.mid_y + ")")
@@ -96,18 +99,19 @@ export default {
                 .attr("font-family", "Noto Sans")
                 .attr("font-weight", "900")
                 .text("Player y_Position/ EXP/ Cash/ Events");
+            // #endregion
 
             // plot pos
-            const curveline = function (plr) {
+            const curveline = function(plr, name) {
                 const line = d3
                     .line()
                     .curve(d3.curveLinear)
                     .x((d) => x(d.time))
-                    .y((d) => y(d["usr_" + plr]["pos"][1]));
+                    .y((d)=>{return name=='pos'?y(d["usr_" + plr][name][1]):y(d["usr_" + plr][name])});
                 return line(data);
             };
 
-            const color = function (i) {
+            const color = function(i) {
                 return _this.colors[i];
             };
 
@@ -116,20 +120,20 @@ export default {
             for (let i = 0; i < 10; i++) {
                 pos_group
                     .append("path")
-                    .attr("d", curveline(i))
+                    .attr("d", curveline(i,'pos'))
                     .attr("id", "curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "2px")
                     .attr("fill", "none")
-                    .attr("opacity", "0.5")
+                    .attr("opacity", 0.5)
                     .attr("class", "pos_history")
                     .style("cursor", "pointer")
                     .on("click", function () {
                         // console.log(d3.select(this))
-                        if (d3.select(this).attr('opacity') != 1) {
+                        if (d3.select(this).attr("opacity") != 1) {
                             _this.$emit("clickUpdate", i, 1);
                         } else {
-                            console.log
+                            console.log;
                             _this.$emit("clickUpdate", i, -1);
                         }
                     })
@@ -139,10 +143,20 @@ export default {
 
             // plot cash & exp
             const area = function (name, plr) {
-                var max = d3.max(data, function (d) {
-                    return +d["usr_" + plr][name];
+                var area = d3
+                    .area()
+                    .x((d) => x(d.time))
+                    .y0(_this.mid_y)
+                    .y1((d) => y(d["usr_" + plr][name]));
+                return area(data);
+            };
+            const cash_group = g.append("g").attr("id", "cash");
+            for (let i = 0; i < 10; i++) {
+                // update y by different scale
+                var max = d3.max(data, (d) => {
+                    return +d["usr_" + i].cashGain;
                 });
-                if (plr < 5) {
+                if (i < 5) {
                     y = d3
                         .scaleLinear()
                         .range([_this.mid_y, 0])
@@ -153,15 +167,8 @@ export default {
                         .range([_this.mid_y, height])
                         .domain([0, max]);
                 }
-                var area = d3
-                    .area()
-                    .x((d) => x(d.time))
-                    .y0(_this.mid_y)
-                    .y1((d) => y(d["usr_" + plr][name]));
-                return area(data);
-            };
-            const cash_group = g.append("g").attr("id", "cash");
-            for (let i = 0; i < 10; i++) {
+
+                // add area
                 cash_group
                     .append("path")
                     .attr("d", area("cashGain", i))
@@ -169,9 +176,36 @@ export default {
                     .attr("id", "cash_" + i)
                     .attr("fill", color(i))
                     .attr("opacity", 0.02);
+
+                // add line
+                cash_group
+                    .append("path")
+                    .attr("d", curveline(i,'cashGain'))
+                    .attr("id", "cash_curve_" + i)
+                    .attr("stroke", color(i))
+                    .attr("stroke-width", "3px")
+                    .attr("fill", "none")
+                    .attr("opacity", 0.2)
+                    .attr("class", "cash_history_curve")
             }
             const exp_group = g.append("g").attr("id", "exp");
             for (let i = 0; i < 10; i++) {
+                // update y by different scale
+                var max = d3.max(data, (d) => {
+                    return +d["usr_" + i].expGain;
+                });
+                if (i < 5) {
+                    y = d3
+                        .scaleLinear()
+                        .range([_this.mid_y, 0])
+                        .domain([0, max]);
+                } else {
+                    y = d3
+                        .scaleLinear()
+                        .range([_this.mid_y, height])
+                        .domain([0, max]);
+                }
+                // add areas
                 exp_group
                     .append("path")
                     .attr("d", area("expGain", i))
@@ -179,7 +213,40 @@ export default {
                     .attr("id", "exp_" + i)
                     .attr("fill", color(i))
                     .attr("opacity", 0.02);
+
+                // add line
+                cash_group
+                    .append("path")
+                    .attr("d", curveline(i,'expGain'))
+                    .attr("id", "exp_curve_" + i)
+                    .attr("stroke", color(i))
+                    .attr("stroke-width", "3px")
+                    .attr("fill", "none")
+                    .attr("opacity", 0.2)
+                    .attr("class", "exp_history_curve")
             }
+            //#endregion
+
+            // add tooltip
+            var tooltip = d3
+                .select("#history_div")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+            g.on("mouseover", function (d) {
+                console.log(d);
+                // if (d.tooltip) {
+                //     tooltip.transition().duration(200).style("opacity", 0.9);
+                //     tooltip
+                //         .html(d.tooltip)
+                //         .style("left", d3.event.pageX + "px")
+                //         .style("top", d3.event.pageY - 28 + "px");
+                // }
+            }).on("mouseout", function (d) {
+                // if (d.tooltip) {
+                //     tooltip.transition().duration(500).style("opacity", 0);
+                // }
+            });
         },
         plotEvents(plr_id) {
             const data = this.data;
@@ -272,3 +339,19 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+#tooltip {
+    position: absolute;
+    padding: 8px;
+    text-align: left;
+    font: 16px "Hiragino Sans GB", "华文细黑", "STHeiti", "微软雅黑",
+        "Microsoft YaHei", SimHei, "Helvetica Neue", Helvetica, Arial,
+        sans-serif !important;
+    background: rgba(0, 0, 0, 0.87);
+    color: #fff;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+</style>
