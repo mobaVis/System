@@ -35,7 +35,7 @@
                 </el-col>
             </el-row>
 
-            <history-view ref="history" :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" />
+            <history-view ref="history" :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" @clickUpdate="updateHistory"  />
         </div>
 
         <div class="live">

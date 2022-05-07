@@ -146,7 +146,7 @@ export default {
             }
             else {
                 // remove all events
-                this.updateHistory(-1, -1)
+                d3.select('#events').remove()
             }
         }
 
@@ -213,16 +213,40 @@ export default {
         },
         /** history: click on plrs, operation = 1 for select and -1 for deselect */
         updateHistory(plr_id, operation) {
+            const legend = document.getElementById("legend_" + plr_id);
             if (operation == 1) {
-                // add
+                // select
                 this.history_plrs[+plr_id] = 1
+                legend.style.opacity = 1;
+                if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 1);
+                if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.6);
+                if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.6);
                 if (this.event_display) this.$refs.history.plotEvents(plr_id)
             }
             else {
-                if (plr_id != -1) this.history_plrs[+plr_id] = 0   // not for watch eventDisplay
-                d3.select('#events').remove()
+                if (plr_id >= 0) {
+                    // deselect
+                    this.history_plrs[+plr_id] = 0
+                    legend.style.opacity = 0.6;
+                    if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 0.5);
+                    else this.changePathOpacity(plr_id, 'curve', 0.1);
+                    if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.1);
+                    else this.changePathOpacity(plr_id, 'cash', 0.02);
+                    if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.1);
+                    else this.changePathOpacity(plr_id, 'exp', 0.02);
+                }
             }
             // console.log(this.history_plrs)
+        },
+        changePathOpacity(playerID, name, opacity) {
+            const path = d3.select("#" + name + '_' + playerID);
+
+            if (name == 'curve') {
+                if (opacity == 1) path.attr("opacity", "1").attr("stroke-width", "4px");
+                else path.attr("opacity", opacity).attr("stroke-width", "2px");
+            } else {
+                path.attr("opacity", opacity)
+            }
         }
     }
 };

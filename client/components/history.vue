@@ -20,9 +20,8 @@ export default {
         colors: { type: Array },
     },
     setup() {},
-    data(){
-        return {mid_y:0,width:0}
-
+    data() {
+        return { mid_y: 0, width: 0 };
     },
     watch: {
         data(val, oldVal) {
@@ -41,14 +40,14 @@ export default {
             const _this = this;
             // plot only if data not empty
             // if(Object.keys(this.data).length==0) return
-            const data = this.data
+            const data = this.data;
 
             // init svg vars
             var svg = d3.select("#" + this.name),
                 margin = { top: 20, right: 90, bottom: 50, left: 50 },
                 width = svg.attr("width") - margin.left - margin.right,
                 height = svg.attr("height") - margin.top - margin.bottom;
-            _this.mid_y=height/2,_this.width=width;
+            (_this.mid_y = height / 2), (_this.width = width);
 
             // add domain for axis and scale
             var x = d3
@@ -123,7 +122,19 @@ export default {
                     .attr("stroke-width", "2px")
                     .attr("fill", "none")
                     .attr("opacity", "0.5")
-                    .attr("class", "pos_history");
+                    .attr("class", "pos_history")
+                    .style("cursor", "pointer")
+                    .on("click", function () {
+                        // console.log(d3.select(this))
+                        if (d3.select(this).attr('opacity') != 1) {
+                            _this.$emit("clickUpdate", i, 1);
+                        } else {
+                            console.log
+                            _this.$emit("clickUpdate", i, -1);
+                        }
+                    })
+                    .append("title")
+                    .text("player " + i);
             }
 
             // plot cash & exp
@@ -176,9 +187,9 @@ export default {
                 .scaleLinear()
                 .domain([0, data.length - 1])
                 .range([0, this.width]);
-            var parent = d3.select("#history")
-            parent.select("#events").remove()
-            var g=parent.append("g").attr("id", "events");
+            var parent = d3.select("#history");
+            parent.select("#events").remove();
+            var g = parent.append("g").attr("id", "events");
             // plot events
             for (let i = 0; i < data.length; i++) {
                 // player
@@ -192,7 +203,13 @@ export default {
                         .attr("height", 20)
                         .attr("href", require("@/assets/image/maya_kill.png"))
                         .append("title")
-                        .text("hero " + plr_id + " killed a maya at " + data[i].time + " s");
+                        .text(
+                            "player " +
+                                plr_id +
+                                " killed a maya at " +
+                                data[i].time +
+                                " s"
+                        );
                     img_y -= 25;
                 }
                 if (data[i]["usr_" + plr_id].boss_kill == 1) {
@@ -203,7 +220,13 @@ export default {
                         .attr("height", 20)
                         .attr("href", require("@/assets/image/boss_kill.png"))
                         .append("title")
-                        .text("hero " + plr_id + " killed a boss at " + data[i].time + " s");
+                        .text(
+                            "player " +
+                                plr_id +
+                                " killed a boss at " +
+                                data[i].time +
+                                " s"
+                        );
                     img_y -= 25;
                 }
                 if (data[i]["usr_" + plr_id].isAlive == 0) {
@@ -215,7 +238,11 @@ export default {
                         .attr("href", require("@/assets/image/hero_die.png"))
                         .append("title")
                         .text(
-                            "hero " + plr_id + " died at " + data[i].time + " s"
+                            "player " +
+                                plr_id +
+                                " died at " +
+                                data[i].time +
+                                " s"
                         );
                     img_y -= 25;
                 }
@@ -230,7 +257,13 @@ export default {
                             require("@/assets/image/tower_destroy.png")
                         )
                         .append("title")
-                        .text("hero " + plr_id + " destroyed one tower at " + data[i].time + " s");
+                        .text(
+                            "player " +
+                                plr_id +
+                                " destroyed one tower at " +
+                                data[i].time +
+                                " s"
+                        );
 
                     img_y -= 25;
                 }
