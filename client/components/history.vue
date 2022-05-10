@@ -58,6 +58,10 @@ export default {
                     .scaleLinear()
                     .domain([0, data.length - 1])
                     .range([0, width]),
+                invert_x = d3
+                    .scaleLinear()
+                    .range([0, data.length - 1])
+                    .domain([0, width]),
                 y = d3.scaleLinear().range([0, height]).domain([-120, 120]);
             const color = function (i) {
                 return _this.colors[i];
@@ -112,7 +116,7 @@ export default {
             // #endregion
 
             //#region plot cash & exp
-            const curveline = function (plr, name) {
+            const curveline = function (plr, name, y) {
                 const line = d3
                     .line()
                     .curve(d3.curveLinear)
@@ -125,7 +129,7 @@ export default {
                 return line(data);
             };
 
-            const area = function (name, plr) {
+            const area = function (name, plr, y) {
                 var area = d3
                     .area()
                     .x((d) => x(d.time))
@@ -134,27 +138,27 @@ export default {
                 return area(data);
             };
             const cash_group = g.append("g").attr("id", "cash");
+            // get max expGain
+            var max = 0;
             for (let i = 0; i < 10; i++) {
-                // update y by different scale
-                var max = d3.max(data, (d) => {
+                const tmp = d3.max(data, (d) => {
                     return +d["usr_" + i].cashGain;
                 });
+                max = Math.max(max, tmp);
+            }
+            const y_cash = d3.scaleLinear().domain([0, max]);
+            for (let i = 0; i < 10; i++) {
+                // update y by different scale
                 if (i < 5) {
-                    y = d3
-                        .scaleLinear()
-                        .range([_this.mid_y, 0])
-                        .domain([0, max]);
+                    y_cash.range([_this.mid_y, 0]);
                 } else {
-                    y = d3
-                        .scaleLinear()
-                        .range([_this.mid_y, height])
-                        .domain([0, max]);
+                    y_cash.range([_this.mid_y, height]);
                 }
 
                 // add area
                 cash_group
                     .append("path")
-                    .attr("d", area("cashGain", i))
+                    .attr("d", area("cashGain", i, y_cash))
                     .attr("class", "cash_history")
                     .attr("id", "cash_" + i)
                     .attr("fill", color(i))
@@ -163,7 +167,7 @@ export default {
                 // add line
                 cash_group
                     .append("path")
-                    .attr("d", curveline(i, "cashGain"))
+                    .attr("d", curveline(i, "cashGain", y_cash))
                     .attr("id", "cash_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
@@ -171,27 +175,29 @@ export default {
                     .attr("opacity", 0.2)
                     .attr("class", "cash_history_curve");
             }
+
+            // plot expGain
             const exp_group = g.append("g").attr("id", "exp");
+            // get max expGain
+            max = 0;
             for (let i = 0; i < 10; i++) {
-                // update y by different scale
-                var max = d3.max(data, (d) => {
+                const tmp = d3.max(data, (d) => {
                     return +d["usr_" + i].expGain;
                 });
+                max = Math.max(max, tmp);
+            }
+            const y_exp = d3.scaleLinear().domain([0, max]);
+            for (let i = 0; i < 10; i++) {
+                // update y by different scale
                 if (i < 5) {
-                    y = d3
-                        .scaleLinear()
-                        .range([_this.mid_y, 0])
-                        .domain([0, max]);
+                    y_exp.range([_this.mid_y, 0]);
                 } else {
-                    y = d3
-                        .scaleLinear()
-                        .range([_this.mid_y, height])
-                        .domain([0, max]);
+                    y_exp.range([_this.mid_y, height]);
                 }
                 // add areas
                 exp_group
                     .append("path")
-                    .attr("d", area("expGain", i))
+                    .attr("d", area("expGain", i, y_exp))
                     .attr("class", "exp_history")
                     .attr("id", "exp_" + i)
                     .attr("fill", color(i))
@@ -200,7 +206,7 @@ export default {
                 // add line
                 cash_group
                     .append("path")
-                    .attr("d", curveline(i, "expGain"))
+                    .attr("d", curveline(i, "expGain", y_exp))
                     .attr("id", "exp_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
@@ -218,7 +224,7 @@ export default {
             for (let i = 0; i < 10; i++) {
                 pos_group
                     .append("path")
-                    .attr("d", curveline(i, "pos"))
+                    .attr("d", curveline(i, "pos", y))
                     .attr("id", "curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "2px")
@@ -262,23 +268,37 @@ export default {
             g.selectAll("g")
                 .on("mouseover", function (d, i) {
                     if (!_this.tooltip) return;
-                    console.log(d, i);
+                    // console.log(d, i, this, d3.event);
                     // Using d3.mouse() function
                     let pos = d3.mouse(this);
-                    // tooltip.transition().duration(100).style("opacity", 0.8);
+                    if (pos[0] < 0) return;
+
+                    // transform with pos[0]
+                    const time = Math.round(invert_x(pos[0]));
+                    var str = "Time: " + time + "s<br/>Cash:<br/>";
+                    var display_list=[]
+                    for (let i = 0; i < 10; i++) {
+                        const pos_y =_this.data[time]["usr_" + i].cashGain.toFixed(2);
+                        str += "player" + i + ": " + pos_y + "<br/>";
+                    }
                     d3.select("#tooltip_line")
                         .attr(
                             "transform",
                             "translate(" + pos[0] + "," + _this.mid_y + ")"
                         )
-                        .style("opacity", 1);
+                        .style("opacity", 1)
                     tooltip
                         .html(() => {
-                            return "position:<br/>" + pos[0] + "<br/>" + pos[1];
+                            return str;
                         })
                         .transition()
                         .duration(100)
-                        .style("left", pos[0] + 50 + "px")
+                        .style(
+                            "left",
+                            width - pos[0] < 180
+                                ? pos[0] - 185 + "px"
+                                : pos[0] + 85 + "px"
+                        )
                         .style("top", _this.mid_y - 20 + "px")
                         .style("opacity", 0.8);
                 })
@@ -296,7 +316,10 @@ export default {
                 .range([0, this.width]);
             var parent = d3.select("#history");
             parent.select("#events").remove();
-            var g = parent.append("g").attr("id", "events").style('cursor','pointer');
+            var g = parent
+                .append("g")
+                .attr("id", "events")
+                .style("cursor", "pointer");
             // plot events
             for (let i = 0; i < data.length; i++) {
                 // player
@@ -394,8 +417,8 @@ export default {
     color: #fff;
 
     /* panel */
-    width: 160px;
-    height: 100px;
+    width: 180px;
+    height: 350px;
     background: #333333;
     border: 0px;
     border-radius: 8px;

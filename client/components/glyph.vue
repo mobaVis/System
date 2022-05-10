@@ -70,9 +70,14 @@ export default {
                 .append("path")
                 .attr("class", (d) => d[0])
                 .attr("d", arc_generator)
+                .style('cursor','pointer')
                 .style("fill", function (d, i) {
                     return color(i);
-                });
+                })
+                .append('title').text(function(d,i){
+                    // console.log(d,i)
+                    return d.data[0]+' = '+d.data[1]
+                })
         },
     },
 };
