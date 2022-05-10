@@ -50,7 +50,7 @@ export default {
     },
     data() {
         return {
-            focus: "player2",
+            focus: "global",
             // focus: time_pair[0],
             // begin: "01:00",
             // end: "01:14",

@@ -68,8 +68,8 @@ export default {
     data() {
         return {
             black: "#5E5E5E",
-            kills: 0,
-            dies: 0,
+
+            // dies: 0,
         };
     },
     props: {
@@ -81,6 +81,8 @@ export default {
             type: String,
             required: true,
         },
+        kills: {type:Number},
+        dies: {type:Number}
         // class: {
         //     type: String,
         //     required: true,

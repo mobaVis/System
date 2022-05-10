@@ -5,6 +5,7 @@ import troisModel from "@/components/TroisLoadModel.vue";
 import historyView from "@/components/history.vue";
 
 import avatarUnit from "@/components/avaterButton.vue";
+import campDataDisplayer from "@/components/campDataDisplayer.vue";
 import eventLegends from "@/components/eventLegends.vue";
 import overviewLegends from "@/components/overviewLegend.vue";
 
@@ -22,7 +23,7 @@ export default {
         mapView,
         troisModel,
         'history-view': historyView,
-        'avatar-button': avatarUnit,
+        'avatar-button': avatarUnit, 'camp-data-displayer': campDataDisplayer,
         'live-legend': eventLegends,
         'plrs-legend': overviewLegends,
         'review-time-detail': reviewDetail,
@@ -41,6 +42,10 @@ export default {
             x_max: 58,
             y_max: 117,
             svgID: "players",
+
+            // for play and record
+            video_records: [],
+            recordLength:0,
 
             // for avatar
             camp1_colors: ["#FDCB6E", "#FAB1A0", "#FF7675", "#FD79A8", "#F2CCD3"], //blue
@@ -71,7 +76,7 @@ export default {
             exp_display: false,
             cash_display: false,
             event_display: false,
-            tooltip_on:false
+            tooltip_on: false
 
         };
     },
@@ -157,11 +162,11 @@ export default {
             }
         },
         // tooltip on/off
-        tooltip_on(val, oldVal){
-            if(val){
+        tooltip_on(val, oldVal) {
+            if (val) {
                 console.log('display tooltip')
-            }else{
-                d3.selectAll('.tooltip').style('opacity',0)
+            } else {
+                d3.selectAll('.tooltip').style('opacity', 0)
             }
         }
 
@@ -172,17 +177,6 @@ export default {
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
     setup() {
-        // const tableData = [
-        //     {
-        //         date: '2016-05-02',
-        //         name: '王小虎',
-        //         address: '上海市普陀区金沙江路 1518 弄',
-        //     }
-        // ];
-
-        // return {
-        //     tableData
-        // };
     },
 
     methods: {
@@ -208,6 +202,43 @@ export default {
             this.$refs[refName].findPlayer(player_id);
         },
 
+        /** live: CAMP DATA
+         * @param: time:Int;
+         * @param: camID:1,2;
+         * @param: name:'kills'.'dies','towers'
+         */
+        getCampData(time, campID, name) {
+            let count = 0;
+            switch (name) {
+                case 'kills':
+                    for (let i = 0; i < 5; i++) {
+                        count += json[time]['usr_' + (i + campID * 5 - 5)].kills;
+                    }
+                    return count;
+                case 'dies':
+                    for (let i = 0; i < 5; i++) {
+                        count += json[time]['usr_' + (i + campID * 5 - 5)].dies;
+                    }
+                    return count;
+                case 'towers':
+                    return this.json[time]['camp_' + campID].all_tower_destroy;
+            }
+        },
+
+        /**
+         * for recording review records with live records
+        */
+        addRecord() {
+            this.video_records.push(this.review_times);
+            this.recordLength+=this.review_times[1]-this.review_times[0];
+        },
+        playRecord(){
+            for (pair in this.video_records){
+                this.live_time=pair[0]
+                while(this.live_time<pair[1])this.live_time+=1;
+            }
+        },
+
         // predict
         updatePredictions(time) {
             const key = time.toString()
@@ -226,7 +257,7 @@ export default {
             this.glyph_plr = select_plr_id
             this.bar_plr = select_plr_id
         },
-        /** history: click on plrs, operation = 1 for select and -1 for deselect */
+        /**  history: click on plrs, operation = 1 for select and -1 for deselect */
         updateHistory(plr_id, operation) {
             const legend = document.getElementById("legend_" + plr_id);
             if (operation == 1) {
@@ -249,7 +280,7 @@ export default {
                     else this.changePathOpacity(plr_id, 'cash', 0.02);
                     if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.1);
                     else this.changePathOpacity(plr_id, 'exp', 0.02);
-                    if(this.event_display) d3.select('#events').remove()
+                    if (this.event_display) d3.select('#events').remove()
                 }
             }
             // console.log(this.history_plrs)
