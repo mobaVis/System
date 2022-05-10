@@ -6,7 +6,7 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "node build/dev-server.js  --max-old-space-size=4096",
+    "start": "node  --max-old-space-size=4096 build/dev-server.js",
     "test": "npx cross-env NODE_OPTIONS='--trace-warnings' node build/dev-server.js",
     "build": "node build/build.js",
     "server": "nodemon app.js",

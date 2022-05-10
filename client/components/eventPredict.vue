@@ -65,27 +65,6 @@ export default {
     data() {
         return {
             events:[]
-            // events: [
-            //     {
-            //         possibility: 0.92,
-            //         event: "destroy tower",
-            //         plr_id: 0,
-            //         count_down: 1,
-            //     },
-            //     // { possibility: 0.78, event: "destroy tower", plr_id: 2,count_down:1 },
-            //     {
-            //         possibility: 0.55,
-            //         event: "destroy tower",
-            //         plr_id: 4,
-            //         count_down: 1,
-            //     },
-            //     {
-            //         possibility: 0.53,
-            //         event: "destroy tower",
-            //         plr_id: 8,
-            //         count_down: 1,
-            //     },
-            // ],
         };
     },
     props: {

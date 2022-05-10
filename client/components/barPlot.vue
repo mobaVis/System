@@ -88,7 +88,7 @@ export default {
                 .text("Feature Importance");
 
             // plot data
-            console.log(barData)
+            // console.log(barData)
             g.selectAll(".bar")
                 .data(Object.entries(barData))
                 .enter()

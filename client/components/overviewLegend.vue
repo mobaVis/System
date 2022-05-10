@@ -97,7 +97,7 @@ export default {
             // select
             // console.log(legend.style);
             if (legend.style.opacity != 1) {
-                this.$emit('clickUpdate',playerID,1)
+                this.$emit('clickUpdate',playerID, 1)
             }
             else {// deselect
                 this.$emit('clickUpdate',playerID, -1)

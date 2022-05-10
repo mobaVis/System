@@ -20,6 +20,7 @@ export default {
             default: "history_track",
         },
         colors: { type: Array },
+        tooltip: { type: Boolean },
     },
     setup() {},
     data() {
@@ -58,6 +59,9 @@ export default {
                     .domain([0, data.length - 1])
                     .range([0, width]),
                 y = d3.scaleLinear().range([0, height]).domain([-120, 120]);
+            const color = function (i) {
+                return _this.colors[i];
+            };
 
             // append g to svg
             const g = svg
@@ -67,8 +71,14 @@ export default {
                     "translate(" + margin.left + "," + margin.top + ")"
                 )
                 .attr("id", "history");
+            g.append("g")
+                .append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("fill", "none");
 
             // #region : read and plot data
+
             // #region : x axis
             var xAxis = g
                 .append("g")
@@ -101,47 +111,20 @@ export default {
                 .text("Player y_Position/ EXP/ Cash/ Events");
             // #endregion
 
-            // plot pos
-            const curveline = function(plr, name) {
+            //#region plot cash & exp
+            const curveline = function (plr, name) {
                 const line = d3
                     .line()
                     .curve(d3.curveLinear)
                     .x((d) => x(d.time))
-                    .y((d)=>{return name=='pos'?y(d["usr_" + plr][name][1]):y(d["usr_" + plr][name])});
+                    .y((d) => {
+                        return name == "pos"
+                            ? y(d["usr_" + plr][name][1])
+                            : y(d["usr_" + plr][name]);
+                    });
                 return line(data);
             };
 
-            const color = function(i) {
-                return _this.colors[i];
-            };
-
-            // plot y_tracks
-            const pos_group = g.append("g").attr("id", "pos");
-            for (let i = 0; i < 10; i++) {
-                pos_group
-                    .append("path")
-                    .attr("d", curveline(i,'pos'))
-                    .attr("id", "curve_" + i)
-                    .attr("stroke", color(i))
-                    .attr("stroke-width", "2px")
-                    .attr("fill", "none")
-                    .attr("opacity", 0.5)
-                    .attr("class", "pos_history")
-                    .style("cursor", "pointer")
-                    .on("click", function () {
-                        // console.log(d3.select(this))
-                        if (d3.select(this).attr("opacity") != 1) {
-                            _this.$emit("clickUpdate", i, 1);
-                        } else {
-                            console.log;
-                            _this.$emit("clickUpdate", i, -1);
-                        }
-                    })
-                    .append("title")
-                    .text("player " + i);
-            }
-
-            // plot cash & exp
             const area = function (name, plr) {
                 var area = d3
                     .area()
@@ -180,13 +163,13 @@ export default {
                 // add line
                 cash_group
                     .append("path")
-                    .attr("d", curveline(i,'cashGain'))
+                    .attr("d", curveline(i, "cashGain"))
                     .attr("id", "cash_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
                     .attr("fill", "none")
                     .attr("opacity", 0.2)
-                    .attr("class", "cash_history_curve")
+                    .attr("class", "cash_history_curve");
             }
             const exp_group = g.append("g").attr("id", "exp");
             for (let i = 0; i < 10; i++) {
@@ -217,36 +200,93 @@ export default {
                 // add line
                 cash_group
                     .append("path")
-                    .attr("d", curveline(i,'expGain'))
+                    .attr("d", curveline(i, "expGain"))
                     .attr("id", "exp_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
                     .attr("fill", "none")
                     .attr("opacity", 0.2)
-                    .attr("class", "exp_history_curve")
+                    .attr("class", "exp_history_curve");
+            }
+            //#endregion
+
+            //#region plot pos
+            y = d3.scaleLinear().range([0, height]).domain([-120, 120]);
+
+            // plot y_tracks
+            const pos_group = g.append("g").attr("id", "pos");
+            for (let i = 0; i < 10; i++) {
+                pos_group
+                    .append("path")
+                    .attr("d", curveline(i, "pos"))
+                    .attr("id", "curve_" + i)
+                    .attr("stroke", color(i))
+                    .attr("stroke-width", "2px")
+                    .attr("fill", "none")
+                    .attr("opacity", 0.5)
+                    .style("z-index", 4)
+                    .attr("class", "pos_history")
+                    .style("cursor", "pointer")
+                    .on("click", function () {
+                        // console.log(d3.select(this))
+                        if (d3.select(this).attr("opacity") != 1) {
+                            _this.$emit("clickUpdate", i, 1);
+                        } else {
+                            console.log;
+                            _this.$emit("clickUpdate", i, -1);
+                        }
+                    })
+                    .append("title")
+                    .text("player " + i);
             }
             //#endregion
 
             // add tooltip
+            g.append("line")
+                .attr("x1", 0)
+                .attr("y1", -180)
+                .attr("x2", 0)
+                .attr("y2", 180)
+                .style("opacity", 0)
+                .attr("id", "tooltip_line")
+                .attr("stroke", "#333333")
+                .attr("class", "tooltip")
+                .attr("stroke-width", "3px")
+                .attr("fill", "none");
             var tooltip = d3
                 .select("#history_div")
                 .append("div")
                 .attr("class", "tooltip")
                 .style("opacity", 0);
-            g.on("mouseover", function (d) {
-                console.log(d);
-                // if (d.tooltip) {
-                //     tooltip.transition().duration(200).style("opacity", 0.9);
-                //     tooltip
-                //         .html(d.tooltip)
-                //         .style("left", d3.event.pageX + "px")
-                //         .style("top", d3.event.pageY - 28 + "px");
-                // }
-            }).on("mouseout", function (d) {
-                // if (d.tooltip) {
-                //     tooltip.transition().duration(500).style("opacity", 0);
-                // }
-            });
+            // console.log(g.selectAll('g'))
+            g.selectAll("g")
+                .on("mouseover", function (d, i) {
+                    if (!_this.tooltip) return;
+                    console.log(d, i);
+                    // Using d3.mouse() function
+                    let pos = d3.mouse(this);
+                    // tooltip.transition().duration(100).style("opacity", 0.8);
+                    d3.select("#tooltip_line")
+                        .attr(
+                            "transform",
+                            "translate(" + pos[0] + "," + _this.mid_y + ")"
+                        )
+                        .style("opacity", 1);
+                    tooltip
+                        .html(() => {
+                            return "position:<br/>" + pos[0] + "<br/>" + pos[1];
+                        })
+                        .transition()
+                        .duration(100)
+                        .style("left", pos[0] + 50 + "px")
+                        .style("top", _this.mid_y - 20 + "px")
+                        .style("opacity", 0.8);
+                })
+                .on("mouseout", function () {
+                    if (!_this.tooltip) return;
+                    tooltip.transition().duration(100).style("opacity", 0);
+                });
+            //#endregion
         },
         plotEvents(plr_id) {
             const data = this.data;
@@ -340,18 +380,26 @@ export default {
 };
 </script>
 
-<style scoped>
-#tooltip {
+<style>
+.tooltip {
+    /* text */
     position: absolute;
+    font-family: "Noto Sans";
+    font-style: black;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 27px;
     padding: 8px;
     text-align: left;
-    font: 16px "Hiragino Sans GB", "华文细黑", "STHeiti", "微软雅黑",
-        "Microsoft YaHei", SimHei, "Helvetica Neue", Helvetica, Arial,
-        sans-serif !important;
-    background: rgba(0, 0, 0, 0.87);
     color: #fff;
+
+    /* panel */
+    width: 160px;
+    height: 100px;
+    background: #333333;
     border: 0px;
     border-radius: 8px;
+    border-style: solid;
     pointer-events: none;
 }
 </style>

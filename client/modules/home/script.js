@@ -52,8 +52,8 @@ export default {
             glyph_plr: 0,
 
             // for distribution bar plot
-            predictions: require('@/assets/json/grad_out_testing_time.json'),
-            predict_hash: require('@/assets/json/grad_out_testing_time_hash.json'),
+            predictions: require('@/assets/json/grad_out_testing_time_2.json'),
+            predict_hash: require('@/assets/json/grad_out_testing_time_2_hash.json'),
             // predict_live: require('@/assets/json/grad_out_testing_time.json')[0],
             predict_live: {},
             bar_plr: 0,
@@ -71,6 +71,7 @@ export default {
             exp_display: false,
             cash_display: false,
             event_display: false,
+            tooltip_on:false
 
         };
     },
@@ -105,7 +106,7 @@ export default {
                 // plot exp for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        d3.select('#cash_' + i).attr('opacity', 0.5)
+                        d3.select('#cash_' + i).attr('opacity', 0.4)
                         d3.select('#cash_curve_' + i).attr('opacity', 1)
                     }
                     else {
@@ -115,8 +116,8 @@ export default {
                 }
             }
             else {
-                d3.selectAll('.cash_history').attr('opacity', '0.02')
-                d3.selectAll('.cash_history_curve').attr('opacity', '0.2')
+                d3.selectAll('.cash_history').attr('opacity', 0.02)
+                d3.selectAll('.cash_history_curve').attr('opacity', 0.2)
             }
         },
         // display history
@@ -125,18 +126,18 @@ export default {
                 // plot exp for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        d3.select('#exp_' + i).attr('opacity', '0.5')
+                        d3.select('#exp_' + i).attr('opacity', 0.4)
                         d3.select('#exp_curve_' + i).attr('opacity', 1)
                     }
                     else {
-                        d3.select('#exp_' + i).attr('opacity', '0.1')
-                        d3.select('#exp_curve_' + i).attr('opacity', '0.5')
+                        d3.select('#exp_' + i).attr('opacity', 0.1)
+                        d3.select('#exp_curve_' + i).attr('opacity', 0.5)
                     }
                 }
             }
             else {
-                d3.selectAll('.exp_history').attr('opacity', '0.02')
-                d3.selectAll('.exp_history_curve').attr('opacity', '0.2')
+                d3.selectAll('.exp_history').attr('opacity', 0.02)
+                d3.selectAll('.exp_history_curve').attr('opacity', 0.2)
             }
         },
         // display events
@@ -153,6 +154,14 @@ export default {
             else {
                 // remove all events
                 d3.select('#events').remove()
+            }
+        },
+        // tooltip on/off
+        tooltip_on(val, oldVal){
+            if(val){
+                console.log('display tooltip')
+            }else{
+                d3.selectAll('.tooltip').style('opacity',0)
             }
         }
 
@@ -194,8 +203,8 @@ export default {
         },
         // live & review: click on avatar
         goWatchPlayer(refName, player_id) {
-            console.log(refName)
-            console.log(this.$refs[refName])
+            // console.log(refName)
+            // console.log(this.$refs[refName])
             this.$refs[refName].findPlayer(player_id);
         },
 
@@ -225,8 +234,8 @@ export default {
                 this.history_plrs[+plr_id] = 1
                 legend.style.opacity = 1;
                 if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 1);
-                if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.5);
-                if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.5);
+                if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.4);
+                if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.4);
                 if (this.event_display) this.$refs.history.plotEvents(plr_id)
             }
             else {
@@ -253,11 +262,14 @@ export default {
             } else {
                 path.attr("opacity", opacity)
                 switch (opacity) {
-                    case 0.02: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 0.4);
+                    // not selected
+                    case 0.02: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 0.2);
                         break;
+                    // selected but not clicked plr
                     case 0.1: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 0.5);
                         break;
-                    case 0.5: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 1);
+                    // clock player
+                    case 0.4: d3.select("#" + name + '_curve_' + playerID).attr('opacity', 1);
                         break;
 
 

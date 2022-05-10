@@ -29,13 +29,14 @@
                     <el-checkbox v-model="exp_display">experience</el-checkbox><br />
                     <el-checkbox v-model="cash_display">cash</el-checkbox><br />
                     <el-checkbox v-model="event_display">events</el-checkbox><br />
+                    <el-checkbox v-model="tooltip_on">tooltip</el-checkbox><br />
                 </el-col>
                 <el-col :span="6">
                     <live-legend />
                 </el-col>
             </el-row>
 
-            <history-view ref="history" :data="json" name="history_track" :colors="camp1_colors.concat(camp2_colors)" @clickUpdate="updateHistory"  />
+            <history-view ref="history" :data="json" name="history_track" :tooltip="tooltip_on" :colors="camp1_colors.concat(camp2_colors)" @clickUpdate="updateHistory"   />
         </div>
 
         <div class="live">
