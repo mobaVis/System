@@ -84,7 +84,7 @@
         <div class="review">
             <b> Review View </b>
             <el-row>
-                <review-time-detail />
+                <review-time-detail :time_pair='review_times' />
             </el-row>
             <el-row>
                 <el-col :span="20">

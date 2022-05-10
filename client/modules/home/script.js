@@ -249,6 +249,7 @@ export default {
                     else this.changePathOpacity(plr_id, 'cash', 0.02);
                     if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.1);
                     else this.changePathOpacity(plr_id, 'exp', 0.02);
+                    if(this.event_display) d3.select('#events').remove()
                 }
             }
             // console.log(this.history_plrs)

@@ -30,7 +30,7 @@
                 "
                 :fill="black"
             >
-                {{ num1 }} / {{ num2 }}
+                {{ kills }} / {{ dies }}
             </text>
         </g>
 
@@ -68,8 +68,8 @@ export default {
     data() {
         return {
             black: "#5E5E5E",
-            num1: 0,
-            num2: 0,
+            kills: 0,
+            dies: 0,
         };
     },
     props: {
