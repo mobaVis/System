@@ -67,7 +67,7 @@ export default {
                 this.begin = this.formatSeconds(val[0]);
                 this.play = this.begin;
             }
-            if (val[0] != oldVal[0]) {
+            if (val[1] != oldVal[1]) {
                 this.end = this.formatSeconds(val[1]);
             }
             this.duration = this.formatSeconds(val[1] - val[0]);

@@ -88,6 +88,9 @@
                             :max="json.length - 1"
                         />
                     </el-row>
+                    <el-row>
+                    <el-slider id='recordVideoSlider' :width="recordLength" v-model='record_time' :max="recordLength" />
+                    </el-row>
                 </el-col>
                 <el-col :span="4">
                     <ul style="list-style-type: none">
@@ -116,20 +119,30 @@
                                 :dies="json[live_time]['usr_' + (i + 5)].dies"
                             />
                         </li>
-                        <li><el-button
-                        circle
-                        icon="CameraFilled"
-                        @click="goWatchPlayer('liveVideo', -1)"
-                    /></li>
+                        <!-- <li> -->
+                        <span>
+                            <el-button
+                                circle
+                                :style="{ display: play_1 }"
+                                icon="VideoPlay"
+                                @click="playTime('live')" />
+                            <el-button
+                                circle
+                                :style="{ display: pause_1 }"
+                                icon="VideoPause"
+                                @click="playTime('live')" />
+                            <el-button
+                                circle
+                                icon="CameraFilled"
+                                @click="goWatchPlayer('liveVideo', -1)"
+                        /></span>
+                        <!-- </li> -->
+                        <li>
+                            <el-checkbox v-model="select_video"
+                                >play edited video</el-checkbox
+                            >
+                        </li>
                     </ul>
-                    <!-- <el-switch
-                        v-model="live_switch"
-                        size="small"
-                        :active-text="
-                            select_plr == -1 ? 'global' : `player${select_plr}`
-                        "
-                        active-color="#a29bfe"
-                    /> -->
                 </el-col>
             </el-row>
             <!-- <liveView /> -->
@@ -143,16 +156,20 @@
             <span class="review_buttons">
                 <el-button
                     circle
+                    :style="{ display: play_2 }"
                     icon="VideoPlay"
-                    @click="review_times[0] += 1" />
+                    @click="playTime('review')" />
                 <el-button
                     circle
-                    icon="ArrowUpBold"
-                    @click="addRecord" />
+                    :style="{ display: pause_2 }"
+                    icon="VideoPause"
+                    @click="playTime('review')" />
+                <el-button circle icon="ArrowUpBold" @click="addRecord" />
                 <el-button
                     circle
                     icon="CameraFilled"
-                    @click="goWatchPlayer('reviewVideo', -1)"/></span>
+                    @click="goWatchPlayer('reviewVideo', -1)"
+            /></span>
             <el-row>
                 <el-col :span="20">
                     <el-row>
@@ -399,7 +416,6 @@
 // #region sliders
 #liveVideoSlider {
     /* processLine */
-
     position: absolute;
     width: 100%;
     left: 12px;
@@ -418,9 +434,28 @@
     // height: fit-content;
 }
 
+#recordVideoSlider {
+    /* processLine */
+    position: absolute;
+    // width: 100%;
+    left: 12px;
+    top: 580px;
+    height: 20px;
+    --el-slider-main-bg-color: #6d5e7a;
+    --el-slider-runway-bg-color: var(--el-border-color-light);
+    --el-slider-stop-bg-color: var(--el-color-white);
+    --el-slider-disabled-color: var(--el-text-color-placeholder);
+    --el-slider-border-radius: 10px;
+    --el-slider-height: 20px;
+    --el-slider-button-size: 19.97px;
+    --el-slider-button-wrapper-size: 19.97px;
+    --el-slider-button-wrapper-offset: -5px;
+    z-index: 1;
+    // height: fit-content;
+}
+
 #reviewVideoSlider {
     /* processLine */
-
     position: absolute;
     width: 100%;
     left: 12px;
@@ -462,9 +497,21 @@
     color: aliceblue;
     cursor: pointer;
 }
+.live_buttons {
+    // position: absolute;
+    // right: 3%;
+    // bottom: 15%;
+    z-index: 2;
+    // width: 20px;
+    // height: 20px;
+    // opacity: 50%;
+    // color: #999999;
+    // cursor: pointer;
+}
 .review_buttons {
     position: absolute;
     right: 15%;
     top: 3%;
+    z-index: 6;
 }
 </style>

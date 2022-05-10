@@ -45,7 +45,13 @@ export default {
 
             // for play and record
             video_records: [],
-            recordLength:0,
+            recordLength: 0,
+            record_time:0,
+            play_1: "inline",
+            pause_1: "none",
+            play_2: "inline",
+            pause_2: "none",
+            select_video: false,
 
             // for avatar
             camp1_colors: ["#FDCB6E", "#FAB1A0", "#FF7675", "#FD79A8", "#F2CCD3"], //blue
@@ -230,12 +236,52 @@ export default {
         */
         addRecord() {
             this.video_records.push(this.review_times);
-            this.recordLength+=this.review_times[1]-this.review_times[0];
+            this.recordLength += this.review_times[1] - this.review_times[0];
+            console.log(this.video_records, this.recordLength)
         },
-        playRecord(){
-            for (pair in this.video_records){
-                this.live_time=pair[0]
-                while(this.live_time<pair[1])this.live_time+=1;
+        playRecord() {
+            for (pair in this.video_records) {
+                this.live_time = pair[0]
+                while (this.live_time < pair[1]) this.live_time += 1;
+            }
+        },
+
+        /**
+         * play & pause: videoID
+         */
+        playTime(videoID) {
+            if (this.play != "none") {
+                // play
+                console.log("play!!");
+                if (videoID == 'live') {
+                    this.play_1 = "none";
+                    this.pause_1 = "inline";
+                    this.timer_1 = setInterval(() => {
+                        this.live_time++;
+                    }, 1000);
+                }
+                else {
+                    this.play_2 = "none";
+                    this.pause_2 = "inline";
+                    this.timer_2 = setInterval(() => {
+                        this.review_times[0] += 1;
+                    }, 1000);
+                }
+
+            } else {
+                // pause
+                console.log("pause!!");
+                if (videoID == 'live') {
+                    this.pause_1 = "none";
+                    this.play_1 = "inline";
+                    if (this.timer_1) clearInterval(this.timer_1);
+                }
+                else {
+                    this.pause_2 = "none";
+                    this.play_2 = "inline";
+                    if (this.timer_2) clearInterval(this.timer_2);
+                }
+
             }
         },
 
@@ -252,6 +298,7 @@ export default {
                 // console.log('miss',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
             }
         },
+
         // predict: select predict event bt plr
         updateFeaturePlr(select_plr_id) {
             this.glyph_plr = select_plr_id

@@ -296,7 +296,7 @@ export default {
                 .range([0, this.width]);
             var parent = d3.select("#history");
             parent.select("#events").remove();
-            var g = parent.append("g").attr("id", "events").attr('cursor',pointer);
+            var g = parent.append("g").attr("id", "events").style('cursor','pointer');
             // plot events
             for (let i = 0; i < data.length; i++) {
                 // player
