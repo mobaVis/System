@@ -46,7 +46,7 @@ export default {
             // for play and record
             video_records: [],
             recordLength: 0,
-            record_time:0,
+            record_time: 0,
             play_1: "inline",
             pause_1: "none",
             play_2: "inline",
@@ -250,38 +250,43 @@ export default {
          * play & pause: videoID
          */
         playTime(videoID) {
-            if (this.play != "none") {
-                // play
-                console.log("play!!");
-                if (videoID == 'live') {
-                    this.play_1 = "none";
-                    this.pause_1 = "inline";
-                    this.timer_1 = setInterval(() => {
-                        this.live_time++;
-                    }, 1000);
-                }
-                else {
-                    this.play_2 = "none";
-                    this.pause_2 = "inline";
-                    this.timer_2 = setInterval(() => {
-                        this.review_times[0] += 1;
-                    }, 1000);
-                }
+            switch (videoID) {
+                case 'live':
+                    if (this.play_1 != "none") {
+                        // play
+                        console.log("play!!");
 
-            } else {
-                // pause
-                console.log("pause!!");
-                if (videoID == 'live') {
-                    this.pause_1 = "none";
-                    this.play_1 = "inline";
-                    if (this.timer_1) clearInterval(this.timer_1);
-                }
-                else {
-                    this.pause_2 = "none";
-                    this.play_2 = "inline";
-                    if (this.timer_2) clearInterval(this.timer_2);
-                }
+                        this.play_1 = "none";
+                        this.pause_1 = "inline";
+                        this.timer_1 = setInterval(() => {
+                            this.live_time++;
+                        }, 1000);
+                    }
+                    else {
+                        // pause
+                        console.log("pause!!");
+                        this.pause_1 = "none";
+                        this.play_1 = "inline";
+                        if (this.timer_1) clearInterval(this.timer_1);
+                        break;}
+                case 'review':
+                    if (this.play_2 != "none") {
+                        // play
+                        console.log("play!!");
 
+                        this.play_2 = "none";
+                        this.pause_2 = "inline";
+                        this.timer_2 = setInterval(() => {
+                            this.live_time++;
+                        }, 1000);
+                    }
+                    else {
+                        // pause
+                        console.log("pause!!");
+                        this.pause_2 = "none";
+                        this.play_2 = "inline";
+                        if (this.timer_2) clearInterval(this.timer_2);
+                    }
             }
         },
 
