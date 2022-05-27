@@ -1,5 +1,5 @@
 <template>
-    <svg width="600" height="50" viewBox="0 0 600 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="600" height="72" viewBox="0 0 600 72" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- camp1 -->
         <text y="20" fill="#333333" style="font-family: 'Noto Sans'">
             camp1
@@ -44,6 +44,10 @@
         <!-- camp2 -->
         <text y="44" fill="#333333" style="font-family: 'Noto Sans'">
             camp2
+        </text>
+        <!-- predict history -->
+        <text y="68" fill="#333333" style="font-family: 'Noto Sans'">
+            predict history
         </text>
         <!-- 5 -->
         <g id="legend_5" style="cursor: pointer; opacity: 0.6" @click="clickPlayer(5)">

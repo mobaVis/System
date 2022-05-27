@@ -11,7 +11,7 @@ export default {
     mounted() {
         this.plotBG(this.name);
         this.updatePlayers(this.name, this.circle_size);
-        this.updateCameraPosition(this.name, this.cam_position);
+        this.plotCameraPosition(this.name, this.cam_position);
     },
     data() {
         return {
@@ -68,7 +68,7 @@ export default {
             this.updatePlayers(this.name, this.circle_size);
         },
         cam_position(val, oldVal) {
-            this.updateCameraPosition(this.name, val);
+            this.updateCameraPosition(val);
         },
     },
     methods: {
@@ -97,6 +97,8 @@ export default {
                 width = svgDom.clientWidth,
                 height = svgDom.clientHeight,
                 margin = this.margin;
+            this.height = height;
+            this.width = width;
             margin.top = margin.bottom = height * 0.04;
 
             svg.selectAll(".camp1").remove();
@@ -132,8 +134,7 @@ export default {
                     });
                 svg.selectAll(".camp1").attr("fill", this.red);
                 svg.selectAll(".camp2").attr("fill", this.blue);
-            }
-            else{
+            } else {
                 // avaters
                 circles
                     .data(this.positions)
@@ -150,7 +151,7 @@ export default {
                         // console.log('y',d.y);
                         return getY(d.y);
                     })
-                    .attr('fill',(d,i)=>this.colors[i])
+                    .attr("fill", (d, i) => this.colors[i]);
                 circles
                     .data(this.positions)
                     .enter()
@@ -159,51 +160,61 @@ export default {
                     .attr("x", (d) => {
                         // console.log(d);
                         // console.log('x',d.x);
-                        return getX(d.x)-15;
+                        return getX(d.x) - 15;
                     })
                     .attr("y", (d) => {
                         // console.log('y',d.y);
-                        return getY(d.y)-15;
+                        return getY(d.y) - 15;
                     })
-                    .attr('width',25)
-                    .attr('height',25)
-                    .attr('fill',"url(#avatar_pattern)")
+                    .attr("width", 25)
+                    .attr("height", 25)
+                    .attr("fill", "url(#avatar_pattern)");
             }
         },
 
-        updateCameraPosition(svgID, cam_position) {
+        plotCameraPosition(svgID, cam_position) {
             // console.log('cam_position:',cam_position);
             var svg = d3.select("#" + svgID),
                 svgDom = document.getElementById(svgID),
-                width = svgDom.clientWidth,
-                height = svgDom.clientHeight,
-                margin = this.margin;
-
-            svg.selectAll("rect").remove();
-            var getX = d3
-                .scaleLinear()
-                .domain([-this.x_max, this.x_max])
-                .range([margin.left, width - margin.right])
-                .nice();
-            var getY = d3
-                .scaleLinear()
-                .domain([-this.y_max, this.y_max])
-                .range([margin.bottom, height - margin.top])
-                .nice();
+                height = svgDom.clientHeight;
 
             var rect = svg.selectAll("rect").append("g");
             rect.data([cam_position])
                 .enter()
                 .append("rect")
-                .attr("x", (d) => getX(d.x * 2))
-                .attr("y", (d) => getY(d.z * 2))
+                .attr("class", "cam_field")
+                .attr("x", (d) => this.getX(d.x * 2))
+                .attr("y", (d) => this.getY(d.z * 2))
                 .attr("width", this.blockScale.width * height)
                 .attr("height", this.blockScale.height * height)
-                .attr("class", "cam_field")
                 .attr("fill", this.blockColor)
                 .attr("opacity", "0.5")
                 .attr("stroke", "2")
                 .style("z-index", 3);
+        },
+
+        // helper function
+        getX(x) {
+            var getX = d3
+                .scaleLinear()
+                .domain([-this.x_max, this.x_max])
+                .range([this.margin.left, this.width - this.margin.right])
+                .nice();
+            return getX(x);
+        },
+        getY(y) {
+            var getY = d3
+                .scaleLinear()
+                .domain([-this.y_max, this.y_max])
+                .range([this.margin.bottom, this.height - this.margin.top])
+                .nice();
+            return getY(y);
+        },
+        updateCameraPosition(position) {
+            d3.select("rect.cam_field")
+                .attr("x", this.getX(position.x * 2))
+                .attr("y", this.getY(position.z * 2));
+            console.log(this.getX(position.x * 2), d3.select("rect.cam_field"))
         },
     },
 };

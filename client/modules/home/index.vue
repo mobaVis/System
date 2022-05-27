@@ -240,6 +240,7 @@
                     <!-- popups -->
                     <prediction
                         @onClickEvent="updateFeaturePlr"
+                        @parsePredictEvents="parsePredictions"
                         :colors="
                             camp1_colors
                                 .concat(camp2_colors)
@@ -261,8 +262,8 @@
                         :red="red"
                         :blue="blue"
                         name="predictMap"
-                        :cam_position="cam_position"
-                        :circle_size='18'
+                        :cam_position="predict_cam_pos"
+                        :circle_size='16'
                         :colors="camp1_colors.concat(camp2_colors)"
                     />
                 </el-col>

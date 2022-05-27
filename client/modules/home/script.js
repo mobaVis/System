@@ -42,7 +42,7 @@ export default {
             x_max: 58,
             y_max: 117,
             svgID: "players",
-            cam_position:{ x: -10, y: 20, z: -10 },
+            predict_cam_pos: { x: -10, z: -10 },
 
             // for play and record
             video_records: [],
@@ -83,8 +83,9 @@ export default {
             exp_display: false,
             cash_display: false,
             event_display: false,
-            event_display_id:-1,
+            event_display_id: -1,
             tooltip_on: false,
+            predict_events: { '0': [], '1': [], '2': [], '3': [], '4': [], '5': [], '6': [], '7': [], '8': [], '9': [] }
 
         };
     },
@@ -176,7 +177,7 @@ export default {
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
                         this.$refs.history.plotEvents(i);
-                        this.event_display_id=i;
+                        this.event_display_id = i;
                         break
                     }
                 }
@@ -184,7 +185,7 @@ export default {
             else {
                 // remove all events
                 d3.select('#events').remove();
-                this.event_display_id=-1;
+                this.event_display_id = -1;
             }
         },
         // tooltip on/off
@@ -195,7 +196,7 @@ export default {
                 d3.selectAll('.tooltip').style('opacity', 0)
             }
         },
-        // re
+        // review times info update (why fail????)
         review_times(val, oldVal) {
             if (val[0] != oldVal[0]) {
                 this.$refs.review_info.update(0, val[0]);
@@ -316,7 +317,7 @@ export default {
                     }
                     break;
                 case 'review':
-                    function review_pause(){
+                    function review_pause() {
                         // pause
                         console.log("pause_2!!");
                         _this.pause_2 = "none";
@@ -330,10 +331,10 @@ export default {
                         _this.play_2 = "none";
                         _this.pause_2 = "inline";
                         _this.timer_2 = setInterval(() => {
-                            if(_this.review_times[0]==_this.review_times[1]){
+                            if (_this.review_times[0] == _this.review_times[1]) {
                                 review_pause();
                             }
-                            else{
+                            else {
                                 _this.review_times[0] += 1;
                             }
                             // _this.$refs.review_info.update(0, _this.review_times[0]);
@@ -357,6 +358,23 @@ export default {
                 this.predict_live = {}
                 // console.log('miss',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
             }
+        },
+        // update with predict results
+        parsePredictions(events) {
+            const player0 = events[0].plr_id
+            if(player0>9)return
+
+            // update closeup & map cam
+            this.$refs['closeVideo'].player = 'player' + player0;
+            // this.$refs['closeVideo'].findPlayer(player0);
+            this.predict_cam_pos = { x: this.positions[player0].x/2-5, z: this.positions[player0].y/2-5 }
+            for (let i = 0; i < events.length; i++) {
+                this.predict_events[events[i].plr_id+''].push({
+                    time: this.live_time + events[i].count_down,
+                    event: events[i].event
+                })
+            }
+            // console.log(this.predict_events)
         },
 
         // predict: select predict event bt plr

@@ -22,7 +22,7 @@ export default {
         colors: { type: Array },
         tooltip: { type: Boolean },
         time: { type: Number },
-        events: {type: Number }, // player_ID to display events
+        events: { type: Number }, // player_ID to display events
     },
     setup() {},
     data() {
@@ -37,7 +37,7 @@ export default {
         },
         time(val, oldVal) {
             this.plotYtrack();
-            if(this.events!=-1)this.plotEvents(this.events)
+            if (this.events != -1) this.plotEvents(this.events);
         },
     },
     mounted() {
@@ -45,6 +45,13 @@ export default {
         this.plotYtrack();
     },
     methods: {
+        getX(time) {
+            var x = d3
+                .scaleLinear()
+                .domain([0, this.data.length - 1])
+                .range([0, this.width]);
+            return x(time);
+        },
         plotYtrack() {
             const _this = this;
 
@@ -319,10 +326,7 @@ export default {
         plotEvents(plr_id) {
             const _this = this;
             const data = _this.data;
-            var x = d3
-                .scaleLinear()
-                .domain([0, data.length - 1])
-                .range([0, _this.width]);
+            let x = this.getX();
             var parent = d3.select("#history");
             parent.select("#events").remove();
             var g = parent
@@ -407,6 +411,22 @@ export default {
                     img_y -= 25;
                 }
             }
+        },
+        plotHistoryEvent(time, plr_id, event_name) {
+            g.append("svg:image")
+                .attr("x", this.getX(time))
+                .attr("y", 10)
+                .attr("width", 20)
+                .attr("height", 20)
+                .attr("href", require("@/assets/image/maya_kill.png"))
+                .append("title")
+                .text(
+                    "predict: player " +
+                        plr_id +
+                        " killed a maya at " +
+                        time +
+                        " s"
+                );
         },
     },
 };

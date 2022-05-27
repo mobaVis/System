@@ -99,7 +99,8 @@ export default {
                     plr_id: get_id(this.data["event_" + i]),
                 });
             }
-            // console.log("events", events);
+            this.$emit('parsePredictEvents',this.events)
+            // console.log("events", this.events);
 
             function get_id(eventName) {
                 const suffix = eventName.slice(-2);
