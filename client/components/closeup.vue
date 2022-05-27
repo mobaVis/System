@@ -33,7 +33,7 @@
                         }"
                     />
 
-                    <!-- <GltfModel
+                    <GltfModel
                         v-for="i in 10"
                         :key="i"
                         :position="{
@@ -43,7 +43,7 @@
                         }"
                         src="three/calibur/scene.gltf"
                         @load="onLoad"
-                    /> -->
+                    />
 
                     <Plane
                         :width="60"
@@ -52,7 +52,7 @@
                         receive-shadow
                     >
                         <PhysicalMaterial>
-                            <Texture src="three/map.png" />
+                            <Texture src="three/map_clear.jpg" />
                         </PhysicalMaterial>
                     </Plane>
                 </Scene>
@@ -112,10 +112,10 @@ export default {
         },
     },
     watch: {
-        // positions(val, oldVal) {
-        //     console.log(this.id, val);
-        //     this.updatePlayerPos(val);
-        // },
+        positions(val, oldVal) {
+            // console.log(this.players);
+            this.updatePlayerPos();
+        },
     },
     mounted() {
         // render
@@ -144,7 +144,7 @@ export default {
                 // global view at ceneter
                 const camera = this.$refs.cam.camera;
                 // camera.position.set(-10, 20, -10);
-                this.camPos = { x: -10, y: 15, z: -10 };
+                this.camPos = { x: -10, y: 10, z: -10 };
                 camera.lookAt(0, 0, 0);
                 return;
             }
@@ -163,27 +163,21 @@ export default {
             const target = position;
             const camera = this.$refs.cam.camera;
 
-            camera.position.set(target.x - 10, 15, target.z - 10);
+            camera.position.set(target.x - 3, 10, target.z - 3);
             // this.camPos = {x:target.x - 10, y:15, z:target.z - 10};
-            this.camPos = { x: camera.position.x, y: 15, z: camera.position.z }; //or the camera may shake
-            // console.log(this.camPos);
+            this.camPos = { x: camera.position.x, y: 10, z: camera.position.z }; //or the camera may shake
             camera.lookAt(target);
-            // console.log(camera.position, "lookAt target:", target);
         },
 
         // refresh positions of all player scenes and camera if possible
-        updatePlayerPos(positions) {
+        updatePlayerPos() {
             // scatter players
-            for (let i = 0; i < 10; i++) {
-                // console.log(i);
-                var x = positions[i].x / 2;
-                var z = positions[i].y / 2;
-                // var x = this.getRandomIntInclusive(-29,29);
-                // var z = this.getRandomIntInclusive(-58,58);
+            // for (let i = 0; i < 10; i++) {
+            //     var x = positions[i].x / 2;
+            //     var z = positions[i].y / 2;
 
-                // console.log(this.players[i].scene.position);
-                this.players[i].scene.position.set(x, 0, z);
-            }
+            //     this.players[i].scene.position.set(x, 0, z);
+            // }
 
             // if target is any player, update camera
             if (this.select_plr != -1) {
@@ -225,14 +219,6 @@ export default {
             }
         },
         // #endregion
-
-        // render LOOP: rotate 2 cubes
-        // helper function
-        getRandomIntInclusive(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min; //含最大值，含最小值
-        },
     },
 };
 </script>

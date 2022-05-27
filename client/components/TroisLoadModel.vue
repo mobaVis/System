@@ -76,13 +76,13 @@
                         </Plane>
                     </Scene>
                 </Renderer>
-                <div class="top">
+                <!-- <div class="top">
                     <video-play :style="{ display: play }" @click="playTime" />
                     <video-pause
                         :style="{ display: pause }"
                         @click="playTime"
                     />
-                </div>
+                </div> -->
                 <mapView
                     v-bind:positions="positions"
                     :red="red"
@@ -174,7 +174,7 @@ export default {
 
     watch: {
         select_time(val, oldVal) {
-            console.log(this.id, val);
+            // console.log('change select_time',this.id, val);
             // this.$emit('live_time_change', val)
             this.value = val;
             this.updatePlayerPos(val);

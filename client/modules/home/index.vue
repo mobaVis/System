@@ -151,7 +151,7 @@
         <div class="review">
             <b> Review View </b>
             <el-row>
-                <review-time-detail :time_pair="review_times" />
+                <review-time-detail ref='review_info' :time_pair="review_times" />
             </el-row>
             <span class="review_buttons">
                 <el-button

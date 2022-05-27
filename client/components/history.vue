@@ -276,9 +276,10 @@ export default {
                     // transform with pos[0]
                     const time = Math.round(invert_x(pos[0]));
                     var str = "Time: " + time + "s<br/>Cash:<br/>";
-                    var display_list=[]
+                    var display_list = [];
                     for (let i = 0; i < 10; i++) {
-                        const pos_y =_this.data[time]["usr_" + i].cashGain.toFixed(2);
+                        const pos_y =
+                            _this.data[time]["usr_" + i].cashGain.toFixed(2);
                         str += "player" + i + ": " + pos_y + "<br/>";
                     }
                     d3.select("#tooltip_line")
@@ -286,7 +287,7 @@ export default {
                             "transform",
                             "translate(" + pos[0] + "," + _this.mid_y + ")"
                         )
-                        .style("opacity", 1)
+                        .style("opacity", 1);
                     tooltip
                         .html(() => {
                             return str;

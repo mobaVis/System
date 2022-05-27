@@ -62,16 +62,14 @@ export default {
         time_pair: { type: Array },
     },
     watch: {
-        time_pair(val, oldVal) {
-            if (val[0] != oldVal[0]) {
-                this.begin = this.formatSeconds(val[0]);
-                this.play = this.begin;
-            }
-            if (val[1] != oldVal[1]) {
-                this.end = this.formatSeconds(val[1]);
-            }
-            this.duration = this.formatSeconds(val[1] - val[0]);
-        },
+        // time_pair(val, oldVal) {
+        //     if (val[0] != oldVal[0]) {
+        //         this.update(0, val[0]);
+        //     }
+        //     if (val[1] != oldVal[1]) {
+        //         this.update(1, val[1]);
+        //     }
+        // },
     },
     methods: {
         formatSeconds(seconds) {
@@ -81,6 +79,18 @@ export default {
             const sec = s < 10 ? "0" + parseInt(s) : parseInt(s);
             return min + ":" + sec;
         },
+        update(index, val){
+            if (index==0) {
+                this.begin = this.formatSeconds(val);
+                this.play = this.begin;
+                console.log(this.begin)
+            }
+            else if (index==1) {
+                this.end = this.formatSeconds(val);
+            }
+            this.duration = this.formatSeconds(this.time_pair[1] - this.time_pair[0]);
+            console.log('review_info update('+index+', '+val+')')
+        }
     },
     mounted() {
         // console.log(this.begin);

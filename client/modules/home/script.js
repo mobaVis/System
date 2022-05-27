@@ -36,7 +36,7 @@ export default {
             positions: [],
             select_time: 0, // predict map
             live_time: 0,
-            review_times: ref([100, 200]),
+            review_times: [0, 6],
             red: "#E74866",
             blue: "#55A4F3",
             x_max: 58,
@@ -87,12 +87,27 @@ export default {
         };
     },
     watch: {
+        // update closeup
+        // live_time(val,oldVal){
+        //     this.$refs['closeVideo'].updatePlayerPos()
+        // }
         // watch if any var changes
         select_time(val, oldVal) {
             this.updatePositions(val);
             this.updatePredictions(val);
             this.glyph_plr = 0
             this.bar_plr = 0
+        },
+        // update positions according to live_time
+        live_time(val, oldVal) {
+            this.updatePositions(val);
+            this.updatePredictions(val);
+            this.glyph_plr = 0
+            this.bar_plr = 0
+
+            // update review end: review_times[1]
+            this.review_times[1] = val;
+            this.$refs.review_info.update(1, val);
         },
         // display history
         pos_display(val, oldVal) {
@@ -174,11 +189,20 @@ export default {
             } else {
                 d3.selectAll('.tooltip').style('opacity', 0)
             }
-        }
+        },
+        // re
+        review_times(val, oldVal) {
+            if (val[0] != oldVal[0]) {
+                this.$refs.review_info.update(0, val[0]);
+            }
+            if (val[1] != oldVal[1]) {
+                this.$refs.review_info.update(1, val[1]);
+            }
+        },
 
     },
     mounted() {
-        this.json = require("@/assets/json/parse6219491628248857926.json");
+        // this.json = require("@/assets/json/parse6219491628248857926.json");
         this.updatePositions(this.select_time);
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
@@ -205,6 +229,16 @@ export default {
         goWatchPlayer(refName, player_id) {
             // console.log(refName)
             // console.log(this.$refs[refName])
+            switch (refName) {
+                case 'liveVideo':
+                    // console.log(this.$refs['review_info'])
+                    this.$refs['closeVideo'].player = 'player' + player_id;
+                    this.$refs['closeVideo'].findPlayer(player_id);
+                    break;
+                case 'reviewVideo':
+                    this.$refs['review_info'].focus = 'player' + player_id
+                    break;
+            }
             this.$refs[refName].findPlayer(player_id);
         },
 
@@ -235,9 +269,12 @@ export default {
          * for recording review records with live records
         */
         addRecord() {
-            this.video_records.push(this.review_times);
-            this.recordLength += this.review_times[1] - this.review_times[0];
-            console.log(this.video_records, this.recordLength)
+            let review_length = this.review_times[1] - this.review_times[0];
+            for (let i = this.review_times[0]; i < this.review_times[1]; i++) {
+                this.video_records.push(i)
+            }
+            this.recordLength += review_length;
+            console.log('record', this.video_records, this.recordLength)
         },
         playRecord() {
             for (pair in this.video_records) {
@@ -250,42 +287,55 @@ export default {
          * play & pause: videoID
          */
         playTime(videoID) {
+            const _this = this;
             switch (videoID) {
                 case 'live':
-                    if (this.play_1 != "none") {
+                    if (_this.play_1 != "none") {
                         // play
-                        console.log("play!!");
+                        console.log("play_1!!");
 
-                        this.play_1 = "none";
-                        this.pause_1 = "inline";
-                        this.timer_1 = setInterval(() => {
-                            this.live_time++;
-                        }, 1000);
+                        _this.play_1 = "none";
+                        _this.pause_1 = "inline";
+                        _this.timer_1 = setInterval(() => {
+                            _this.live_time++;
+                            _this.review_times[1] = _this.live_time;
+                            _this.$refs.review_info.update(1, _this.review_times[1]);
+                        }, 100);
                     }
                     else {
                         // pause
-                        console.log("pause!!");
-                        this.pause_1 = "none";
-                        this.play_1 = "inline";
-                        if (this.timer_1) clearInterval(this.timer_1);
-                        break;}
+                        console.log("pause_1!!");
+                        _this.pause_1 = "none";
+                        _this.play_1 = "inline";
+                        if (_this.timer_1) clearInterval(_this.timer_1);
+                    }
+                    break;
                 case 'review':
-                    if (this.play_2 != "none") {
+                    function review_pause(){
+                        // pause
+                        console.log("pause_2!!");
+                        _this.pause_2 = "none";
+                        _this.play_2 = "inline";
+                        if (_this.timer_2) clearInterval(_this.timer_2);
+                    }
+                    if (_this.play_2 != "none") {
                         // play
-                        console.log("play!!");
+                        console.log("play_2!!");
 
-                        this.play_2 = "none";
-                        this.pause_2 = "inline";
-                        this.timer_2 = setInterval(() => {
-                            this.live_time++;
-                        }, 1000);
+                        _this.play_2 = "none";
+                        _this.pause_2 = "inline";
+                        _this.timer_2 = setInterval(() => {
+                            if(_this.review_times[0]==_this.review_times[1]){
+                                review_pause();
+                            }
+                            else{
+                                _this.review_times[0] += 1;
+                            }
+                            // _this.$refs.review_info.update(0, _this.review_times[0]);
+                        }, 100);
                     }
                     else {
-                        // pause
-                        console.log("pause!!");
-                        this.pause_2 = "none";
-                        this.play_2 = "inline";
-                        if (this.timer_2) clearInterval(this.timer_2);
+                        review_pause();
                     }
             }
         },
