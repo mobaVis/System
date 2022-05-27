@@ -366,7 +366,7 @@ export default {
 
             // update closeup & map cam
             this.$refs['closeVideo'].player = 'player' + player0;
-            // this.$refs['closeVideo'].findPlayer(player0);
+            this.$refs['closeVideo'].findPlayer(player0);
             this.predict_cam_pos = { x: this.positions[player0].x/2-5, z: this.positions[player0].y/2-5 }
             for (let i = 0; i < events.length; i++) {
                 this.predict_events[events[i].plr_id+''].push({
