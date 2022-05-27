@@ -42,6 +42,7 @@ export default {
             x_max: 58,
             y_max: 117,
             svgID: "players",
+            cam_position:{ x: -10, y: 20, z: -10 },
 
             // for play and record
             video_records: [],
@@ -82,7 +83,8 @@ export default {
             exp_display: false,
             cash_display: false,
             event_display: false,
-            tooltip_on: false
+            event_display_id:-1,
+            tooltip_on: false,
 
         };
     },
@@ -93,6 +95,7 @@ export default {
         // }
         // watch if any var changes
         select_time(val, oldVal) {
+            // this.live_time=val;
             this.updatePositions(val);
             this.updatePredictions(val);
             this.glyph_plr = 0
@@ -172,14 +175,16 @@ export default {
                 // plot events for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        this.$refs.history.plotEvents(i)
+                        this.$refs.history.plotEvents(i);
+                        this.event_display_id=i;
                         break
                     }
                 }
             }
             else {
                 // remove all events
-                d3.select('#events').remove()
+                d3.select('#events').remove();
+                this.event_display_id=-1;
             }
         },
         // tooltip on/off

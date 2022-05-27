@@ -76,13 +76,6 @@
                         </Plane>
                     </Scene>
                 </Renderer>
-                <!-- <div class="top">
-                    <video-play :style="{ display: play }" @click="playTime" />
-                    <video-pause
-                        :style="{ display: pause }"
-                        @click="playTime"
-                    />
-                </div> -->
                 <mapView
                     v-bind:positions="positions"
                     :red="red"
@@ -133,11 +126,6 @@ export default {
             blue: "#55A4F3",
             x_max: 58,
             y_max: 117,
-
-            // play time
-            play: "block",
-            pause: "none",
-            timer: NaN,
 
             // for three.js
             target: new Vector3(0, 0, 0), // camera.lookAt
@@ -246,7 +234,7 @@ export default {
             // this.control.update();
             if (this.select_plr != -1) {
                 this.targetPos = this.players[this.select_plr].scene.position;
-                this.followTarget(this.targetPos);
+                return this.followTarget(this.targetPos);
             }
         },
 
@@ -260,6 +248,7 @@ export default {
             this.camPos = { x: camera.position.x, y: 15, z: camera.position.z }; //or the camera may shake
             // console.log(this.camPos);
             camera.lookAt(target);
+            return { x: camera.position.x, y: 15, z: camera.position.z };
             // console.log(camera.position, "lookAt target:", target);
         },
 
@@ -285,25 +274,6 @@ export default {
                 // follow player
                 this.targetPos = this.players[this.select_plr].scene.position;
                 this.followTarget(this.targetPos);
-            }
-        },
-
-        // play & pause
-        playTime() {
-            if (this.play != "none") {
-                // play
-                this.play = "none";
-                this.pause = "block";
-                console.log("play!!");
-                this.timer = setInterval(() => {
-                    this.select_time++;
-                }, 1000);
-            } else {
-                // pause
-                this.pause = "none";
-                this.play = "block";
-                console.log("pause!!");
-                if (this.timer) clearInterval(this.timer);
             }
         },
 
@@ -369,6 +339,4 @@ export default {
     left: 12px;
     z-index: -1;
 }
-
-
 </style>

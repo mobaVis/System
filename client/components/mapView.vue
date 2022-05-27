@@ -18,13 +18,12 @@ export default {
             // scale of x, y coordinates for plot
             x_max: 58,
             y_max: 117,
-            circle_size: 5,
 
             // margin
             margin: { top: 20, right: 20, bottom: 20, left: 20 },
 
             // block
-            blockSize:{width: 20, height:18},
+            blockScale:{width: 0.1, height:0.1},
             blockColor:'#6D5E7A'
         };
     },
@@ -50,6 +49,16 @@ export default {
             type: Object,
             required: true,
         },
+
+        // update circle_size
+        circle_size: {
+            type:Number,
+            default: 4
+        },
+        circle_scale:{
+            type:Boolean,
+            default:false
+        }
     },
 
     watch: {
@@ -87,6 +96,7 @@ export default {
                 width = svgDom.clientWidth,
                 height = svgDom.clientHeight,
                 margin = this.margin;
+            margin.top=margin.bottom=height*0.04;
 
             svg.selectAll("circle").remove();
 
@@ -147,8 +157,8 @@ export default {
                 .append("rect")
                 .attr("x", (d) => getX(d.x * 2))
                 .attr("y", (d) => getY(d.z * 2))
-                .attr("width", this.blockSize.width)
-                .attr("height", this.blockSize.height)
+                .attr("width", this.blockScale.width*height)
+                .attr("height", this.blockScale.height*height)
                 .attr("class", "cam_field")
                 .attr("fill", this.blockColor)
                 .attr("opacity", "0.5")

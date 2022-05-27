@@ -61,8 +61,10 @@
             <history-view
                 ref="history"
                 :data="json"
+                :time="select_time"
                 name="history_track"
                 :tooltip="tooltip_on"
+                :events="event_display_id"
                 :colors="camp1_colors.concat(camp2_colors)"
                 @clickUpdate="updateHistory"
             />
@@ -73,6 +75,7 @@
             <br />
             <el-row>
                 <el-col :span="20">
+                    <!-- trois -->
                     <el-row>
                         <troisModel
                             id="liveVideo"
@@ -81,6 +84,7 @@
                             ref="liveVideo"
                         />
                     </el-row>
+                    <!-- live slider -->
                     <el-row>
                         <el-slider
                             id="liveVideoSlider"
@@ -88,10 +92,12 @@
                             :max="json.length - 1"
                         />
                     </el-row>
+                    <!-- record slider -->
                     <el-row>
                     <el-slider id='recordVideoSlider' :width="recordLength" v-model='record_time' :max="recordLength" />
                     </el-row>
                 </el-col>
+                <!-- avaters -->
                 <el-col :span="4">
                     <ul style="list-style-type: none">
                         <li v-for="(color, i) in camp1_colors" :key="i">
@@ -255,7 +261,8 @@
                         :red="red"
                         :blue="blue"
                         name="predictMap"
-                        :cam_position="{ x: 0, y: 0, z: 55 }"
+                        :cam_position="cam_position"
+                        :circle_size='10'
                     />
                 </el-col>
             </el-row>

@@ -21,6 +21,8 @@ export default {
         },
         colors: { type: Array },
         tooltip: { type: Boolean },
+        time: { type: Number },
+        events: {type: Number }, // player_ID to display events
     },
     setup() {},
     data() {
@@ -33,6 +35,10 @@ export default {
                 .remove();
             this.plotYtrack();
         },
+        time(val, oldVal) {
+            this.plotYtrack();
+            if(this.events!=-1)this.plotEvents(this.events)
+        },
     },
     mounted() {
         // console.log(this.data, typeof this.data);
@@ -44,7 +50,7 @@ export default {
 
             // plot only if data not empty
             // if(Object.keys(this.data).length==0) return
-            const data = this.data;
+            const data = _this.data;
 
             // init svg vars
             var svg = d3.select("#" + this.name),
@@ -52,6 +58,7 @@ export default {
                 width = svg.attr("width") - margin.left - margin.right,
                 height = svg.attr("height") - margin.top - margin.bottom;
             (_this.mid_y = height / 2), (_this.width = width);
+            svg.selectAll("g").remove();
 
             // add domain for axis and scale
             var x = d3
@@ -126,7 +133,7 @@ export default {
                             ? y(d["usr_" + plr][name][1])
                             : y(d["usr_" + plr][name]);
                     });
-                return line(data);
+                return line(data.slice(0, _this.time));
             };
 
             const area = function (name, plr, y) {
@@ -135,7 +142,7 @@ export default {
                     .x((d) => x(d.time))
                     .y0(_this.mid_y)
                     .y1((d) => y(d["usr_" + plr][name]));
-                return area(data);
+                return area(data.slice(0, _this.time));
             };
             const cash_group = g.append("g").attr("id", "cash");
             // get max expGain
@@ -310,11 +317,12 @@ export default {
             //#endregion
         },
         plotEvents(plr_id) {
-            const data = this.data;
+            const _this = this;
+            const data = _this.data;
             var x = d3
                 .scaleLinear()
                 .domain([0, data.length - 1])
-                .range([0, this.width]);
+                .range([0, _this.width]);
             var parent = d3.select("#history");
             parent.select("#events").remove();
             var g = parent
@@ -322,9 +330,9 @@ export default {
                 .attr("id", "events")
                 .style("cursor", "pointer");
             // plot events
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < _this.time; i++) {
                 // player
-                const img_y = this.mid_y - 22;
+                const img_y = _this.mid_y - 22;
 
                 if (data[i]["usr_" + plr_id].maya_kill == 1) {
                     g.append("svg:image")

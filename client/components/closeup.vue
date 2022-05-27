@@ -9,7 +9,8 @@
                 line-height: 27px;
                 color: #666666;
             "
-            >{{player}}</text>
+            >{{ player }}</text
+        >
         <div class="close-view">
             <Renderer ref="renderer" antialias shadow width="400" height="231">
                 <!-- :orbit-ctrl="{ enableDamping: true, target }" -->
@@ -33,7 +34,7 @@
                         }"
                     />
 
-                    <GltfModel
+                    <!-- <GltfModel
                         v-for="i in 10"
                         :key="i"
                         :position="{
@@ -43,7 +44,7 @@
                         }"
                         src="three/calibur/scene.gltf"
                         @load="onLoad"
-                    />
+                    /> -->
 
                     <Plane
                         :width="60"
@@ -79,7 +80,7 @@ export default {
     data() {
         return {
             // select time: init
-            player:'player1',
+            player: "player1",
             json: require("../assets/json/pos6219491628248857926.json"),
 
             // for three.js
