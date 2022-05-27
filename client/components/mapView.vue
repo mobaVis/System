@@ -68,7 +68,7 @@ export default {
             this.updatePlayers(this.name, this.circle_size);
         },
         cam_position(val, oldVal) {
-            this.updateCameraPosition(val);
+            this.updateCameraPosition(this.name, val);
         },
     },
     methods: {
@@ -190,7 +190,7 @@ export default {
                 .attr("fill", this.blockColor)
                 .attr("opacity", "0.5")
                 .attr("stroke", "2")
-                .style("z-index", 3);
+                .style("z-index", 99999999);
         },
 
         // helper function
@@ -210,11 +210,10 @@ export default {
                 .nice();
             return getY(y);
         },
-        updateCameraPosition(position) {
-            d3.select("rect.cam_field")
+        updateCameraPosition(name, position) {
+            d3.select('#'+name).select("rect.cam_field")
                 .attr("x", this.getX(position.x * 2))
                 .attr("y", this.getY(position.z * 2));
-            console.log(this.getX(position.x * 2), d3.select("rect.cam_field"))
         },
     },
 };
