@@ -262,7 +262,8 @@
                         :blue="blue"
                         name="predictMap"
                         :cam_position="cam_position"
-                        :circle_size='10'
+                        :circle_size='18'
+                        :colors="camp1_colors.concat(camp2_colors)"
                     />
                 </el-col>
             </el-row>

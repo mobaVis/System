@@ -1,6 +1,6 @@
 <template>
     <div>
-        <svg :id="name" width="116" ></svg>
+        <svg :id="name" width="116"></svg>
     </div>
 </template>
 
@@ -23,8 +23,8 @@ export default {
             margin: { top: 20, right: 20, bottom: 20, left: 20 },
 
             // block
-            blockScale:{width: 0.1, height:0.1},
-            blockColor:'#6D5E7A'
+            blockScale: { width: 0.1, height: 0.1 },
+            blockColor: "#6D5E7A",
         };
     },
 
@@ -49,16 +49,17 @@ export default {
             type: Object,
             required: true,
         },
+        colors: { type: Array, default: [] },
 
         // update circle_size
         circle_size: {
-            type:Number,
-            default: 4
+            type: Number,
+            default: 4,
         },
-        circle_scale:{
-            type:Boolean,
-            default:false
-        }
+        circle_scale: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     watch: {
@@ -96,9 +97,10 @@ export default {
                 width = svgDom.clientWidth,
                 height = svgDom.clientHeight,
                 margin = this.margin;
-            margin.top=margin.bottom=height*0.04;
+            margin.top = margin.bottom = height * 0.04;
 
-            svg.selectAll("circle").remove();
+            svg.selectAll(".camp1").remove();
+            svg.selectAll(".camp2").remove();
 
             var getX = d3
                 .scaleLinear()
@@ -112,23 +114,61 @@ export default {
                 .nice();
 
             var circles = svg.selectAll("circle").append("g");
-            circles
-                .data(this.positions)
-                .enter()
-                .append("circle")
-                .attr("class", (d) => "camp" + d.camp)
-                .attr("r", circle_size)
-                .attr("cx", (d) => {
-                    // console.log(d);
-                    // console.log('x',d.x);
-                    return getX(d.x);
-                })
-                .attr("cy", (d) => {
-                    // console.log('y',d.y);
-                    return getY(d.y);
-                });
-            svg.selectAll(".camp1").attr("fill", this.red);
-            svg.selectAll(".camp2").attr("fill", this.blue);
+            if (this.colors.length == 0) {
+                circles
+                    .data(this.positions)
+                    .enter()
+                    .append("circle")
+                    .attr("class", (d) => "camp" + d.camp)
+                    .attr("r", circle_size)
+                    .attr("cx", (d) => {
+                        // console.log(d);
+                        // console.log('x',d.x);
+                        return getX(d.x);
+                    })
+                    .attr("cy", (d) => {
+                        // console.log('y',d.y);
+                        return getY(d.y);
+                    });
+                svg.selectAll(".camp1").attr("fill", this.red);
+                svg.selectAll(".camp2").attr("fill", this.blue);
+            }
+            else{
+                // avaters
+                circles
+                    .data(this.positions)
+                    .enter()
+                    .append("circle")
+                    .attr("class", (d) => "camp" + d.camp)
+                    .attr("r", circle_size)
+                    .attr("cx", (d) => {
+                        // console.log(d);
+                        // console.log('x',d.x);
+                        return getX(d.x);
+                    })
+                    .attr("cy", (d) => {
+                        // console.log('y',d.y);
+                        return getY(d.y);
+                    })
+                    .attr('fill',(d,i)=>this.colors[i])
+                circles
+                    .data(this.positions)
+                    .enter()
+                    .append("rect")
+                    .attr("class", (d) => "camp" + d.camp)
+                    .attr("x", (d) => {
+                        // console.log(d);
+                        // console.log('x',d.x);
+                        return getX(d.x)-15;
+                    })
+                    .attr("y", (d) => {
+                        // console.log('y',d.y);
+                        return getY(d.y)-15;
+                    })
+                    .attr('width',25)
+                    .attr('height',25)
+                    .attr('fill',"url(#avatar_pattern)")
+            }
         },
 
         updateCameraPosition(svgID, cam_position) {
@@ -157,13 +197,13 @@ export default {
                 .append("rect")
                 .attr("x", (d) => getX(d.x * 2))
                 .attr("y", (d) => getY(d.z * 2))
-                .attr("width", this.blockScale.width*height)
-                .attr("height", this.blockScale.height*height)
+                .attr("width", this.blockScale.width * height)
+                .attr("height", this.blockScale.height * height)
                 .attr("class", "cam_field")
                 .attr("fill", this.blockColor)
                 .attr("opacity", "0.5")
                 .attr("stroke", "2")
-                .style('z-index', 3)
+                .style("z-index", 3);
         },
     },
 };
