@@ -193,6 +193,14 @@ export default {
                 .style("z-index", 99999999);
         },
 
+        // add text
+        appendText(text, x, y){
+            d3.select('#'+this.name).append('text').text(text+'')
+                .attr('x', this.getX(x))
+                .attr('y', this.getY(y))
+                .attr("fill", "#333333");
+        },
+
         // helper function
         getX(x) {
             var getX = d3

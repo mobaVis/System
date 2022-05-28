@@ -47,7 +47,7 @@
         </text>
         <!-- predict history -->
         <text y="68" fill="#333333" style="font-family: 'Noto Sans'">
-            predict history
+            predict events
         </text>
         <!-- 5 -->
         <g id="legend_5" style="cursor: pointer; opacity: 0.6" @click="clickPlayer(5)">

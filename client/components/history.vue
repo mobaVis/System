@@ -20,9 +20,14 @@ export default {
             default: "history_track",
         },
         colors: { type: Array },
-        tooltip: { type: Boolean },
         time: { type: Number },
+        pos:{type:Boolean},
+        exp:{type:Boolean},
+        cash:{type:Boolean},
         events: { type: Number }, // player_ID to display events
+        tooltip: { type: Boolean },
+        predictions:{type:Object}, // predict events of 10 players
+        plr_states:{type:Array} // [0 or 1]*10
     },
     setup() {},
     data() {
@@ -37,7 +42,11 @@ export default {
         },
         time(val, oldVal) {
             this.plotYtrack();
-            if (this.events != -1) this.plotEvents(this.events);
+            if (this.events != -1) {
+                // console.log("update events");
+                this.plotEvents(this.events);
+                this.plotPredictEvents(this.events,this.predictions);
+            }
         },
     },
     mounted() {
@@ -59,7 +68,7 @@ export default {
             // if(Object.keys(this.data).length==0) return
             const data = _this.data;
 
-            // init svg vars
+            //#region : init svg vars
             var svg = d3.select("#" + this.name),
                 margin = { top: 20, right: 90, bottom: 50, left: 50 },
                 width = svg.attr("width") - margin.left - margin.right,
@@ -94,6 +103,7 @@ export default {
                 .attr("width", width)
                 .attr("height", height)
                 .attr("fill", "none");
+            // #endregion
 
             // #region : read and plot data
 
@@ -151,8 +161,10 @@ export default {
                     .y1((d) => y(d["usr_" + plr][name]));
                 return area(data.slice(0, _this.time));
             };
+
+            //#region cash
             const cash_group = g.append("g").attr("id", "cash");
-            // get max expGain
+            // get max cashGain
             var max = 0;
             for (let i = 0; i < 10; i++) {
                 const tmp = d3.max(data, (d) => {
@@ -162,6 +174,19 @@ export default {
             }
             const y_cash = d3.scaleLinear().domain([0, max]);
             for (let i = 0; i < 10; i++) {
+                // adjuast opacity with checkbox
+                let opacity=0.02,opacity_curve=0.2;
+                if(_this.cash==true){
+                    if(_this.plr_states[i]==1){
+                        opacity=0.4
+                        opacity_curve=1
+                    }
+                    else{
+                        opacity=0.1
+                        opacity_curve=0.5
+                    }
+                }
+
                 // update y by different scale
                 if (i < 5) {
                     y_cash.range([_this.mid_y, 0]);
@@ -176,21 +201,22 @@ export default {
                     .attr("class", "cash_history")
                     .attr("id", "cash_" + i)
                     .attr("fill", color(i))
-                    .attr("opacity", 0.02);
+                    .attr("opacity", opacity);
 
                 // add line
                 cash_group
                     .append("path")
                     .attr("d", curveline(i, "cashGain", y_cash))
+                    .attr("class", "cash_history_curve")
                     .attr("id", "cash_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
                     .attr("fill", "none")
-                    .attr("opacity", 0.2)
-                    .attr("class", "cash_history_curve");
+                    .attr("opacity", opacity_curve)
             }
+            //#endregion
 
-            // plot expGain
+            //#region plot expGain
             const exp_group = g.append("g").attr("id", "exp");
             // get max expGain
             max = 0;
@@ -202,6 +228,19 @@ export default {
             }
             const y_exp = d3.scaleLinear().domain([0, max]);
             for (let i = 0; i < 10; i++) {
+                // adjuast opacity with checkbox
+                let opacity=0.02,opacity_curve=0.2;
+                if(_this.exp==true){
+                    if(_this.plr_states[i]==1){
+                        opacity=0.4
+                        opacity_curve=1
+                    }
+                    else{
+                        opacity=0.1
+                        opacity_curve=0.5
+                    }
+                }
+
                 // update y by different scale
                 if (i < 5) {
                     y_exp.range([_this.mid_y, 0]);
@@ -215,19 +254,20 @@ export default {
                     .attr("class", "exp_history")
                     .attr("id", "exp_" + i)
                     .attr("fill", color(i))
-                    .attr("opacity", 0.02);
+                    .attr("opacity", opacity);
 
                 // add line
                 cash_group
                     .append("path")
                     .attr("d", curveline(i, "expGain", y_exp))
+                    .attr("class", "exp_history_curve")
                     .attr("id", "exp_curve_" + i)
                     .attr("stroke", color(i))
                     .attr("stroke-width", "3px")
                     .attr("fill", "none")
-                    .attr("opacity", 0.2)
-                    .attr("class", "exp_history_curve");
+                    .attr("opacity", opacity_curve);
             }
+            //#endregion
             //#endregion
 
             //#region plot pos
@@ -236,14 +276,27 @@ export default {
             // plot y_tracks
             const pos_group = g.append("g").attr("id", "pos");
             for (let i = 0; i < 10; i++) {
+                // adjuast opacity with checkbox
+                let opacity=0.1,stroke='2px';
+                if(_this.pos==true){
+                    if(_this.plr_states[i]==1){
+                        opacity=1
+                        stroke='4px'
+                    }
+                    else{
+                        opacity=0.5
+                        stroke='2px'
+                    }
+                }
+
                 pos_group
                     .append("path")
                     .attr("d", curveline(i, "pos", y))
                     .attr("id", "curve_" + i)
                     .attr("stroke", color(i))
-                    .attr("stroke-width", "2px")
+                    .attr("stroke-width", stroke)
                     .attr("fill", "none")
-                    .attr("opacity", 0.5)
+                    .attr("opacity", opacity)
                     .style("z-index", 4)
                     .attr("class", "pos_history")
                     .style("cursor", "pointer")
@@ -261,7 +314,7 @@ export default {
             }
             //#endregion
 
-            // add tooltip
+            //#region add tooltip
             g.append("line")
                 .attr("x1", 0)
                 .attr("y1", -180)
@@ -322,6 +375,7 @@ export default {
                     tooltip.transition().duration(100).style("opacity", 0);
                 });
             //#endregion
+            //#endregion
         },
         plotEvents(plr_id) {
             const _this = this;
@@ -340,7 +394,7 @@ export default {
 
                 if (data[i]["usr_" + plr_id].maya_kill == 1) {
                     g.append("svg:image")
-                        .attr("x", x(data[i].time))
+                        .attr("x", _this.getX(data[i].time))
                         .attr("y", img_y)
                         .attr("width", 20)
                         .attr("height", 20)
@@ -357,7 +411,7 @@ export default {
                 }
                 if (data[i]["usr_" + plr_id].boss_kill == 1) {
                     g.append("svg:image")
-                        .attr("x", x(data[i].time))
+                        .attr("x", _this.getX(data[i].time))
                         .attr("y", img_y)
                         .attr("width", 20)
                         .attr("height", 20)
@@ -374,7 +428,7 @@ export default {
                 }
                 if (data[i]["usr_" + plr_id].isAlive == 0) {
                     g.append("svg:image")
-                        .attr("x", x(data[i].time))
+                        .attr("x", _this.getX(data[i].time))
                         .attr("y", img_y)
                         .attr("width", 20)
                         .attr("height", 20)
@@ -391,7 +445,7 @@ export default {
                 }
                 if (data[i]["usr_" + plr_id].tower_destroy == 1) {
                     g.append("svg:image")
-                        .attr("x", x(data[i].time))
+                        .attr("x", _this.getX(data[i].time))
                         .attr("y", img_y)
                         .attr("width", 20)
                         .attr("height", 20)
@@ -412,21 +466,34 @@ export default {
                 }
             }
         },
-        plotHistoryEvent(time, plr_id, event_name) {
-            g.append("svg:image")
-                .attr("x", this.getX(time))
-                .attr("y", 10)
-                .attr("width", 20)
-                .attr("height", 20)
-                .attr("href", require("@/assets/image/maya_kill.png"))
-                .append("title")
-                .text(
-                    "predict: player " +
-                        plr_id +
-                        " killed a maya at " +
-                        time +
-                        " s"
-                );
+        plotPredictEvents(plr_id, events) {
+            var parent = d3.select("#history");
+            parent.select("#predict_events").remove();
+            var g = parent
+                .append("g")
+                .attr("id", "predict_events")
+                .style("cursor", "pointer");
+
+            // plot events
+            let predict_events = events[plr_id + ""];
+            for (let i = 0; i < predict_events.length; i++) {
+                let png = predict_events[i].event;
+                // console.log(png)
+                g.append("svg:image")
+                    .attr("x", this.getX(predict_events[i].time))
+                    .attr("y", 0)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .attr("href", require("@/assets/image/" + png + ".png"))
+                    .append("title")
+                    .text(
+                        "predict: player " +
+                            plr_id +
+                            " killed a maya at " +
+                            predict_events[i].time +
+                            " s"
+                    );
+            }
         },
     },
 };

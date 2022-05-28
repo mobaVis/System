@@ -119,15 +119,15 @@ export default {
                 // plot exp for 1st selected plr
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
-                        d3.select('#curve_' + i).attr('opacity', '1').attr("stroke-width", "4px");
+                        d3.select('#curve_' + i).attr('opacity', 1).attr("stroke-width", "4px");
                     }
                     else {
-                        d3.select('#curve_' + i).attr('opacity', '0.5').attr("stroke-width", "2px");
+                        d3.select('#curve_' + i).attr('opacity', 0.5).attr("stroke-width", "2px");
                     }
                 }
             }
             else {
-                d3.selectAll('.pos_history').attr('opacity', '0.1').attr("stroke-width", "2px");
+                d3.selectAll('.pos_history').attr('opacity', 0.1).attr("stroke-width", "2px");
             }
         },
         // display history
@@ -177,6 +177,7 @@ export default {
                 for (let i = 0; i < 10; i++) {
                     if (this.history_plrs[i] == 1) {
                         this.$refs.history.plotEvents(i);
+                        this.$refs.history.plotPredictEvents(i, this.predict_events);
                         this.event_display_id = i;
                         break
                     }
@@ -185,6 +186,7 @@ export default {
             else {
                 // remove all events
                 d3.select('#events').remove();
+                d3.select('#predict_events').remove();
                 this.event_display_id = -1;
             }
         },
@@ -348,6 +350,10 @@ export default {
 
         // predict
         updatePredictions(time) {
+            // remove old warning marks
+            d3.select("#predictMap").selectAll('text').remove()
+
+            // update predict and warning marks
             const key = time.toString()
             if (this.predict_hash[key] != undefined) {
                 const predict_index = this.predict_hash[key]
@@ -356,23 +362,32 @@ export default {
             }
             else {
                 this.predict_live = {}
+
                 // console.log('miss',this.predict_live,typeof(this.predict_live),JSON.stringify(this.predict_live))
             }
         },
         // update with predict results
         parsePredictions(events) {
             const player0 = events[0].plr_id
-            if(player0>9)return
+            if (player0 > 9) return
 
             // update closeup & map cam
             this.$refs['closeVideo'].player = 'player' + player0;
-            this.$refs['closeVideo'].findPlayer(player0);
-            this.predict_cam_pos = { x: this.positions[player0].x/2-5, z: this.positions[player0].y/2-5 }
+            // this.$refs['closeVideo'].findPlayer(player0);
+
+            let pos = this.positions[player0]
+            this.predict_cam_pos = { x: pos.x / 2 - 5, z: pos.y / 2 - 5 }
+            // console.log(d3.select("#predictMap"),this.$refs.predictMap)
             for (let i = 0; i < events.length; i++) {
-                this.predict_events[events[i].plr_id+''].push({
-                    time: this.live_time + events[i].count_down,
-                    event: events[i].event
+                this.predict_events[events[i].plr_id + ''].push({
+                    time: this.select_time + events[i].count_down,
+                    event: events[i].event.slice(0, -2)
                 })
+
+                // add warning text to map
+                pos = this.positions[events[i].plr_id]
+                this.$refs.predictMap.appendText(events[i].event,pos.x-20,pos.y-10)
+
             }
             // console.log(this.predict_events)
         },
@@ -392,11 +407,16 @@ export default {
                 if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 1);
                 if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.4);
                 if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.4);
-                if (this.event_display) this.$refs.history.plotEvents(plr_id)
+                if (this.event_display) {
+                    this.event_display_id = plr_id
+                    this.$refs.history.plotEvents(plr_id)
+                    this.$refs.history.plotPredictEvents(plr_id, this.predict_events)
+                }
             }
             else {
                 if (plr_id >= 0) {
                     // deselect
+                    this.event_display_id = -1
                     this.history_plrs[+plr_id] = 0
                     legend.style.opacity = 0.6;
                     if (this.pos_display) this.changePathOpacity(plr_id, 'curve', 0.5);
@@ -405,7 +425,10 @@ export default {
                     else this.changePathOpacity(plr_id, 'cash', 0.02);
                     if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.1);
                     else this.changePathOpacity(plr_id, 'exp', 0.02);
-                    if (this.event_display) d3.select('#events').remove()
+                    if (this.event_display) {
+                        d3.select('#events').remove()
+                        d3.select('#predict_events').remove()
+                    }
                 }
             }
             // console.log(this.history_plrs)

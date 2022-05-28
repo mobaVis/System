@@ -63,8 +63,13 @@
                 :data="json"
                 :time="select_time"
                 name="history_track"
+                :pos="pos_display"
+                :exp="exp_display"
+                :cash="cash_display"
                 :tooltip="tooltip_on"
+                :plr_states="history_plrs"
                 :events="event_display_id"
+                :predictions="predict_events"
                 :colors="camp1_colors.concat(camp2_colors)"
                 @clickUpdate="updateHistory"
             />
@@ -262,6 +267,7 @@
                         :red="red"
                         :blue="blue"
                         name="predictMap"
+                        ref="predictMap"
                         :cam_position="predict_cam_pos"
                         :circle_size='16'
                         :colors="camp1_colors.concat(camp2_colors)"

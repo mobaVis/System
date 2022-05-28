@@ -64,7 +64,7 @@
 export default {
     data() {
         return {
-            events:[]
+            events: [],
         };
     },
     props: {
@@ -90,16 +90,20 @@ export default {
     },
     methods: {
         parseData() {
-            const event_num = this.data.event_num
+            const event_num = this.data.event_num;
             for (let i = 0; i < event_num; i++) {
+                let plr_id = get_id(this.data["event_" + i]);
                 this.events.push({
-                    event: this.data["event_" + i],
+                    event:
+                        this.data["event_" + i].slice(0, -2) == "isAlive"
+                            ? "hero_die_" + plr_id
+                            : this.data["event_" + i],
                     possibility: this.data["possibility_" + i].toFixed(2),
                     count_down: this.data["count_down_" + i],
-                    plr_id: get_id(this.data["event_" + i]),
+                    plr_id: plr_id,
                 });
             }
-            this.$emit('parsePredictEvents',this.events)
+            this.$emit("parsePredictEvents", this.events);
             // console.log("events", this.events);
 
             function get_id(eventName) {
@@ -113,7 +117,7 @@ export default {
             }
         },
         plotPopUps() {
-            const _this=this
+            const _this = this;
             const svg = d3.select("#predict_title");
             for (let i = 0; i < this.events.length; i++) {
                 let g = svg
@@ -128,9 +132,9 @@ export default {
                         return 40 + i * 40;
                     })
                     .attr("class", "popup")
-                    .attr('id',"event"+i)
+                    .attr("id", "event" + i)
                     .style("cursor", "pointer")
-                    .on('click',clickEventPlr)
+                    .on("click", clickEventPlr)
                     .attr("width", (d) => d.w)
                     .attr("height", (d) => d.h)
                     .attr("rx", 15)
@@ -150,10 +154,10 @@ export default {
                     .attr("fill", "#333333");
             }
 
-            function clickEventPlr(){
-                const select_plr=this.id.slice(-1)
+            function clickEventPlr() {
+                const select_plr = this.id.slice(-1);
                 // console.log(this.id.slice(-1))
-                _this.$emit('onClickEvent', select_plr)
+                _this.$emit("onClickEvent", select_plr);
             }
 
             return;

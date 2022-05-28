@@ -1,5 +1,5 @@
 <template>
-    <svg :id="name" width="1290" height="410" :style="{display:'play'}" ></svg>
+    <svg :id="name" width="1299" height="410" :style="{display:'play'}" ></svg>
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
                 stepSize = 0.3;
             // init svg vars
             var svg = d3.select("#" + this.name),
-                margin = { top: 20, right: 100, bottom: 160, left: 85 },
+                margin = { top: 20, right: 95, bottom: 160, left: 75 },
                 width = svg.attr("width") - margin.left - margin.right,
                 height = svg.attr("height") - margin.top - margin.bottom;
             var x = d3.scaleBand().range([0, width]).padding(stepSize),
