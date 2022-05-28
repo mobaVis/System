@@ -43,7 +43,7 @@ export default {
 
             let glyph_val = this.glyph_val;
             delete glyph_val.rest;
-            console.log(glyph_val);
+            // console.log(glyph_val);
 
             const outerR = this.radius,
                 innerR = this.radius * 0.5;
@@ -73,9 +73,9 @@ export default {
                 )
             g.append("text")
                 .text(Object.keys(glyph_val)[0])
-                .attr("x", 20)
+                .attr("x", 0)
                 .attr("y", 0)
-                .attr("text-anchor", "end")
+                .attr("text-anchor", "middle")
                 .attr("font-weight", "900")
                 .attr("fill", "#666");
             g.selectAll("path")

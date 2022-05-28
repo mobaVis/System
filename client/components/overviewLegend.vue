@@ -1,5 +1,5 @@
 <template>
-    <svg width="600" height="72" viewBox="0 0 600 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="600" height="75" viewBox="0 0 600 72" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- camp1 -->
         <text y="20" fill="#333333" style="font-family: 'Noto Sans'">
             camp1
@@ -46,8 +46,8 @@
             camp2
         </text>
         <!-- predict history -->
-        <text y="68" fill="#333333" style="font-family: 'Noto Sans'">
-            predict events
+        <text y="70" fill="#333333" style="font-family: 'Noto Sans'">
+            predict events for player{{event_id}}
         </text>
         <!-- 5 -->
         <g id="legend_5" style="cursor: pointer; opacity: 0.6" @click="clickPlayer(5)">
@@ -94,6 +94,7 @@ export default {
         pos_display: { type: Boolean, default: true },
         cash_display: { type: Boolean, default: false },
         exp_display: { type: Boolean, default: false },
+        event_id:{type:String}
     },
     methods: {
         clickPlayer(playerID) {

@@ -84,6 +84,7 @@ export default {
             cash_display: false,
             event_display: false,
             event_display_id: -1,
+            event_predict_id: -1, // last predict: -1 if already selected else record, only used for predict, not click on players
             tooltip_on: false,
             predict_events: { '0': [], '1': [], '2': [], '3': [], '4': [], '5': [], '6': [], '7': [], '8': [], '9': [] }
 
@@ -371,8 +372,6 @@ export default {
             const player0 = events[0].plr_id
             if (player0 > 9) return
 
-            // update closeup & map cam: default with first event player
-            this.parsePredictionByPlayerID(player0);
             // console.log(d3.select("#predictMap"),this.$refs.predictMap)
             for (let i = 0; i < events.length; i++) {
                 this.predict_events[events[i].plr_id + ''].push({
@@ -382,25 +381,49 @@ export default {
 
                 // add warning text to map
                 let pos = this.positions[events[i].plr_id]
-                this.$refs.predictMap.appendText(events[i].event,pos.x-20,pos.y-10)
+                this.$refs.predictMap.appendText(events[i].event, pos.x - 20, pos.y - 10)
             }
             // console.log(this.predict_events)
+
+            // update closeup & map cam: default with first event player
+            this.parsePredictionByPlayerID(player0);
         },
 
         // update with predict results by player
-        parsePredictionByPlayerID(playerID){
-            // update closeup & map cam
+        parsePredictionByPlayerID(playerID) {
+            // update closeup
             this.$refs['closeVideo'].player = 'player' + playerID;
             // this.$refs['closeVideo'].findPlayer(playerID);
 
+            // update map cam
             let pos = this.positions[playerID]
             this.predict_cam_pos = { x: pos.x / 2 - 5, z: pos.y / 2 - 5 }
+
+            // update predict event
+            if(this.event_predict_last_id!=-1){
+                // last time select by predict, not click
+                this.updateHistory(this.event_predict_last_id, 0);
+                this.event_predict_last_id=-1
+            }
+            // select player & event_display
+            if (this.history_plrs[playerID] == 0) {
+                // not selected previously
+                this.event_display = true
+                this.updateHistory(playerID, 1)
+                this.event_predict_last_id = playerID
+            } else if (this.event_display == false || this.event_display_id != parseInt(playerID)) {
+                this.$refs.history.plotEvents(playerID);
+                this.$refs.history.plotPredictEvents(playerID, this.predict_events);
+                this.event_display_id = parseInt(playerID);
+            }
+
         },
 
-        // predict: select predict event bt plr
+        // predict: select predict event by plr
         updateFeaturePlr(select_plr_id) {
             this.glyph_plr = select_plr_id
             this.bar_plr = select_plr_id
+            this.parsePredictionByPlayerID(select_plr_id)
         },
         /**  history: click on plrs, operation = 1 for select and -1 for deselect */
         updateHistory(plr_id, operation) {
@@ -413,7 +436,7 @@ export default {
                 if (this.cash_display) this.changePathOpacity(plr_id, 'cash', 0.4);
                 if (this.exp_display) this.changePathOpacity(plr_id, 'exp', 0.4);
                 if (this.event_display) {
-                    this.event_display_id = plr_id
+                    this.event_display_id = parseInt(plr_id)
                     this.$refs.history.plotEvents(plr_id)
                     this.$refs.history.plotPredictEvents(plr_id, this.predict_events)
                 }

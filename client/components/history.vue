@@ -3,7 +3,7 @@
         <svg
             :id="name"
             width="1290"
-            height="410"
+            height="380"
             :style="{ display: 'play' }"
         ></svg>
     </div>
@@ -70,7 +70,7 @@ export default {
 
             //#region : init svg vars
             var svg = d3.select("#" + this.name),
-                margin = { top: 20, right: 90, bottom: 50, left: 50 },
+                margin = { top: 0, right: 90, bottom: 0, left: 50 },
                 width = svg.attr("width") - margin.left - margin.right,
                 height = svg.attr("height") - margin.top - margin.bottom;
             (_this.mid_y = height / 2), (_this.width = width);

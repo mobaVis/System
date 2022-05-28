@@ -36,6 +36,7 @@
                     </el-select>
                     <el-divider />
                     <plrs-legend
+                        :event_id="event_display_id=='-1'?'':event_display_id+''"
                         :pos_display="pos_display"
                         :cash_display="cash_display"
                         :exp_display="exp_display"

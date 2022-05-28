@@ -122,7 +122,7 @@ export default {
             for (let i = 0; i < this.events.length; i++) {
                 let g = svg
                     .selectAll()
-                    .data([{ w: 250, h: 30 }])
+                    .data([{ w: 300, h: 30 }])
                     .enter()
                     .append("g")
                     .attr("class", "predict_events");
@@ -149,6 +149,10 @@ export default {
                             this.events[i].count_down +
                             "s"
                     )
+                    .attr("class", "popup")
+                    .attr("id", "event" + i)
+                    .style("cursor", "pointer")
+                    .on("click", clickEventPlr)
                     .attr("x", 15)
                     .attr("y", 60 + i * 40)
                     .attr("fill", "#333333");
