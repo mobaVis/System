@@ -69,7 +69,6 @@ export default {
                 .attr("y", margin.bottom)
                 .attr("x", width -100)
                 .attr("text-anchor", "end")
-                .attr("text-anchor", "end")
                 .attr("fill", "#666")
                 .attr("font-family", "Noto Sans")
                 .attr("font-weight", "900")

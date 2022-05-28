@@ -371,12 +371,8 @@ export default {
             const player0 = events[0].plr_id
             if (player0 > 9) return
 
-            // update closeup & map cam
-            this.$refs['closeVideo'].player = 'player' + player0;
-            // this.$refs['closeVideo'].findPlayer(player0);
-
-            let pos = this.positions[player0]
-            this.predict_cam_pos = { x: pos.x / 2 - 5, z: pos.y / 2 - 5 }
+            // update closeup & map cam: default with first event player
+            this.parsePredictionByPlayerID(player0);
             // console.log(d3.select("#predictMap"),this.$refs.predictMap)
             for (let i = 0; i < events.length; i++) {
                 this.predict_events[events[i].plr_id + ''].push({
@@ -385,11 +381,20 @@ export default {
                 })
 
                 // add warning text to map
-                pos = this.positions[events[i].plr_id]
+                let pos = this.positions[events[i].plr_id]
                 this.$refs.predictMap.appendText(events[i].event,pos.x-20,pos.y-10)
-
             }
             // console.log(this.predict_events)
+        },
+
+        // update with predict results by player
+        parsePredictionByPlayerID(playerID){
+            // update closeup & map cam
+            this.$refs['closeVideo'].player = 'player' + playerID;
+            // this.$refs['closeVideo'].findPlayer(playerID);
+
+            let pos = this.positions[playerID]
+            this.predict_cam_pos = { x: pos.x / 2 - 5, z: pos.y / 2 - 5 }
         },
 
         // predict: select predict event bt plr
