@@ -34,7 +34,7 @@
                         }"
                     />
 
-                    <!-- <GltfModel
+                    <GltfModel
                         v-for="i in 10"
                         :key="i"
                         :position="{
@@ -44,7 +44,7 @@
                         }"
                         src="three/calibur/scene.gltf"
                         @load="onLoad"
-                    /> -->
+                    />
 
                     <Plane
                         :width="60"

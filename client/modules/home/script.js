@@ -91,13 +91,8 @@ export default {
         };
     },
     watch: {
-        // update closeup
-        // live_time(val,oldVal){
-        //     this.$refs['closeVideo'].updatePlayerPos()
-        // }
         // watch if any var changes
         select_time(val, oldVal) {
-            // this.live_time=val;
             this.updatePositions(val);
             this.updatePredictions(val);
             this.glyph_plr = 0
@@ -105,6 +100,7 @@ export default {
         },
         // update positions according to live_time
         live_time(val, oldVal) {
+            this.select_time=val;
             this.updatePositions(val);
             this.updatePredictions(val);
             this.glyph_plr = 0
@@ -393,7 +389,7 @@ export default {
         parsePredictionByPlayerID(playerID) {
             // update closeup
             this.$refs['closeVideo'].player = 'player' + playerID;
-            // this.$refs['closeVideo'].findPlayer(playerID);
+            this.$refs['closeVideo'].findPlayer(playerID);
 
             // update map cam
             let pos = this.positions[playerID]
