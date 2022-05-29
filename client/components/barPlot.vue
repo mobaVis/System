@@ -141,25 +141,25 @@ export default {
                 .attr("fill", "#6d5e7a")
                 .attr("stroke", "2px")
                 .attr("width", width / 5)
-                .attr("height", height / 2+20);
+                .attr("height", height / 2 + 20);
 
             let text_y = 23;
             tips.append("text")
                 .text("top 5 features")
                 .attr("text-anchor", "end")
-                .attr('font-weight',900)
+                .attr("font-weight", 900)
                 .attr("x", width / 5)
                 .attr("y", -10)
                 .attr("fill", "#6d5e7a")
-                .attr("-webkit-text-stroke", "2px #fff")
+                .style("text-shadow", "0 0 5px #fff, 0 0 5px #fff");
 
-// console.log(barData);
+            // console.log(barData);
             for (let i = 0; i < 5; i++) {
                 tips.append("text")
                     .attr("class", "tips")
                     .text(Object.keys(barData)[i])
                     .attr("text-anchor", "end")
-                    .attr("x", width / 5-20)
+                    .attr("x", width / 5 - 20)
                     .attr("y", text_y);
                 text_y += 23;
                 // .attr("fill", "#fff");

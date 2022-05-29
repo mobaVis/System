@@ -78,6 +78,7 @@ export default {
                 .attr("text-anchor", "middle")
                 .attr("font-size", "20px")
                 .attr("font-weight", "900")
+                .style("text-shadow", "0 0 5px #fff, 0 0 5px #fff")
                 .attr("fill", "#666");
             g.selectAll("path")
                 .data(angle_data(Object.entries(glyph_val)))
