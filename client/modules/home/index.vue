@@ -80,7 +80,7 @@
             <b> Live View </b>
             <br />
             <el-row>
-                <el-col :span="20">
+                <el-col :span="21">
                     <!-- trois -->
                     <el-row>
                         <troisModel
@@ -104,8 +104,8 @@
                     </el-row>
                 </el-col>
                 <!-- avaters -->
-                <el-col :span="4">
-                    <ul style="list-style-type: none">
+                <el-col :span="3">
+                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
                         <li v-for="(color, i) in camp1_colors" :key="i">
                             <avatar-button
                                 :name="i"
@@ -118,9 +118,9 @@
                         </li>
                     </ul>
 
-                    <camp-data-displayer />
+                    <camp-data-displayer style="float: right"/>
 
-                    <ul style="list-style-type: none">
+                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
                         <li v-for="(color, i) in camp2_colors" :key="i">
                             <avatar-button
                                 :name="i + 5"
@@ -151,7 +151,7 @@
                         <!-- </li> -->
                         <li>
                             <el-checkbox v-model="select_video"
-                                >play edited video</el-checkbox
+                                >edited video</el-checkbox
                             >
                         </li>
                     </ul>
@@ -183,7 +183,7 @@
                     @click="goWatchPlayer('reviewVideo', -1)"
             /></span>
             <el-row>
-                <el-col :span="20">
+                <el-col :span="21">
                     <el-row>
                         <troisModel
                             id="reviewVideo"
@@ -201,9 +201,9 @@
                         />
                     </el-row>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="3">
                     <br />
-                    <ul style="list-style-type: none">
+                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
                         <li v-for="(color, i) in camp1_colors" :key="i">
                             <avatar-button
                                 :name="i"
@@ -215,9 +215,9 @@
                             />
                         </li>
                     </ul>
-                    <camp-data-displayer />
+                    <camp-data-displayer style="float:right"/>
 
-                    <ul style="list-style-type: none">
+                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
                         <li v-for="(color, i) in camp2_colors" :key="i">
                             <avatar-button
                                 :name="i + 5"
@@ -337,10 +337,10 @@
 .Overview {
     /* overview */
     position: absolute;
-    left: 51.13%;
-    right: 1.25%;
+    left: 48.78%;
+    right: 0.78%; // 20px
     top: 56.67%;
-    bottom: 2.08%;
+    bottom: 1.39%; // 20px
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -350,9 +350,9 @@
 .live {
     /* live */
     position: absolute;
-    left: 1.17%;
-    right: 50%;
-    top: 2.08%;
+    left: 0.78%;
+    right: 52%;
+    top: 1.39%;
     bottom: 51.32%;
 
     border: 1px solid #999999;
@@ -363,10 +363,10 @@
 .review {
     /* review */
     position: absolute;
-    left: 1.17%;
-    right: 50%;
+    left: 0.78%;
+    right: 52%;
     top: 50.69%;
-    bottom: 2.08%;
+    bottom: 1.39%;
 
     border: 1px solid #999999;
     box-sizing: border-box;
@@ -376,8 +376,8 @@
 .prediction {
     /* prediction */
     position: absolute;
-    left: 51.13%;
-    right: 1.29%;
+    left: 48.78%;
+    right: 0.78%;
     top: 5.21%;
     bottom: 45.42%;
 
@@ -433,7 +433,7 @@
 #liveVideoSlider {
     /* processLine */
     position: absolute;
-    width: 100%;
+    width: 1040px;
     left: 12px;
     top: 520px;
     height: 20px;
@@ -453,7 +453,7 @@
 #recordVideoSlider {
     /* processLine */
     position: absolute;
-    // width: 100%;
+    width: 1040px;
     left: 12px;
     top: 580px;
     height: 20px;
@@ -473,7 +473,7 @@
 #reviewVideoSlider {
     /* processLine */
     position: absolute;
-    width: 100%;
+    width: 1040px;
     left: 12px;
     top: 45px;
     height: 20px;

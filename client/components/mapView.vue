@@ -25,6 +25,7 @@ export default {
             // block
             blockScale: { width: 0.1, height: 0.1 },
             blockColor: "#6D5E7A",
+            blockOpacity:0.4
         };
     },
 
@@ -66,6 +67,7 @@ export default {
         // watch if any var changes
         positions(val, oldVal) {
             this.updatePlayers(this.name, this.circle_size);
+            this.updateCameraPosition(this.name, this.cam_position);
         },
         cam_position(val, oldVal) {
             this.updateCameraPosition(this.name, val);
@@ -177,27 +179,27 @@ export default {
             var svg = d3.select("#" + svgID),
                 svgDom = document.getElementById(svgID),
                 height = svgDom.clientHeight;
+            this.blockWidth = this.blockScale.width * height;
+            this.blockHeight = this.blockScale.height * height;
 
-            var rect = svg.selectAll("rect").append("g");
-            rect.data([cam_position])
-                .enter()
-                .append("rect")
+            svg.append("rect")
                 .attr("class", "cam_field")
-                .attr("x", (d) => this.getX(d.x * 2))
-                .attr("y", (d) => this.getY(d.z * 2))
-                .attr("width", this.blockScale.width * height)
-                .attr("height", this.blockScale.height * height)
+                .attr("x", this.getX(cam_position.x * 2))
+                .attr("y", this.getY(cam_position.z * 2))
+                .attr("width", this.blockWidth)
+                .attr("height", this.blockHeight)
                 .attr("fill", this.blockColor)
-                .attr("opacity", "0.5")
+                .attr("opacity", this.blockOpacity)
                 .attr("stroke", "2")
-                .style("z-index", 99999999);
         },
 
         // add text
-        appendText(text, x, y){
-            d3.select('#'+this.name).append('text').text(text+'')
-                .attr('x', this.getX(x))
-                .attr('y', this.getY(y))
+        appendText(text, x, y) {
+            d3.select("#" + this.name)
+                .append("text")
+                .text(text + "")
+                .attr("x", this.getX(x))
+                .attr("y", this.getY(y))
                 .attr("fill", "#333333");
         },
 
@@ -219,9 +221,17 @@ export default {
             return getY(y);
         },
         updateCameraPosition(name, position) {
-            d3.select('#'+name).select("rect.cam_field")
+            let svg = d3.select("#" + name);
+            svg.select("rect.cam_field").remove();
+            svg.append("rect")
+                .attr("class", "cam_field")
                 .attr("x", this.getX(position.x * 2))
-                .attr("y", this.getY(position.z * 2));
+                .attr("y", this.getY(position.z * 2))
+                .attr("width", this.blockWidth)
+                .attr("height", this.blockHeight)
+                .attr("fill", this.blockColor)
+                .attr("opacity", this.blockOpacity)
+                .attr("stroke", "2");
         },
     },
 };

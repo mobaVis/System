@@ -143,14 +143,15 @@ export default {
                 g.append("text")
                     .text(
                         this.events[i].possibility +
-                            " - " +
+                            " -- " +
                             this.events[i].event +
-                            " - " +
+                            " -- in " +
                             this.events[i].count_down +
                             "s"
                     )
                     .attr("class", "popup")
                     .attr("id", "event" + i)
+                    .attr('font-weight','500')
                     .style("cursor", "pointer")
                     .on("click", clickEventPlr)
                     .attr("x", 15)
@@ -159,9 +160,10 @@ export default {
             }
 
             function clickEventPlr() {
-                const select_plr = this.id.slice(-1);
+                const select_event = this.id.slice(-1);
+                const select_plr = _this.events[select_event].plr_id
                 // console.log(this.id.slice(-1))
-                _this.$emit("onClickEvent", select_plr);
+                _this.$emit("onClickEvent", select_event, select_plr);
             }
 
             return;

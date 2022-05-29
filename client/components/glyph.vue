@@ -76,6 +76,7 @@ export default {
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("text-anchor", "middle")
+                .attr("font-size", "20px")
                 .attr("font-weight", "900")
                 .attr("fill", "#666");
             g.selectAll("path")

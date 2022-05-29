@@ -416,13 +416,12 @@ export default {
                 this.$refs.history.plotPredictEvents(playerID, this.predict_events);
                 this.event_display_id = parseInt(playerID);
             }
-
         },
 
         // predict: select predict event by plr
-        updateFeaturePlr(select_plr_id) {
-            this.glyph_plr = select_plr_id
-            this.bar_plr = select_plr_id
+        updateFeaturePlr(select_pred_id, select_plr_id) {
+            this.bar_plr = select_pred_id
+            this.glyph_plr = select_pred_id
             this.parsePredictionByPlayerID(select_plr_id)
         },
         /**  history: click on plrs, operation = 1 for select and -1 for deselect */
