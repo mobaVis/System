@@ -150,14 +150,16 @@ export default {
                 .attr('font-weight',900)
                 .attr("x", width / 5)
                 .attr("y", -10)
-                .attr("fill", "#6d5e7a");
-            // console.log(barData);
+                .attr("fill", "#6d5e7a")
+                .attr("-webkit-text-stroke", "2px #fff")
+
+// console.log(barData);
             for (let i = 0; i < 5; i++) {
                 tips.append("text")
                     .attr("class", "tips")
                     .text(Object.keys(barData)[i])
-                    .attr("text-anchor", "start")
-                    .attr("x", 20)
+                    .attr("text-anchor", "end")
+                    .attr("x", width / 5-20)
                     .attr("y", text_y);
                 text_y += 23;
                 // .attr("fill", "#fff");
