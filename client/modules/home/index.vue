@@ -62,7 +62,7 @@
             <history-view
                 ref="history"
                 :data="json"
-                :time="select_time"
+                :time="live_time"
                 name="history_track"
                 :pos="pos_display"
                 :exp="exp_display"
@@ -311,7 +311,7 @@
             </el-row>
 
             <!-- slider for predict map -->
-            <div class="tmp">
+            <!-- <div class="tmp">
                 <el-button
                     @click="select_time--"
                     icon="ArrowLeftBold"
@@ -325,7 +325,7 @@
                 <div class="slider-demo-block">
                     <el-slider v-model="select_time" :max="json.length - 1" />
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

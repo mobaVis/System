@@ -208,7 +208,7 @@ export default {
     },
     mounted() {
         // this.json = require("@/assets/json/parse6219491628248857926.json");
-        this.updatePositions(this.select_time);
+        this.updatePositions(this.live_time);
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
     setup() {
@@ -335,8 +335,8 @@ export default {
                             }
                             else {
                                 _this.review_times[0] += 1;
+                                _this.$refs.review_info.update(0, _this.review_times[0]);
                             }
-                            // _this.$refs.review_info.update(0, _this.review_times[0]);
                         }, 100);
                     }
                     else {
@@ -371,7 +371,7 @@ export default {
             // console.log(d3.select("#predictMap"),this.$refs.predictMap)
             for (let i = 0; i < events.length; i++) {
                 this.predict_events[events[i].plr_id + ''].push({
-                    time: this.select_time + events[i].count_down,
+                    time: this.live_time + events[i].count_down,
                     event: events[i].event.slice(0, -2)
                 })
 

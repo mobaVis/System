@@ -79,18 +79,22 @@ export default {
             const sec = s < 10 ? "0" + parseInt(s) : parseInt(s);
             return min + ":" + sec;
         },
-        update(index, val){
-            if (index==0) {
-                this.begin = this.formatSeconds(val);
-                this.play = this.begin;
-                console.log(this.begin)
-            }
-            else if (index==1) {
-                this.end = this.formatSeconds(val);
-            }
-            this.duration = this.formatSeconds(this.time_pair[1] - this.time_pair[0]);
-            console.log('review_info update('+index+', '+val+')')
-        }
+        update(index, val) {
+            this.$nextTick(() => {
+                if (index == 0) {
+                    this.begin = this.formatSeconds(val);
+                    this.play = this.begin;
+                    console.log('begin',this.begin);
+                } else if (index == 1) {
+                    this.end = this.formatSeconds(val);
+                    console.log('end',this.end);
+                }
+                this.duration = this.formatSeconds(
+                    this.time_pair[1] - this.time_pair[0]
+                );
+            });
+            console.log("review_info update(" + index + ", " + val + ")");
+        },
     },
     mounted() {
         // console.log(this.begin);
