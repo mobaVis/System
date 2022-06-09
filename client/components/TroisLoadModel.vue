@@ -109,7 +109,6 @@ export default {
     data() {
         return {
             // select time: init
-            json: require("../assets/json/pos6219491628248857926.json"),
             positions: [
                 { x: 0, y: -10, camp: 1 },
                 { x: 0, y: -8, camp: 1 },
@@ -138,6 +137,10 @@ export default {
         };
     },
     props: {
+        json:{
+            type:Array,
+            required:true,
+        },
         mapname: {
             type: String,
             required: true,
@@ -147,24 +150,10 @@ export default {
             default: 0,
         },
     },
-    emits: ["update:live_name"],
-    computed: {
-        select_time: {
-            get: function () {
-                return this.live_time;
-            },
-            set: function (value) {
-                // console.log('set select_time', value)
-                this.$emit("update:live_name", value);
-            },
-        },
-    },
 
     watch: {
-        select_time(val, oldVal) {
-            // console.log('change select_time',this.id, val);
-            // this.$emit('live_time_change', val)
-            this.value = val;
+        live_time(val, oldVal) {
+            // console.log(this.mapname, val);
             this.updatePlayerPos(val);
         },
         // targetPos(val, oldVal) {
@@ -177,7 +166,7 @@ export default {
     },
 
     mounted() {
-        this.updatePositions(0);
+        // this.updatePositions(0);
 
         // render
         const scene = this.$refs.scene.scene;
@@ -207,7 +196,7 @@ export default {
             // positions
             this.positions = [];
             for (let i in d3.range(10)) {
-                let data = this.json[time]["usr_" + i];
+                let data = this.json[time]["usr_" + i]['pos'];
                 let camp = i > 4 ? 2 : 1;
                 this.positions.push({
                     x: data[0],

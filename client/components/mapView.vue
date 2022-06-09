@@ -77,8 +77,8 @@ export default {
         // plot map.png
         plotBG(svgID) {
             var svg = d3.select("#" + svgID),
-                svgDom = document.getElementById(svgID),
-                width = svgDom.clientWidth,
+                svgDom = document.getElementById(svgID);
+            var width = svgDom.clientWidth,
                 height = svgDom.clientHeight;
 
             // add image
@@ -95,8 +95,8 @@ export default {
         updatePlayers(svgID, circle_size) {
             // console.log("positions in map view: ", this.positions);
             var svg = d3.select("#" + svgID),
-                svgDom = document.getElementById(svgID),
-                width = svgDom.clientWidth,
+                svgDom = document.getElementById(svgID);
+            var width = svgDom.clientWidth,
                 height = svgDom.clientHeight,
                 margin = this.margin;
             this.height = height;

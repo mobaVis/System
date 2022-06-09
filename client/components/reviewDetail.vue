@@ -1,5 +1,5 @@
 <template>
-    <svg
+    <svg class="review_detail"
         width="950"
         height="30"
         viewBox="0 0 950 30"
@@ -102,8 +102,8 @@ export default {
 };
 </script>
 
-<style scoped>
-svg {
+<style>
+.review_detail {
     position: absolute;
     margin: 0 auto;
     left: 21%;

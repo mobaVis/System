@@ -36,7 +36,11 @@
                     </el-select>
                     <el-divider />
                     <plrs-legend
-                        :event_id="event_display_id=='-1'?'':event_display_id+''"
+                        :event_id="
+                            event_display_id == '-1'
+                                ? ''
+                                : event_display_id + ''
+                        "
                         :pos_display="pos_display"
                         :cash_display="cash_display"
                         :exp_display="exp_display"
@@ -85,11 +89,17 @@
                     <el-row>
                         <troisModel
                             id="liveVideo"
-                            v-model:live_time="live_time"
+                            :json="json"
+                            :live_time="
+                                select_video
+                                    ? video_records[record_time.toString()]
+                                    : live_time
+                            "
                             mapname="liveMap"
                             ref="liveVideo"
                         />
                     </el-row>
+
                     <!-- live slider -->
                     <el-row>
                         <el-slider
@@ -98,14 +108,68 @@
                             :max="json.length - 1"
                         />
                     </el-row>
+
                     <!-- record slider -->
                     <el-row>
-                    <el-slider id='recordVideoSlider' :width="recordLength" v-model='record_time' :max="recordLength" />
+                        <el-slider
+                            id="recordVideoSlider"
+                            v-model="record_time"
+                            :max="recordLength==0?0:recordLength - 1"
+                        />
                     </el-row>
+
+                    <!-- title -->
+                    <text
+                        class="key"
+                        style="position: absolute; left: 20px; color: #666666"
+                    >
+                        <tspan style="position: absolute; top: 550px"
+                            >play_time</tspan
+                        ><tspan style="position: absolute; top: 600px"
+                            >play_time</tspan
+                        ><tspan
+                            style="position: absolute; left: 200px; top: 600px"
+                            >record_time</tspan
+                        >
+                    </text>
+
+                    <!-- value -->
+                    <text
+                        class="value"
+                        style="position: absolute; left: 100px; color: #333333"
+                    >
+                        ><tspan style="position: absolute; top: 550px">{{
+                            live_time
+                        }}</tspan>
+                        <tspan style="position: absolute; top: 600px">
+                            {{ record_time }}</tspan
+                        >
+                        <tspan
+                            style="position: absolute; left: 230px; top: 600px"
+                        >
+                            {{ recordLength }}</tspan
+                        >
+                        <!-- <tspan
+                            style="
+                                position: absolute;
+                                width: 1040px;
+                                left: 12px;
+                                top: 600px;
+                                height: 20px;
+                                font-family: 'Noto Sans';
+                                font-style: normal;
+                                font-weight: 900;
+                                font-size: 20px;
+                                line-height: 27px;
+                                color: #666666;
+                            "
+                        >
+                            {{ recordLength }}</tspan> -->
+                    </text>
                 </el-col>
                 <!-- avaters -->
                 <el-col :span="3">
-                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
+                    <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp1_colors" :key="i">
                             <avatar-button
                                 :name="i"
@@ -118,9 +182,9 @@
                         </li>
                     </ul>
 
-                    <camp-data-displayer style="float: right"/>
+                    <camp-data-displayer style="float: right" />
 
-                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
+                    <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">
                             <avatar-button
                                 :name="i + 5"
@@ -149,6 +213,8 @@
                                 @click="goWatchPlayer('liveVideo', -1)"
                         /></span>
                         <!-- </li> -->
+                        <br />
+                        <br />
                         <li>
                             <el-checkbox v-model="select_video"
                                 >edited video</el-checkbox
@@ -163,7 +229,10 @@
         <div class="review">
             <b> Review View </b>
             <el-row>
-                <review-time-detail ref='review_info' :time_pair="review_times" />
+                <review-time-detail
+                    ref="review_info"
+                    :time_pair="review_times"
+                />
             </el-row>
             <span class="review_buttons">
                 <el-button
@@ -187,7 +256,8 @@
                     <el-row>
                         <troisModel
                             id="reviewVideo"
-                            v-model:live_time="review_times[0]"
+                            :json="json"
+                            :live_time="review_times[0]"
                             mapname="reviewMap"
                             ref="reviewVideo"
                         />
@@ -203,7 +273,7 @@
                 </el-col>
                 <el-col :span="3">
                     <br />
-                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
+                    <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp1_colors" :key="i">
                             <avatar-button
                                 :name="i"
@@ -215,9 +285,9 @@
                             />
                         </li>
                     </ul>
-                    <camp-data-displayer style="float:right"/>
+                    <camp-data-displayer style="float: right" />
 
-                    <ul style="list-style-type: none;padding: 0 0 0 15px;">
+                    <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">
                             <avatar-button
                                 :name="i + 5"
@@ -270,7 +340,7 @@
                         name="predictMap"
                         ref="predictMap"
                         :cam_position="predict_cam_pos"
-                        :circle_size='16'
+                        :circle_size="16"
                         :colors="camp1_colors.concat(camp2_colors)"
                     />
                 </el-col>

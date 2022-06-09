@@ -81,7 +81,6 @@ export default {
         return {
             // select time: init
             player: "player1",
-            json: require("../assets/json/pos6219491628248857926.json"),
 
             // for three.js
             target: new Vector3(0, 0, 0), // camera.lookAt

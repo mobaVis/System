@@ -29,14 +29,22 @@ export default {
         'review-time-detail': reviewDetail,
         'prediction': eventPredict, closeup, glyph, 'distribution': barPlot
     },
+    setup() {
+        var json = require("@/assets/json/parse6219151093176859974.json"),
+            // for distribution bar plot
+            predictions = require('@/assets/json/grad_out_testing_time_2.json'),
+            predict_hash = require('@/assets/json/grad_out_testing_time_2_hash.json');
+
+
+        return { json, predictions, predict_hash }
+    },
     data() {
         return {
             // for mapView
-            json: require("@/assets/json/parse6219491628248857926.json"),
             positions: [],
             select_time: 0, // predict map
             live_time: 0,
-            review_times: [0, 6],
+            review_times: [0, 10],
             red: "#E74866",
             blue: "#55A4F3",
             x_max: 58,
@@ -47,7 +55,7 @@ export default {
             // for play and record
             video_records: [],
             recordLength: 0,
-            record_time: 0,
+            record_time: 0, // time to play in recorded video
             play_1: "inline",
             pause_1: "none",
             play_2: "inline",
@@ -63,9 +71,6 @@ export default {
             glyph_num: 4,
             glyph_plr: 0,
 
-            // for distribution bar plot
-            predictions: require('@/assets/json/grad_out_testing_time_2.json'),
-            predict_hash: require('@/assets/json/grad_out_testing_time_2_hash.json'),
             // predict_live: require('@/assets/json/grad_out_testing_time.json')[0],
             predict_live: {},
             bar_plr: 0,
@@ -100,7 +105,7 @@ export default {
         },
         // update positions according to live_time
         live_time(val, oldVal) {
-            this.select_time=val;
+            this.select_time = val;
             this.updatePositions(val);
             this.updatePredictions(val);
             this.glyph_plr = 0
@@ -108,6 +113,8 @@ export default {
 
             // update review end: review_times[1]
             this.review_times[1] = val;
+            this.review_times[0] = val - 10;
+            this.$refs.review_info.update(0, val - 10);
             this.$refs.review_info.update(1, val);
         },
         // display history
@@ -211,8 +218,6 @@ export default {
         this.updatePositions(this.live_time);
         this.live_positions = JSON.parse(JSON.stringify(this.positions));
     },
-    setup() {
-    },
 
     methods: {
         // predict: map
@@ -279,7 +284,7 @@ export default {
                 this.video_records.push(i)
             }
             this.recordLength += review_length;
-            console.log('record', this.video_records, this.recordLength)
+            // console.log('record', this.video_records, this.recordLength)
         },
         playRecord() {
             for (pair in this.video_records) {
@@ -298,14 +303,46 @@ export default {
                     if (_this.play_1 != "none") {
                         // play
                         console.log("play_1!!");
-
                         _this.play_1 = "none";
                         _this.pause_1 = "inline";
+
                         _this.timer_1 = setInterval(() => {
-                            _this.live_time++;
-                            _this.review_times[1] = _this.live_time;
-                            _this.$refs.review_info.update(1, _this.review_times[1]);
-                        }, 100);
+                            if (_this.select_video) {
+                                // play or pause recorded video
+
+                                if (_this.record_time == _this.recordLength - 1) {
+                                    // pause
+                                    console.log("pause_1!!");
+                                    _this.pause_1 = "none";
+                                    _this.play_1 = "inline";
+                                    if (_this.timer_1) clearInterval(_this.timer_1);
+                                }
+                                else {
+                                    // play
+                                    _this.record_time++;
+                                }
+                            }
+                            else {
+                                // play or pause live video
+                                if (_this.live_time == _this.json.length - 1) {
+                                    // pause
+                                    console.log("pause_1!!");
+                                    _this.pause_1 = "none";
+                                    _this.play_1 = "inline";
+                                    if (_this.timer_1) clearInterval(_this.timer_1);
+                                }
+                                else {
+                                    // play
+                                    _this.live_time++;
+                                }
+
+                                // review_time changes with live_time
+                                _this.review_times[0] = _this.live_time - 10;
+                                _this.review_times[1] = _this.live_time;
+                                _this.$refs.review_info.update(0, _this.review_times[1] - 10);
+                                _this.$refs.review_info.update(1, _this.review_times[1]);
+                            }
+                        }, 500);
                     }
                     else {
                         // pause
@@ -331,13 +368,15 @@ export default {
                         _this.pause_2 = "inline";
                         _this.timer_2 = setInterval(() => {
                             if (_this.review_times[0] == _this.review_times[1]) {
+                                // review ended
                                 review_pause();
                             }
                             else {
+                                // play review
                                 _this.review_times[0] += 1;
                                 _this.$refs.review_info.update(0, _this.review_times[0]);
                             }
-                        }, 100);
+                        }, 500);
                     }
                     else {
                         review_pause();
@@ -396,10 +435,10 @@ export default {
             this.predict_cam_pos = { x: pos.x / 2 - 5, z: pos.y / 2 - 5 }
 
             // update predict event
-            if(this.event_predict_last_id!=-1){
+            if (this.event_predict_last_id != -1) {
                 // last time select by predict, not click
                 this.updateHistory(this.event_predict_last_id, 0);
-                this.event_predict_last_id=-1
+                this.event_predict_last_id = -1
             }
             // select player & event_display
             if (this.history_plrs[playerID] == 0) {
