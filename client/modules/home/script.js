@@ -517,6 +517,27 @@ export default {
 
                 }
             }
+        },
+
+        get_camp_data(time) {
+            let camp_data = { kills_0: 0, towers_0: 0, money_0: 0, kills: 0, towers: 0, money: 0 }
+            let all_data = this.json[time]
+
+            // count kills
+            for (let i = 0; i < 10; i++) {
+                if (i < 5) {
+                    camp_data.kills_0 += all_data["usr_" + i].kills
+                    camp_data.money_0 += all_data["usr_" + i].cashGain
+                }
+                else {
+                    camp_data.kills += all_data["usr_" + i].kills
+                    camp_data.money += all_data["usr_" + i].cashGain
+                }
+            }
+            camp_data.towers_0 = all_data.camp_1.all_tower_destroy
+            camp_data.towers = all_data.camp_2.all_tower_destroy
+
+            return camp_data
         }
     }
 };

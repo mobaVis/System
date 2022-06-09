@@ -129,7 +129,7 @@
                             >play_time</tspan
                         ><tspan
                             style="position: absolute; left: 200px; top: 600px"
-                            >record_time</tspan
+                            >record_length</tspan
                         >
                     </text>
 
@@ -145,7 +145,7 @@
                             {{ record_time }}</tspan
                         >
                         <tspan
-                            style="position: absolute; left: 230px; top: 600px"
+                            style="position: absolute; left: 250px; top: 600px"
                         >
                             {{ recordLength }}</tspan
                         >
@@ -182,7 +182,7 @@
                         </li>
                     </ul>
 
-                    <camp-data-displayer style="float: right" />
+                    <camp-data-displayer :campData="get_camp_data(live_time)" style="float: right" />
 
                     <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">
@@ -285,7 +285,7 @@
                             />
                         </li>
                     </ul>
-                    <camp-data-displayer style="float: right" />
+                    <camp-data-displayer :campData="get_camp_data(review_times[0])" style="float: right" />
 
                     <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">
