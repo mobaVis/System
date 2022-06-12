@@ -87,11 +87,11 @@ export default {
                 // Object.definePropety(this, "play", this.begin);
                 this.begin = this.formatSeconds(val);
                 this.play = this.begin;
-                console.log("begin", this.begin);
+                // console.log("begin", this.begin);
             } else if (index == 1) {
                 // Object.definePropety(this, "end", this.formatSeconds(val));
                 this.end = this.formatSeconds(val);
-                console.log("end", this.end);
+                // console.log("end", this.end);
             }
             this.duration = this.formatSeconds(
                 this.time_pair[1] - this.time_pair[0]

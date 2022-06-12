@@ -1,10 +1,11 @@
 import json
 
+name = input('input dir name: ')
 # input: open json file flow -> python class
-openFilePath = "../json/grad_out_testing_time_2.json"
+openFilePath = "../json/"+name+"/grad_out_testing_time_2.json"
 
 # output
-destName = open("../json/grad_out_testing_time_2_hash.json", 'w+')
+destName = open("../json/"+name+"/grad_out_testing_time_2_hash.json", 'w+')
 
 # dict in python: hashMap[${live_time}]=${index_of_correlated_obj}
 # both strings
