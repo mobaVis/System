@@ -1,5 +1,6 @@
 <template>
-    <svg class="review_detail"
+    <svg
+        class="review_detail"
         width="950"
         height="30"
         viewBox="0 0 950 30"
@@ -80,20 +81,24 @@ export default {
             return min + ":" + sec;
         },
         update(index, val) {
-            this.$nextTick(() => {
-                if (index == 0) {
-                    this.begin = this.formatSeconds(val);
-                    this.play = this.begin;
-                    console.log('begin',this.begin);
-                } else if (index == 1) {
-                    this.end = this.formatSeconds(val);
-                    console.log('end',this.end);
-                }
-                this.duration = this.formatSeconds(
-                    this.time_pair[1] - this.time_pair[0]
-                );
-            });
-            console.log("review_info update(" + index + ", " + val + ")");
+            // this.$nextTick(() => {
+            if (index == 0) {
+                // Object.definePropety(this, "begin", this.formatSeconds(val));
+                // Object.definePropety(this, "play", this.begin);
+                this.begin = this.formatSeconds(val);
+                this.play = this.begin;
+                console.log("begin", this.begin);
+            } else if (index == 1) {
+                // Object.definePropety(this, "end", this.formatSeconds(val));
+                this.end = this.formatSeconds(val);
+                console.log("end", this.end);
+            }
+            this.duration = this.formatSeconds(
+                this.time_pair[1] - this.time_pair[0]
+            );
+            this.$forceUpdate();
+            // });
+            // console.log("review_info update(" + index + ", " + val + ")");
         },
     },
     mounted() {

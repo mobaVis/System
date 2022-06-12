@@ -32,8 +32,13 @@
                             :key="index"
                             :label="name"
                             :value="name"
-                        />
-                    </el-select>
+                        /> </el-select
+                    >&nbsp;&nbsp;<el-button
+                        circle
+                        :style="{ display: play_1 }"
+                        icon="Refresh"
+                        @click="refreshJson"
+                    />
                     <el-divider />
                     <plrs-legend
                         :event_id="
@@ -114,7 +119,7 @@
                         <el-slider
                             id="recordVideoSlider"
                             v-model="record_time"
-                            :max="recordLength==0?0:recordLength - 1"
+                            :max="recordLength == 0 ? 0 : recordLength - 1"
                         />
                     </el-row>
 
@@ -136,9 +141,9 @@
                     <!-- value -->
                     <text
                         class="value"
-                        style="position: absolute; left: 100px; color: #333333"
+                        style="position: absolute; left: 110px; color: #333333"
                     >
-                        ><tspan style="position: absolute; top: 550px">{{
+                        <tspan style="position: absolute; top: 550px">{{
                             live_time
                         }}</tspan>
                         <tspan style="position: absolute; top: 600px">
@@ -182,7 +187,10 @@
                         </li>
                     </ul>
 
-                    <camp-data-displayer :campData="get_camp_data(live_time)" style="float: right" />
+                    <camp-data-displayer
+                        :campData="get_camp_data(live_time)"
+                        style="float: right"
+                    />
 
                     <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">
@@ -285,7 +293,10 @@
                             />
                         </li>
                     </ul>
-                    <camp-data-displayer :campData="get_camp_data(review_times[0])" style="float: right" />
+                    <camp-data-displayer
+                        :campData="get_camp_data(review_times[0])"
+                        style="float: right"
+                    />
 
                     <ul style="list-style-type: none; padding: 0 0 0 15px">
                         <li v-for="(color, i) in camp2_colors" :key="i">

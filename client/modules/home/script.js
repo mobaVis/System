@@ -32,8 +32,8 @@ export default {
     setup() {
         var json = require("@/assets/json/parse6219151093176859974.json"),
             // for distribution bar plot
-            predictions = require('@/assets/json/grad_out_testing_time_2.json'),
-            predict_hash = require('@/assets/json/grad_out_testing_time_2_hash.json');
+            predictions = require('@/assets/json/grad_out_testing_time.json'),
+            predict_hash = require('@/assets/json/grad_out_testing_time_hash.json');
 
 
         return { json, predictions, predict_hash }
@@ -83,7 +83,7 @@ export default {
             // for history: game switch
             select_game: '',
             history_plrs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // list of all selected plr in plrs-legend
-            games: ['6219491628248857926'],
+            games: ['6219491628248857926', '6219151093176859974', '6219266335739346246'],
             pos_display: true,
             exp_display: false,
             cash_display: false,
@@ -220,6 +220,29 @@ export default {
     },
 
     methods: {
+        // click function: as the name
+        refreshJson() {
+            let val=this.select_game
+            if (val != '') {
+                var json = 'parse' + val
+                this.json = require("@/assets/json/" + json + ".json")
+
+
+                // reset all views with live_time
+                this.select_time = 0;
+                this.live_time = 0;
+                this.updatePositions(0);
+                this.updatePredictions(0);
+                this.glyph_plr = 0
+                this.bar_plr = 0
+
+                // update review end: review_times[1]
+                this.review_times[1] = 10;
+                this.review_times[0] = 0;
+                this.$refs.review_info.update(0, 0);
+                this.$refs.review_info.update(1, 10);
+            }
+        },
         // predict: map
         updatePositions(time) {
             // positions
@@ -384,7 +407,7 @@ export default {
             }
         },
 
-        // predict
+        // refresh  text & `predict_live`
         updatePredictions(time) {
             // remove old warning marks
             d3.select("#predictMap").selectAll('text').remove()
