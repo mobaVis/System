@@ -1,5 +1,6 @@
 # MOBA_VIS
 This Visual Analytics System is built based on JsonVee, an efficient front-end integration framework，Based on Node.js, Vue, Webpack.
+More ducuments could be found under the dir [/thesis](https://github.com/mobaVis/System/tree/master/thesis)
 
 ## Dependence
 1. Webpack5, Vue 3.0, MongoDB
