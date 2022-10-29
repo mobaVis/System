@@ -2,6 +2,10 @@
 This Visual Analytics System is built based on JsonVee, an efficient front-end integration framework，Based on Node.js, Vue.js, Express.js, Webpack.
 More ducuments could be found under the dir [/thesis](https://github.com/mobaVis/System/tree/master/thesis)
 
+## Overview
+![image](https://user-images.githubusercontent.com/43395416/198819039-77f51b88-6cb5-46b3-981f-e1073c8159e0.png)
+
+
 ## Dependence
 1. Webpack5, Vue 3.0, MongoDB
 2. node >=v16
