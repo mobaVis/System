@@ -1,6 +1,8 @@
 # MOBA_VIS
-This Visual Analytics System is built based on JsonVee, an efficient front-end integration framework，Based on Node.js, Vue.js, Express.js, Webpack.
-More ducuments could be found under the dir [/thesis](https://github.com/mobaVis/System/tree/master/thesis)
+This project is a Visual Analytics System for real-time MOBA game prediction and feature analysis, in supplement to the current MOBA game live programs. The system frontend is designed with real-time game features and predictions, equiped with interactive analysis functionalities.
+Thanks to JsonVee, an efficient front-end integration framework based on Node.js, Vue.js, Express.js, Webpack.
+
+More documents could be found under the dir [/thesis](https://github.com/mobaVis/System/tree/master/thesis), which is my undergrad thesis.
 
 ## Overview
 #### Frontend Demo GIF
