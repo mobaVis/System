@@ -1,5 +1,5 @@
 # MOBA_VIS
-This project is a Visual Analytics System for real-time MOBA game prediction and feature analysis, in supplement to the current MOBA game live programs. The system frontend is designed with real-time game features and predictions, equiped with interactive analysis functionalities.
+This project is a Visual Analytics System for real-time MOBA game prediction and feature analysis, in supplement to the current MOBA game live programs. The system frontend is designed with real-time game features and predictions, equiped with interactive analysis functionalities. We experimented with dataset from a real MOBA game WildFire by NetEase and it turned out succeddful primitively.
 Thanks to JsonVee, an efficient front-end integration framework based on Node.js, Vue.js, Express.js, Webpack.
 
 More documents could be found under the dir [/thesis](https://github.com/mobaVis/System/tree/master/thesis), which is my undergrad thesis.
